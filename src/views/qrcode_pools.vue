@@ -246,8 +246,8 @@
             },
             rowDel(row,index){
                 this.$confirm('确认删除吗？', '提示', {}).then(() => {
-                    del_qrcode({
-                        data : {"id":row.id},
+                    upd_status_qrcode({
+                        data : {"id":row.id,"status":"4"},
                         callback : () => {
                             this.QueryQrcode()
                             this.$message.success("删除成功!")

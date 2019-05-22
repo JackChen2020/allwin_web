@@ -105,6 +105,8 @@
                             span:24,
                             imgFullscreen:true,
                             addVisdiplay:false,
+                            // imgHeight:400,
+                            // imgWidth:100,
                             imgType:'card'
                         },
                         {
