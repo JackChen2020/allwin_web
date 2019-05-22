@@ -231,7 +231,6 @@
                             this.addLoading = false;
                             this.$message.success("手工上分成功!")
                             console.log(res.data.data)
-                            this.$message.warning(res.data.data)
                             this.RequestQuery()
                         },
                         errorcallback : () => {
