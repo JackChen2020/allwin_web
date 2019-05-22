@@ -246,8 +246,8 @@
             },
             rowDel(row,index){
                 this.$confirm('确认删除吗？', '提示', {}).then(() => {
-                    upd_status_qrcode({
-                        data : {"id":row.id,"status":"4"},
+                    del_qrcode({
+                        data : {"id":row.id},
                         callback : () => {
                             this.QueryQrcode()
                             this.$message.success("删除成功!")
@@ -276,7 +276,8 @@
                         "page" : this.page.currentPage,
                         "page_size" : this.page.pageSize,
                         "name" : this.filter.name,
-                        "userid" : this.$route.query.id
+                        "userid" : this.$route.query.hasOwnProperty('id') ? this.$route.query.id : 0,
+                        "wechathelper_id" : this.$route.query.hasOwnProperty('wechathelper_id') ? this.$route.query.wechathelper_id : 0,
                     },
                     "callback": (res)=>{
                         this.data=[]
@@ -303,6 +304,7 @@
             }
         },
         mounted() {
+            console.log(this.$route.query)
             // this.QueryQrcode()
             // console.log(this.$route.query.id)
         }

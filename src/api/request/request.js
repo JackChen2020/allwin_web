@@ -377,3 +377,39 @@ export function upd_status_qrcode(options) {
   options['method']='post'
   CoreRequest(options)
 }
+
+export function wechathelper_add(options) {
+  options['url']='/api/public/wechathelper_add'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+export function wechathelper_upd(options) {
+  options['url']='/api/public/wechathelper_upd'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+export function wechathelper_del(options) {
+  options['url']='/api/public/wechathelper_del'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+export function wechathelper_query(options) {
+  options['url']='/api/public/wechathelper_query'
+  options['method']='get'
+  CoreRequest(options)
+}
+
+export function wechathelper_login(options) {
+  options['url']='/api/public/wechathelper_login'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+export function wechathelper_stop(options) {
+  options['url']='/api/public/wechathelper_stop'
+  options['method']='post'
+  CoreRequest(options)
+}

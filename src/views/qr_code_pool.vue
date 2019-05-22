@@ -6,6 +6,11 @@
                     <el-option v-for="item in FormObj" :label="item.name" :value="item.userid" :key="item.userid"></el-option>
                 </el-select>
             </el-form-item>
+            <el-form-item label="店员助手" :rules="{ required: true, message: '请选择店员助手!', trigger: 'blur' }" placeholder="请选择店员助手">
+                <el-select v-model="request_data.wechathelper_id" placeholder="请选择店员助手">
+                    <el-option v-for="item in FormObj1" :label="item.name" :value="item.id" :key="item.id"></el-option>
+                </el-select>
+            </el-form-item>
 
             <el-form-item label="上传二维码">
                 <el-upload
@@ -65,7 +70,7 @@
 
 <script>
 
-    import { get_qrcode,del_qrcode,upd_qrcode ,open_qrcode ,agent_query} from '~/api/request/request'
+    import { get_qrcode,del_qrcode,upd_qrcode ,open_qrcode ,agent_query,wechathelper_query} from '~/api/request/request'
 
     import { imgjoin } from '~/api/utils'
 
@@ -73,6 +78,7 @@
         data() {
             return {
                 FormObj:[],
+                FormObj1:[],
                 fileList: [],
                 data : [],
                 obj:{},
@@ -283,6 +289,15 @@
                 },
                 "callback": (res)=>{
                     this.FormObj=res.data.data
+                }
+            })
+            wechathelper_query({
+                "params":{
+                    "page" : 1,
+                    "page_size" : 99999999
+                },
+                "callback": (res)=>{
+                    this.FormObj1=res.data.data
                 }
             })
         }
