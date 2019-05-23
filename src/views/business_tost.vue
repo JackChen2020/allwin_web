@@ -20,6 +20,11 @@
                         <el-link @click="HandlerPass" class="img-border1" type="success"  target="_blank">密钥: {{g_token}}</el-link>
                     </div>
                 </basic-container>
+                <basic-container>
+                    <div class="info">
+                        <el-link class="img-border" type="success" :href="javasdk_url" target="_blank">Java-sdk下载</el-link>
+                    </div>
+                </basic-container>
             </el-col>
         </el-row>
 
@@ -37,6 +42,7 @@
 <script>
     import { mapState } from 'vuex'
     import { check_paypasswd } from '~/api/request/request'
+    import { imgjoin } from '~/api/utils'
 
     export default {
 
@@ -46,7 +52,8 @@
                 cflag : false,
                 isFlag: false,
                 obj:{},
-                obj1:{}
+                obj1:{},
+                javasdk_url:''
             }
         },
         computed: {
@@ -111,6 +118,7 @@
         mounted() {
             let token = this.user.google_token
             this.g_token = token.substr(0,3) + "********" + token.substr(11);
+            this.javasdk_url = imgjoin("/nginx_upload/sdk/java/allwin-api-client-1.0.zip")
         }
     }
 
