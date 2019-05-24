@@ -18,6 +18,10 @@
             </el-table-column>
             <el-table-column prop="loginname" label="登录账号" width="120" sortable align="center">
             </el-table-column>
+            <el-table-column prop="bal" label="商户余额" width="100" sortable align="center">
+            </el-table-column>
+            <el-table-column prop="bal1" label="可提现余额" width="120" sortable align="center">
+            </el-table-column>
             <el-table-column prop="concat" label="联系人" width="100" sortable align="center">
             </el-table-column>
             <el-table-column prop="contype" label="联系方式" width="120" sortable align="center">
