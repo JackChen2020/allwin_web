@@ -1,12 +1,17 @@
 <template>
     <section class="main">
         <el-form ref="FormObj" :model="request_data" label-width="100px">
+            <el-form-item label="二维码类型" :rules="{ required: true, message: '请选择二维码类型!', trigger: 'blur' }" placeholder="请选择二维码类型">
+                <el-select v-model="request_data.qrtype" placeholder="请选择二维码类型">
+                    <el-option v-for="item in FormObj2" :label="item.value" :value="item.name" :key="item.name"></el-option>
+                </el-select>
+            </el-form-item>
             <el-form-item label="码商" :rules="{ required: true, message: '请选择码商!', trigger: 'blur' }" placeholder="请选择码商">
                 <el-select v-model="request_data.userid" placeholder="请选择码商">
                     <el-option v-for="item in FormObj" :label="item.name" :value="item.userid" :key="item.userid"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="店员助手" :rules="{ required: true, message: '请选择店员助手!', trigger: 'blur' }" placeholder="请选择店员助手">
+            <el-form-item label="店员助手" v-show="isFlag" :rules="{ required: true, message: '请选择店员助手!', trigger: 'blur' }" placeholder="请选择店员助手">
                 <el-select v-model="request_data.wechathelper_id" placeholder="请选择店员助手">
                     <el-option v-for="item in FormObj1" :label="item.name" :value="item.id" :key="item.id"></el-option>
                 </el-select>
@@ -70,7 +75,7 @@
 
 <script>
 
-    import { get_qrcode,del_qrcode,upd_qrcode ,open_qrcode ,agent_query,wechathelper_query} from '~/api/request/request'
+    import { get_qrcode,del_qrcode,upd_qrcode ,open_qrcode ,agent_query,wechathelper_query , get_qrtype} from '~/api/request/request'
 
     import { imgjoin } from '~/api/utils'
 
@@ -79,6 +84,8 @@
             return {
                 FormObj:[],
                 FormObj1:[],
+                FormObj2:[],
+                isFlag:false,
                 fileList: [],
                 data : [],
                 obj:{},
@@ -88,6 +95,7 @@
                   name:''
                 },
                 request_data:{
+                    qrtype:''
                 },
                 page: {
                     // pageSizes: [2],
@@ -167,6 +175,19 @@
                     ]
                 }
             };
+        },
+        watch: {
+            request_data: {
+                handler(newName, oldName) {
+                    if(newName.qrtype === 'QR001'){
+                        this.isFlag=true
+                    }else{
+                        this.isFlag=false
+                    }
+                },
+                deep: true,
+                immediate: true
+            }
         },
         methods: {
             handleRemove(file, fileList) {
@@ -280,6 +301,18 @@
         },
         mounted() {
             // this.QueryQrcode()
+            get_qrtype({
+                "params":{
+                    "status" : "0",
+                    "page" : 1,
+                    "page_size" : 99999999,
+                    "type" : "3"
+                },
+                "callback": (res)=>{
+                    this.FormObj2=res.data.data
+                    console.log(this.FormObj2)
+                }
+            })
             agent_query({
                 "params":{
                     "status" : "0",

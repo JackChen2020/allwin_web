@@ -413,3 +413,9 @@ export function wechathelper_stop(options) {
   options['method']='post'
   CoreRequest(options)
 }
+
+export function get_qrtype(options) {
+  options['url']='/api/public/get_qrtype'
+  options['method']='get'
+  CoreRequest(options)
+}
