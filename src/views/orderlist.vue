@@ -7,6 +7,13 @@
                     <el-input v-model="filters.ordercode" placeholder="订单号"></el-input>
                 </el-form-item>
                 <el-form-item >
+                    <el-select v-model="filters.status" placeholder="支付状态">
+                        <el-option label="支付成功" value="0"></el-option>
+                        <el-option label="等待支付" value="1"></el-option>
+                        <el-option label="订单过期" value="3"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item >
                     <el-date-picker
                             v-model="filters.querytime"
                             type="daterange"
@@ -58,9 +65,9 @@
             </el-table-column>
             <el-table-column prop="status_name" label="支付状态" width="100" sortable align="center">
                 <template slot-scope="scope">
-                    <span v-if="scope.row.status=== '0'" style="color: #ff0000">{{scope.row.status_name}}</span>
-                    <span v-else-if="scope.row.status=== '1'" style="color: #000000">{{scope.row.status_name}}</span>
-                    <span v-else style="color: #1AE642">{{scope.row.status_name}}</span>
+                    <span v-if="scope.row.status=== '0'" style="color: #95e61a">{{scope.row.status_name}}</span>
+                    <span v-else-if="scope.row.status=== '1'" style="color: #abd5f9">{{scope.row.status_name}}</span>
+                    <span v-else style="color: #e62b32">{{scope.row.status_name}}</span>
                 </template>
             </el-table-column>
             <el-table-column prop="amount" label="订单金额" width="100" sortable align="center">
@@ -157,7 +164,8 @@
                 tot_order_ok_count : 0,
                 filters: {
                     querytime:'',
-                    ordercode:''
+                    ordercode:'',
+                    status:''
                 },
                 pickerOptions2: {
                     shortcuts: [{
@@ -334,7 +342,7 @@
 
                 let startdate=""
                 let enddate=""
-                if(this.filters.querytime[0] && this.filters.querytime[1]){
+                if(this.filters.querytime && this.filters.querytime[0] && this.filters.querytime[1]){
                     startdate=dateformart(this.filters.querytime[0])+' 00:00:01'
                     enddate=dateformart(this.filters.querytime[1])+' 23:59:59'
                 }
@@ -345,7 +353,8 @@
                         page_size: this.pagesize,
                         ordercode : this.filters.ordercode,
                         startdate : startdate ,
-                        enddate : enddate
+                        enddate : enddate,
+                        status : this.filters.status
                     },
                     callback : (res) => {
                         this.vlist = res.data.data.data

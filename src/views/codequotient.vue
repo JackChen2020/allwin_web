@@ -60,7 +60,7 @@
 
 <script>
 
-    import { user_add,user_upd,user_del,agent_query,paypasslinktype_add,paypasslinktype_query,paytype_query } from '~/api/request/request'
+    import { user_add,user_upd,user_del,get_help,paypasslinktype_add,paypasslinktype_query,paytype_query } from '~/api/request/request'
 
     export default {
         data() {
@@ -124,6 +124,25 @@
                     height:300,
                     delBtn : false,
                     searchMenuSpan:6,
+                    showSummary:true,
+                    sumColumnList: [
+                        {
+                            name: 'today_confirm_tot',
+                            type: 'sum'
+                        },
+                        {
+                            name: 'confirm_tot',
+                            type: 'sum'
+                        },
+                        {
+                            name: 'all_tot',
+                            type: 'sum'
+                        },
+                        {
+                            name: 'today_all_tot',
+                            type: 'sum'
+                        }
+                    ],
                     size:"mini",
                     column:[
                         {
@@ -141,15 +160,26 @@
                             cell: true,
                         },
                         {
-                            label:'余额',
-                            prop:'bal',
-                            minWidth:120,
+                            label:'(正常)当天流水',
+                            prop:'today_confirm_tot',
+                            minWidth:110,
                             addVisdiplay:false,
                         },
                         {
-                            label:'可提现余额',
-                            prop:'bal1',
-                            minWidth:120,
+                            label:'(正常)总流水',
+                            prop:'confirm_tot',
+                            minWidth:110,
+                        },
+                        {
+                            label:'(所有)当天流水',
+                            prop:'today_all_tot',
+                            minWidth:110,
+                            addVisdiplay:false,
+                        },
+                        {
+                            label:'(所有)总流水',
+                            prop:'all_tot',
+                            minWidth:110,
                             addVisdiplay:false,
                         },
                         {
@@ -314,7 +344,7 @@
             },
             QueryQrcode(){
                 this.loading=true
-                agent_query({
+                get_help({
                     "params":{
                         "status" : "0",
                         "page" : this.page.currentPage,

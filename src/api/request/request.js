@@ -419,3 +419,9 @@ export function get_qrtype(options) {
   options['method']='get'
   CoreRequest(options)
 }
+
+export function get_help(options) {
+  options['url']='/api/public/get_help'
+  options['method']='get'
+  CoreRequest(options)
+}

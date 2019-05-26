@@ -110,6 +110,21 @@
                             imgType:'card'
                         },
                         {
+                            label:'类型',
+                            prop:'type',
+                            minWidth:150,
+                            search:true,
+                            dicData: [{
+                                "label":"微信扫码",
+                                "value" : "QR001"
+                            },{
+                                "label":"付临门聚合",
+                                "value" : "QR005"
+                            },
+                            ],
+                            type:'select',
+                        },
+                        {
                             label:'创建时间',
                             prop:'createtime',
                             minWidth:150,
@@ -125,7 +140,8 @@
 
                     wechathelper_add({
                         data : {
-                            name:row.name
+                            name:row.name,
+                            type:row.type
                         },
                         callback : () => {
                             this.QueryQrcode()
