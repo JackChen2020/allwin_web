@@ -167,3 +167,10 @@ export function Encrypt(word) {
   return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
 }
 
+export function sleep(milliSeconds){
+  var StartTime =new Date().getTime();
+  let i = 0;
+  while (new Date().getTime() <StartTime+milliSeconds);
+
+}
+

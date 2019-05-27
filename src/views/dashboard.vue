@@ -19,6 +19,41 @@
                             </div>
                         </div>
                     </div>
+                    <div class="info" v-show="this.user.rolecode==4001">
+                        <div class="user-img">
+                            <span class="user-subtitle1">余额: ¥{{user.up_bal}}</span>
+                        </div>
+                        <div class="user-img">
+                            <span class="user-subtitle1">可提现余额: ¥{{user.up_bal - user.bal - user.cashout_bal}}</span>
+                        </div>
+                        <div class="user-img">
+                            <span class="user-subtitle2">利润: ¥{{user.bal}}</span>
+                        </div>
+                    </div>
+                    <div class="info" v-show="this.user.rolecode==2001">
+                        <div class="user-img">
+                            <span class="user-subtitle1">余额: ¥{{user.bal}}</span>
+                        </div>
+                        <div class="user-img">
+                            <span class="user-subtitle2">可提现余额: ¥{{user.bal - user.cashout_bal}}</span>
+                        </div>
+                    </div>
+                    <div class="info" v-show="this.user.rolecode==3001">
+                        <div class="user-img">
+                            <span class="user-subtitle1">余额: ¥{{user.bal}}</span>
+                        </div>
+                        <div class="user-img">
+                            <span class="user-subtitle2">可提现余额: ¥{{user.bal - user.cashout_bal}}</span>
+                        </div>
+                    </div>
+                    <div class="info" v-show="this.user.rolecode==1000">
+                        <div class="user-img">
+                            <span class="user-subtitle1">内部账余额: ¥{{user.bal4}}</span>
+                        </div>
+                        <div class="user-img">
+                            <span class="user-subtitle2">余额: ¥{{user.bal}}</span>
+                        </div>
+                    </div>
                 </basic-container>
             </el-col>
             <basic-container v-show="this.user.rolecode!==4001">
@@ -33,8 +68,9 @@
 
 <script>
     import LineChart from '~/views/com/LineChart'
-    import { mapState } from 'vuex'
-    import { ordercount } from '~/api/request/request'
+    import { ordercount,user_query } from '~/api/request/request'
+
+
 
     export default {
         components: {
@@ -49,32 +85,29 @@
                 lineChartData: {},
                 datakey: [],
                 datatop : [],
+                user:{}
             }
-        },
-        computed: {
-            ...mapState(['user'])
         },
         created() {},
         methods: {
 
         },
         mounted () {
-            console.log(this.user)
-            if(this.user.rolecode !== 4001){
-                ordercount({
-                    callback : (res) => {
-                        this.easyDataOption.data = res.data.data.data1
-                        this.$set(this.lineChartData,'expectedData',res.data.data.data4.value)
-                        this.datakey = res.data.data.data4.key
-                        this.datatop = ['订单金额']
-
-                        console.log(this.easyDataOption)
-                        console.log(this.lineChartData)
-                        console.log(this.datakey)
-                        console.log(this.datatop)
+            user_query({
+                callback : (res) => {
+                    this.user = res.data.data
+                    if(this.user.rolecode !== 4001){
+                        ordercount({
+                            callback : (res) => {
+                                this.easyDataOption.data = res.data.data.data1
+                                this.$set(this.lineChartData,'expectedData',res.data.data.data4.value)
+                                this.datakey = res.data.data.data4.key
+                                this.datatop = ['订单金额']
+                            }
+                        })
                     }
-                })
-            }
+                }
+            })
         }
     };
 </script>
@@ -139,6 +172,33 @@
             font-size: 12px;
             text-align: center;
             color: rgb(255, 44, 84);
+            background-color: rgb(255, 242, 244);
+            white-space: nowrap;
+        }
+        .user-subtitle1 {
+            display: inline-block;
+            height: 16px;
+            line-height: 16px;
+            border-radius: 2px;
+            padding: 0px 5px;
+            margin-left: 10px;
+            margin-right: 50px;
+            margin-bottom: 20px;
+            font-size: 15px;
+            color: rgb(255, 48, 70);
+            background-color: rgb(255, 242, 244);
+            white-space: nowrap;
+        }
+        .user-subtitle2 {
+            display: inline-block;
+            height: 16px;
+            line-height: 16px;
+            border-radius: 2px;
+            padding: 0px 5px;
+            margin-left: 10px;
+            margin-right: 50px;
+            font-size: 15px;
+            color: rgb(255, 48, 70);
             background-color: rgb(255, 242, 244);
             white-space: nowrap;
         }

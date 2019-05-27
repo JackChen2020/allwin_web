@@ -127,21 +127,17 @@
                     showSummary:true,
                     sumColumnList: [
                         {
-                            name: 'today_confirm_tot',
+                            name: 'up_bal',
                             type: 'sum'
                         },
                         {
-                            name: 'confirm_tot',
+                            name: 'bal1',
                             type: 'sum'
                         },
                         {
-                            name: 'all_tot',
+                            name: 'bal',
                             type: 'sum'
                         },
-                        {
-                            name: 'today_all_tot',
-                            type: 'sum'
-                        }
                     ],
                     size:"mini",
                     column:[
@@ -160,25 +156,20 @@
                             cell: true,
                         },
                         {
-                            label:'(正常)当天流水',
-                            prop:'today_confirm_tot',
+                            label:'码商余额',
+                            prop:'up_bal',
                             minWidth:110,
                             addVisdiplay:false,
                         },
                         {
-                            label:'(正常)总流水',
-                            prop:'confirm_tot',
-                            minWidth:110,
-                        },
-                        {
-                            label:'(所有)当天流水',
-                            prop:'today_all_tot',
+                            label:'可提现余额',
+                            prop:'bal1',
                             minWidth:110,
                             addVisdiplay:false,
                         },
                         {
-                            label:'(所有)总流水',
-                            prop:'all_tot',
+                            label:'利润',
+                            prop:'bal',
                             minWidth:110,
                             addVisdiplay:false,
                         },

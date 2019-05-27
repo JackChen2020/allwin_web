@@ -40,6 +40,11 @@
                 >删除</el-button>
             </template>
         </avue-crud>
+
+
+        <el-dialog title="登录" :visible.sync="loginFlag" :close-on-click-modal="false">
+            <el-link class="img-border" type="success" :href="loginUrl" target="_blank">点击链接扫码登录</el-link>
+        </el-dialog>
     </section>
 </template>
 
@@ -47,13 +52,15 @@
 <script>
 
     import { wechathelper_query,wechathelper_del,wechathelper_upd,wechathelper_add,wechathelper_login,wechathelper_stop } from '~/api/request/request'
-    import { imgjoin } from '~/api/utils'
+    import { imgjoin,sleep } from '~/api/utils'
 
     export default {
         data() {
             return {
                 data : [],
                 obj:{'url':[]},
+                loginFlag:false,
+                loginUrl:'',
                 isFlag:false,
                 url:'',
                 loading:false,
@@ -95,20 +102,21 @@
                             minWidth:120,
                             addVisdiplay:false,
                         },
-                        {
-                            label:'登录二维码',
-                            minWidth:120,
-                            prop:'url',
-                            type:'upload',
-                            dataType:'array',
-                            listType:'picture-card',
-                            span:24,
-                            imgFullscreen:true,
-                            addVisdiplay:false,
-                            // imgHeight:400,
-                            // imgWidth:100,
-                            imgType:'card'
-                        },
+                        // {
+                        //     label:'登录二维码',
+                        //     minWidth:120,
+                        //     prop:'url',
+                        //     type:'upload',
+                        //     dataType:'array',
+                        //     listType:'picture-card',
+                        //     lazy:true,
+                        //     span:24,
+                        //     imgFullscreen:true,
+                        //     addVisdiplay:false,
+                        //     // imgHeight:400,
+                        //     // imgWidth:100,
+                        //     imgType:'card'
+                        // },
                         {
                             label:'类型',
                             prop:'type',
@@ -180,15 +188,42 @@
             LinkQrcode(row){
                 this.$router.push({path: '/qrcode_pools?wechathelper_id='+row.id})
             },
+            waite1(res1,row){
+                wechathelper_query({
+                    "params":{
+                        "page" : this.page.currentPage,
+                        "page_size" : this.page.pageSize,
+                        "name" : this.filter.name
+                    },
+                    "callback": (res)=>{
+                        this.data=res.data.data
+
+                        this.data.forEach(item => {
+                            if (item.id === row.id){
+                                if(item.login === "1"){
+                                    this.loginUrl = imgjoin(res1.data.data.path)
+                                    this.loginFlag = true
+                                }
+                            }
+                        })
+
+                        this.page.total = Number(res.headers.total)
+                        this.loading=false
+                    },
+                    errorcallback : () => {
+                        this.loading=false
+                    }
+                })
+            },
             Login(row,index){
                 this.$confirm('确认登录吗？', '提示', {}).then(() => {
+                    this.$message.success("正在登录,请稍等6秒!")
+                    this.loading=true
                     wechathelper_login({
                         data : {"id":row.id},
                         callback : (res) => {
-                            // this.obj.url = [res.data.data.path]
-                            // // this.obj.isFlag = true
-                            this.QueryQrcode()
-                            this.$message.success("如若状态未刷新,请过2秒刷新页面,如果状态依然是未登录,那么请扫码登录!")
+                            sleep(6000)
+                            this.waite1(res,row)
                         },
                     })
                 })
@@ -230,13 +265,14 @@
                     },
                     "callback": (res)=>{
                         this.data=res.data.data
-                        this.data.forEach( item =>{
-                            if(item.qrcode.length > 0 ){
-                                item.url = [imgjoin(item.qrcode)]
-                            } else {
-                                item.url = []
-                            }
-                        })
+                        // this.data.forEach( item =>{
+                        //     if(item.qrcode.length > 0 ){
+                        //         item.url = [imgjoin(item.qrcode)]
+                        //     } else {
+                        //         item.url = []
+                        //     }
+                        // })
+
                         console.log(this.data)
                         this.page.total = Number(res.headers.total)
                         this.loading=false
@@ -253,4 +289,22 @@
 </script>
 
 <style scoped="scoped" lang="scss">
+    .info {
+        padding: 12px 0;
+        text-align: center;
+
+        .img-border {
+            height: 30px;
+            position: relative;
+            vertical-align: middle;
+            display: inline-block;
+        }
+
+        .img-border1 {
+            height: 30px;
+            position: relative;
+            vertical-align: middle;
+            display: inline-block;
+        }
+    }
 </style>
