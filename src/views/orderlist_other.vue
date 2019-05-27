@@ -2,17 +2,21 @@
     <section >
         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
             <el-form :inline="true" :model="filters" size="mini">
-
                 <el-form-item >
-                    <el-input v-model="filters.ordercode" placeholder="订单号"></el-input>
+                    <el-input v-model="filters.ordercode" :clearable="true" placeholder="订单号"></el-input>
                 </el-form-item>
                 <el-form-item >
-                    <el-select v-model="filters.status" placeholder="支付状态">
+                    <el-input v-model="filters.no" :clearable="true" placeholder="流水号"></el-input>
+                </el-form-item>
+                <el-form-item >
+                    <el-select v-model="filters.status" :clearable="true" placeholder="支付状态">
                         <el-option label="支付成功" value="0"></el-option>
                         <el-option label="等待支付" value="1"></el-option>
                         <el-option label="订单过期" value="3"></el-option>
                     </el-select>
                 </el-form-item>
+            </el-form>
+            <el-form :inline="true" :model="filters" size="mini">
                 <el-form-item >
                     <el-date-picker
                             v-model="filters.querytime"
@@ -32,10 +36,6 @@
                 </el-form-item>
             </el-form>
         </el-col>
-
-<!--        <el-col :span="24" class="toolbar">-->
-<!--            <el-button type="primary" icon="el-icon-check" @click="clickUpdOrderStatus" size="mini" :loading="addLoading">手工上分</el-button>-->
-<!--        </el-col>-->
 
         <el-col :span="24" class="toolbar">
             <div style="color:red">当日订单数：{{today_order_tot_count}}，当日成功订单数：{{today_order_ok_count}}，当日流水: {{today_amount}}；
@@ -59,9 +59,7 @@
             </el-table-column>
             <el-table-column prop="ordercode" label="订单ID" width="90" sortable align="center">
             </el-table-column>
-            <el-table-column prop="userid" label="商户ID" width="90" sortable align="center">
-            </el-table-column>
-            <el-table-column prop="username" label="商户名称" width="100" sortable align="center">
+            <el-table-column prop="no" label="流水号" width="200" sortable align="center">
             </el-table-column>
             <el-table-column prop="status_name" label="支付状态" width="100" sortable align="center">
                 <template slot-scope="scope">
@@ -76,9 +74,7 @@
             </el-table-column>
             <el-table-column prop="confirm_amount" label="收款金额" width="100" sortable align="center">
             </el-table-column>
-            <el-table-column prop="tech_cost" label="技术费" width="100" sortable align="center">
-            </el-table-column>
-            <el-table-column prop="no" label="流水号" width="150" sortable align="center">
+            <el-table-column prop="tech_cost" label="总技术费" width="100" sortable align="center">
             </el-table-column>
             <el-table-column prop="paypassname" label="支付渠道" width="110" sortable align="center">
             </el-table-column>
@@ -161,7 +157,8 @@
                 filters: {
                     querytime:'',
                     ordercode:'',
-                    status:''
+                    status:'',
+                    no:''
                 },
                 pickerOptions2: {
                     shortcuts: [{
@@ -216,7 +213,6 @@
         methods:{
             handleSelectionChange(val){
                 this.selectData = val
-                console.log(this.selectData)
             },
             clickUpdOrderStatus(){
                 if(this.selectData.length==0){
@@ -234,8 +230,6 @@
                         callback : (res) => {
                             this.addLoading = false;
                             this.$message.success("手工上分成功!")
-                            console.log(res.data.data)
-                            this.$message.warning(res.data.data)
                             this.RequestQuery()
                         },
                         errorcallback : () => {
@@ -294,6 +288,14 @@
                     }
                 })
             },
+            tableRowClassName({row, rowIndex}) {
+                if (row.status === "0") {
+                    return 'success-row';
+                } else if (row.status === "1") {
+                    return 'warning-row';
+                }
+                return '';
+            },
             updHandler(row){
                 this.updForm = Object.assign({}, row);
                 this.updFlag = true
@@ -342,7 +344,8 @@
                         ordercode : this.filters.ordercode,
                         startdate : startdate ,
                         enddate : enddate,
-                        status : this.filters.status
+                        status : this.filters.status,
+                        no : this.filters.no
                     },
                     callback : (res) => {
                         this.vlist = res.data.data.data
@@ -367,6 +370,12 @@
     }
 </script>
 
-<style scoped>
+<style>
+    .el-table .warning-row {
+        background: #5261fd;
+    }
 
+    .el-table .success-row {
+        background: #f92489;
+    }
 </style>

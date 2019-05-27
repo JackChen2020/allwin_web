@@ -53,7 +53,12 @@
                 handler(newName, oldName) {
                     console.log(newName.userid,this.lastuserid)
                     if(newName.userid !== this.lastuserid && newName.userid >0){
-                        console.log("查询")
+                        this.userids.forEach(item => {
+                            if(newName.userid === item.userid){
+                                newName.up_bal = item.up_bal
+                                newName.cashout_bal = item.cashout_bal
+                            }
+                        })
                     }
                     this.lastuserid = newName.userid
                 },
@@ -85,7 +90,7 @@
                         },
                         {
                             label: "余额",
-                            prop: "bal",
+                            prop: "up_bal",
                             span:12,
                             readonly:true,
                             row:true,
@@ -182,6 +187,7 @@
                 },
                 "callback": (res)=>{
                     this.userids=res.data.data
+                    console.log(this.userids)
                     this.userids.forEach(item =>{
                         this.dicData.push({
                             label:item.name,

@@ -81,11 +81,7 @@
                             type: 'sum'
                         },
                         {
-                            name: 'all_tot',
-                            type: 'sum'
-                        },
-                        {
-                            name: 'today_all_tot',
+                            name: 'usecount',
                             type: 'sum'
                         }
                     ],
@@ -150,25 +146,20 @@
                             minWidth:150,
                         },
                         {
-                            label:'(正常)当天流水',
+                            label:'当天流水',
                             prop:'today_confirm_tot',
                             minWidth:110,
                         },
                         {
-                            label:'(正常)总流水',
+                            label:'总流水',
                             prop:'confirm_tot',
                             minWidth:110,
                         },
                         {
-                            label:'(所有)当天流水',
-                            prop:'today_all_tot',
+                            label:'使用次数',
+                            prop:'usecount',
                             minWidth:110,
-                        },
-                        {
-                            label:'(所有)总流水',
-                            prop:'all_tot',
-                            minWidth:110,
-                        },
+                        }
                     ]
                 }
             };
@@ -291,7 +282,8 @@
                                 confirm_tot : item.confirm_tot,
                                 today_confirm_tot : item.today_confirm_tot,
                                 all_tot : item.all_tot,
-                                today_all_tot: item.today_all_tot
+                                today_all_tot: item.today_all_tot,
+                                usecount: item.usecount
                             })
                         })
                         this.page.total = Number(res.headers.total)
