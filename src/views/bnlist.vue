@@ -13,6 +13,8 @@
                 @selection-change="handleSelectionChange"
                 style="width: 100%;"
                 border
+                :summary-method="getSummaries"
+                show-summary
                 :fit="true"
                 size="mini">
             <el-table-column type="selection" width="55">
@@ -28,6 +30,10 @@
             <el-table-column prop="bal" label="商户余额" width="100" sortable align="center">
             </el-table-column>
             <el-table-column prop="bal1" label="可提现余额" width="120" sortable align="center">
+            </el-table-column>
+            <el-table-column prop="today_amount" label="当天流水" width="120" sortable align="center">
+            </el-table-column>
+            <el-table-column prop="up_bal" label="总流水" width="120" sortable align="center">
             </el-table-column>
             <el-table-column prop="paypassname" label="支付渠道" width="100" sortable align="center">
             </el-table-column>
@@ -338,6 +344,36 @@
             }
         },
         methods:{
+            getSummaries(param) {
+                const { columns, data } = param;
+                const sums = [];
+                columns.forEach((column, index) => {
+                    console.log(index)
+                    if (index === 0 ) {
+                        sums[index] = '总价';
+                        return;
+                    }
+                    if (index === 5 || index ===6 || index===7 || index===8){
+                        const values = data.map(item => Number(item[column.property]));
+                        if (!values.every(value => isNaN(value))) {
+                            sums[index] = values.reduce((prev, curr) => {
+                                const value = Number(curr);
+                                if (!isNaN(value)) {
+                                    return prev + curr;
+                                } else {
+                                    return prev;
+                                }
+                            }, 0);
+                            sums[index] += ' 元';
+                        } else {
+                            sums[index] = 'N/A';
+                        }
+                    }
+
+                });
+
+                return sums;
+            },
             clickUpdpassHandler(){
                 if(this.selectData.length==0){
                     this.$message.error('请勾选商户数据!')
@@ -377,7 +413,6 @@
             },
             handleSelectionChange(val){
                 this.selectData = val
-                console.log(this.selectData)
             },
             AgentModiHandler(){
                 this.$refs.updobj.validate((valid) => {
@@ -435,7 +470,6 @@
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.PayObj.loading= true;
                             this.PayPassObj.types.forEach((item,index) => {
-                                console.log(item.linkid,item.typename+item.name,item.rate)
                                 let listno = this.Pays.pays.indexOf(item.typename + item.name)
                                 if (listno !==-1){
                                     this.PayObj.addlist.insert.push({
@@ -450,7 +484,6 @@
                                 this.$set(this.PayObj.addlist.delete,'id',this.PayPassObj.userid)
                                 this.$set(this.PayObj.addlist.delete,'type','1')
                             }
-                            console.log(this.PayObj.addlist.insert)
                             paypasslinktype_add({
                                 data :this.PayObj.addlist,
                                 callback : () => {
@@ -492,7 +525,6 @@
                     },
                     callback : (res) => {
                         res.data.data.forEach((item,index) => {
-                            console.log(item.typename,item.name,item.rate)
                             this.Pays.pays.push(
                                 item.typename + item.name
                             )
@@ -513,7 +545,6 @@
             AgentQueryTmp(userid){
                 this.AgentObj.loading =true
                 this.updobj={agents:[]}
-                console.log(userid)
                 business_query({
                     params : {
                         status : "0",
@@ -521,8 +552,6 @@
                         userid : this.AgentObj.userid,
                     },
                     callback : (res) => {
-                        console.log("1")
-                        console.log(res.data.data[0].agents)
                         this.AgentObj.list = res.data.data[0].agents
                         this.AgentObj.list.forEach((item,index) => {
                             let userid = this.AgentObj.list[index].userid_to
@@ -538,8 +567,6 @@
                             this.AgentObj.userid  = this.AgentObj.list[index].userid_to
                         })
 
-
-                        console.log("2")
                         this.AgentObj.loading =false
 
                     },
@@ -547,12 +574,10 @@
                         this.AgentObj.loading =false
                     }
                 })
-                console.log(this.AgentObj.list)
             },
             QueryAgent(row){
                 this.AgentObj.showFlag=true
                 this.AgentObj.userid=row.userid
-                console.log("agentobj:",this.AgentObj)
                 this.AgentQueryTmp(row.userid)
             },
             handleSelect(item) {
@@ -606,9 +631,7 @@
                 })
             },
             mg_add () {
-                console.log(this.addFlag)
                 this.addFlag = true;
-                console.log(this.addFlag)
             },
             addSubmit() {
                 this.$refs.addForm.validate((valid) => {
@@ -626,8 +649,6 @@
                             }else{
                                 this.$set(this.addForm1,'paypassid','0')
                             }
-
-                            console.log(this.addForm1)
 
                             user_upd({
                                 data :this.addForm1,

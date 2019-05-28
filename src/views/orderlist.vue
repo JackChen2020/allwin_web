@@ -8,12 +8,17 @@
                 <el-form-item >
                     <el-input v-model="filters.no" :clearable="true" placeholder="流水号"></el-input>
                 </el-form-item>
+            </el-form>
+            <el-form :inline="true" :model="filters" size="mini">
                 <el-form-item >
                     <el-select v-model="filters.status" :clearable="true" placeholder="支付状态">
                         <el-option label="支付成功" value="0"></el-option>
                         <el-option label="等待支付" value="1"></el-option>
                         <el-option label="订单过期" value="3"></el-option>
                     </el-select>
+                </el-form-item>
+                <el-form-item >
+                    <el-input v-model="filters.userid" :clearable="true" placeholder="商户ID"></el-input>
                 </el-form-item>
             </el-form>
             <el-form :inline="true" :model="filters" size="mini">
@@ -170,7 +175,9 @@
                     querytime:'',
                     ordercode:'',
                     status:'',
-                    no:''
+                    no:'',
+                    userid:'',
+                    name:''
                 },
                 pickerOptions2: {
                     shortcuts: [{
@@ -357,7 +364,8 @@
                         startdate : startdate ,
                         enddate : enddate,
                         status : this.filters.status,
-                        no : this.filters.no
+                        no : this.filters.no,
+                        userid: this.filters.userid
                     },
                     callback : (res) => {
                         this.vlist = res.data.data.data
