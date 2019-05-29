@@ -49,7 +49,7 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="操作"  width="140" align="center" >
+            <el-table-column label="操作"  width="140" align="center" fixed="right">
                 <template slot-scope="scope">
                     <el-button v-if="PayObj.PayLodingButton===false" type="primary" size="mini" icon="el-icon-s-finance" circle @click="clickPayHandler(scope.row)"></el-button>
                     <el-button v-else type="primary" size="mini" icon="el-icon-loading" circle @click="clickPayHandler(scope.row)"></el-button>
