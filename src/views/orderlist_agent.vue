@@ -66,6 +66,8 @@
             </el-table-column>
             <el-table-column prop="no" label="流水号" width="200" sortable align="center">
             </el-table-column>
+            <el-table-column prop="userid" label="商户ID" width="90" sortable align="center">
+            </el-table-column>
             <el-table-column prop="status_name" label="支付状态" width="100" sortable align="center">
                 <template slot-scope="scope">
                     <span v-if="scope.row.status=== '0'" style="color: #95e61a">{{scope.row.status_name}}</span>
