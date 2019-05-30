@@ -43,10 +43,6 @@
         </el-col>
 
         <el-col :span="24" class="toolbar">
-            <el-button type="primary" icon="el-icon-check" @click="clickUpdOrderStatus" size="mini" :loading="addLoading">手工上分</el-button>
-        </el-col>
-
-        <el-col :span="24" class="toolbar">
             <div style="color:red">当日订单数：{{today_order_tot_count}}，当日成功订单数：{{today_order_ok_count}}，当日流水: {{today_amount}}；
                 总订单数：{{tot_order_tot_count}}，总成功订单数：{{tot_order_ok_count}}，总流水: {{tot_amount}} </div>
         </el-col>
@@ -69,10 +65,6 @@
             <el-table-column prop="ordercode" label="订单ID" width="90" sortable align="center">
             </el-table-column>
             <el-table-column prop="no" label="流水号" width="200" sortable align="center">
-            </el-table-column>
-            <el-table-column prop="userid" label="商户ID" width="90" sortable align="center">
-            </el-table-column>
-            <el-table-column prop="username" label="商户名称" width="180" sortable align="center">
             </el-table-column>
             <el-table-column prop="status_name" label="支付状态" width="100" sortable align="center">
                 <template slot-scope="scope">
@@ -170,8 +162,7 @@
                     ordercode:'',
                     status:'',
                     no:'',
-                    userid:'',
-                    name:''
+                    userid:''
                 },
                 pickerOptions2: {
                     shortcuts: [{
@@ -359,7 +350,7 @@
                         enddate : enddate,
                         status : this.filters.status,
                         no : this.filters.no,
-                        userid: this.filters.userid
+                        userid : this.filters.userid
                     },
                     callback : (res) => {
                         this.vlist = res.data.data.data

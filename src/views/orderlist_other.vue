@@ -76,8 +76,6 @@
             </el-table-column>
             <el-table-column prop="tech_cost" label="总技术费" width="100" sortable align="center">
             </el-table-column>
-            <el-table-column prop="paypassname" label="支付渠道" width="110" sortable align="center">
-            </el-table-column>
             <el-table-column prop="paytypename" label="支付方式" width="110" sortable align="center">
             </el-table-column>
         </el-table>
