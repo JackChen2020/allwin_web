@@ -72,6 +72,13 @@ export function paypass_query(options) {
   CoreRequest(options)
 }
 
+//支付渠道查询
+export function paypass_query1(options) {
+  options['url']='/api/pay/paypass_query1'
+  options['method']='get'
+  CoreRequest(options)
+}
+
 //支付渠道修改
 export function paypass_upd(options) {
   options['url']='/api/pay/paypass_upd'
@@ -422,6 +429,19 @@ export function get_qrtype(options) {
 
 export function get_help(options) {
   options['url']='/api/public/get_help'
+  options['method']='get'
+  CoreRequest(options)
+}
+
+export function order_status_upd1(options) {
+  options['url']='/api/order/order_status_upd1'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+
+export function paytype_get(options) {
+  options['url']='/api/pay/paytype_get'
   options['method']='get'
   CoreRequest(options)
 }

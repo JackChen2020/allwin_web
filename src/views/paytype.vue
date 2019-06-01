@@ -60,6 +60,7 @@
                         <el-option label="支付宝" value="0"></el-option>
                         <el-option label="微信" value="1"></el-option>
                         <el-option label="银联" value="2"></el-option>
+                        <el-option label="聚合" value="3"></el-option>
                     </el-select>
                 </el-form-item>
             </el-form>

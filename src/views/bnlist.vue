@@ -217,7 +217,7 @@
 
 <script>
     import { user_del,agent_query,user_add,user_verify,agent_query1,business_query,
-        user_upd,paytype_query,paypasslinktype_add,paypasslinktype_query,agent_delete,agent_modi,paypass_query ,
+        user_upd,paytype_query,paypasslinktype_add,paypasslinktype_query,agent_delete,agent_modi,paypass_query1 ,
         user_updpass} from '~/api/request/request';
     export default {
         data() {
@@ -748,7 +748,7 @@
                     this.PayObj.cities = this.PayObj.cityOptions
                 }
             })
-            paypass_query({
+            paypass_query1({
                 params : {
                     page:1,
                     page_size : 9999999,

@@ -44,6 +44,7 @@
 
         <el-col :span="24" class="toolbar">
             <el-button type="primary" icon="el-icon-check" @click="clickUpdOrderStatus" size="mini" :loading="addLoading">手工上分</el-button>
+            <el-button type="primary" icon="el-icon-check" @click="clickWorkHandler" size="mini" :loading="addLoading1">手工补单</el-button>
         </el-col>
 
         <el-col :span="24" class="toolbar">
@@ -113,20 +114,15 @@
             </el-pagination>
         </el-col>
 
-        <el-dialog title="添加" :visible.sync="addFlag" :close-on-click-modal="false">
+        <el-dialog title="补空单" :visible.sync="addFlag" :close-on-click-modal="false">
             <el-form :model="addForm" status-icon label-width="100px" :rules="addFormRules" ref="addForm" label-position='left' size="mini">
-                <el-form-item label="名称" prop="name">
-                    <el-input
-                            v-model="addForm.name"
-                            placeholder="请输入名称">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="类型" prop="type">
-                    <el-select v-model="addForm.type" placeholder="请选择类型">
-                        <el-option label="支付宝" value="0"></el-option>
-                        <el-option label="微信" value="1"></el-option>
-                        <el-option label="银联" value="2"></el-option>
-                    </el-select>
+                <el-form-item label="支付渠道" prop="paypassid">
+                    <el-autocomplete
+                            :fetch-suggestions="querySearch1"
+                            prefix-icon="el-icon-search"
+                            v-model="addForm.paypassid"
+                            placeholder="请输入支付渠道ID">
+                    </el-autocomplete>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -134,34 +130,12 @@
                 <el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
             </div>
         </el-dialog>
-
-        <el-dialog title="编辑" :visible.sync="updFlag" :close-on-click-modal="false">
-            <el-form :model="updForm" status-icon label-width="100px" :rules="addFormRules" ref="updForm" label-position='left' size="mini">
-                <el-form-item label="名称" prop="name">
-                    <el-input
-                            v-model="updForm.name"
-                            placeholder="请输入名称">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="类型" prop="type">
-                    <el-select v-model="updForm.type" placeholder="请选择类型">
-                        <el-option label="支付宝" value="0"></el-option>
-                        <el-option label="微信" value="1"></el-option>
-                        <el-option label="银联" value="2"></el-option>
-                    </el-select>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click.native="updFlag = false">取消</el-button>
-                <el-button type="primary" @click.native="updSubmit" :loading="updLoading">提交</el-button>
-            </div>
-        </el-dialog>
     </section>
 </template>
 
 <script>
-    import { paytype_add,paytype_upd,paytype_del,order_query,order_status_upd  } from '~/api/request/request';
-    import { dateformart , Decrypt , Encrypt} from '~/api/utils'
+    import { paytype_add,paytype_upd,paytype_del,order_query,order_status_upd,order_status_upd1, paypass_query1  } from '~/api/request/request';
+    import { dateformart } from '~/api/utils'
     export default {
         data() {
             return {
@@ -223,10 +197,13 @@
                     ]
                 },
                 addLoading:false,
+                addLoading1:false,
                 updFlag:false,
                 updForm:{},
                 updLoading:false,
-                selectData:[]
+                selectData:[],
+                paypass:[],
+                paypass1:[]
             }
         },
         methods:{
@@ -253,6 +230,30 @@
                         },
                         errorcallback : () => {
                             this.addLoading = false;
+                        }
+                    })
+                }
+            },
+            clickWorkHandler(){
+                if(this.selectData.length==0){
+                    this.addFlag=true
+                }else{
+                    this.addLoading1 = true;
+                    let orders = []
+                    this.selectData.forEach(item => {
+                        if(item.status === '1'){
+                            orders.push(item.ordercode)
+                        }
+                    })
+                    order_status_upd1({
+                        data : {"orders" : orders},
+                        callback : (res) => {
+                            this.addLoading1 = false;
+                            this.$message.success("手工补单成功!")
+                            this.RequestQuery()
+                        },
+                        errorcallback : () => {
+                            this.addLoading1 = false;
                         }
                     })
                 }
@@ -318,6 +319,17 @@
             updHandler(row){
                 this.updForm = Object.assign({}, row);
                 this.updFlag = true
+            },
+            querySearch1(queryString, cb) {
+                var restaurants = this.paypass;
+                var results = queryString ? restaurants.filter(this.createFilter1(queryString)) : restaurants;
+                // 调用 callback 返回建议列表的数据
+                cb(results);
+            },
+            createFilter1(queryString) {
+                return (restaurant) => {
+                    return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1);
+                };
             },
             delHandler(row){
                 this.$confirm('确认删除该记录吗?', '提示', {
@@ -385,6 +397,21 @@
             }
         },
         mounted(){
+            paypass_query1({
+                params : {
+                    page:1,
+                    page_size : 9999999,
+                },
+                callback : (res) => {
+                    res.data.data.forEach(item => {
+                        this.paypass.push({
+                            name : item.name ,
+                            value : item.paypassid+'('+item.name+')'
+                        })
+                        this.paypass1.push( item.paypassid+'('+item.name+')' )
+                    })
+                }
+            })
             this.RequestQuery()
         }
     }

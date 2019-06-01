@@ -75,7 +75,7 @@
 
 <script>
 
-    import { get_qrcode,del_qrcode,upd_qrcode ,open_qrcode ,agent_query,wechathelper_query , get_qrtype} from '~/api/request/request'
+    import { get_qrcode,del_qrcode,upd_qrcode ,open_qrcode ,agent_query,wechathelper_query , get_qrtype,paytype_get} from '~/api/request/request'
 
     import { imgjoin } from '~/api/utils'
 
@@ -85,6 +85,7 @@
                 FormObj:[],
                 FormObj1:[],
                 FormObj2:[],
+                paytypes:[],
                 isFlag:false,
                 fileList: [],
                 data : [],
@@ -301,6 +302,11 @@
         },
         mounted() {
             // this.QueryQrcode()
+            // paytype_get({
+            //     "callback": (res)=>{
+            //         this.paytypes=res.data.data
+            //     }
+            // })
             get_qrtype({
                 "params":{
                     "status" : "0",
