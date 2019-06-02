@@ -25,7 +25,7 @@
 
 <script>
 
-    import { get_help,cashout,bankinfo_query,bankinfo_upd,bankinfo_del,bankinfo_add } from '~/api/request/request'
+    import { get_help,cashout,bankinfo_query,bankinfo_upd,bankinfo_del,bankinfo_add,up_cashout } from '~/api/request/request'
     import { timestampToTime } from '~/api/utils'
 
     export default {
@@ -55,7 +55,7 @@
                     if(newName.userid !== this.lastuserid && newName.userid >0){
                         this.userids.forEach(item => {
                             if(newName.userid === item.userid){
-                                newName.up_bal = item.up_bal
+                                newName.confirm_bal = item.up_bal - item.bal
                                 newName.cashout_bal = item.cashout_bal
                             }
                         })
@@ -89,8 +89,8 @@
                             row:true,
                         },
                         {
-                            label: "余额",
-                            prop: "up_bal",
+                            label: "可提余额",
+                            prop: "confirm_bal",
                             span:12,
                             readonly:true,
                             row:true,
@@ -208,7 +208,7 @@
                             this.obj1 = this.obj
                             this.$set(this.obj1,"pay_passwd",this.$md5(this.obj.pay_passwd))
                             this.$set(this.obj1,"bank",this.bankinfo)
-                            cashout({
+                            up_cashout({
                                 data : this.obj1,
                                 callback : (res) => {
                                     this.obj = res.data.data

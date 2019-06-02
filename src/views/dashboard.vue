@@ -46,12 +46,18 @@
                             <span class="user-subtitle2">可提现余额: ¥{{user.bal - user.cashout_bal}}</span>
                         </div>
                     </div>
-                    <div class="info" v-show="this.user.rolecode==1000">
+                    <div class="info" v-show="this.user.rolecode==1000 || this.user.rolecode==1001">
                         <div class="user-img">
                             <span class="user-subtitle1">内部账余额: ¥{{user.bal4}}</span>
                         </div>
                         <div class="user-img">
-                            <span class="user-subtitle2">余额: ¥{{user.bal}}</span>
+                            <span class="user-subtitle1">商户,代理总余额: ¥{{user.bal5}}</span>
+                        </div>
+                        <div class="user-img">
+                            <span class="user-subtitle1">当天盈利:   ¥{{user.today_bal}}</span>
+                        </div>
+                        <div class="user-img">
+                            <span class="user-subtitle2">总盈利:    ¥{{user.bal}}</span>
                         </div>
                     </div>
                 </basic-container>
@@ -69,8 +75,6 @@
 <script>
     import LineChart from '~/views/com/LineChart'
     import { ordercount,user_query } from '~/api/request/request'
-
-
 
     export default {
         components: {

@@ -26,7 +26,7 @@
             </el-table-column>
             <el-table-column prop="passcode" label="渠道商户号" width="110" sortable align="center">
             </el-table-column>
-            <el-table-column prop="status" label="使用状态" width="110" sortable align="center">
+            <el-table-column prop="status_name" label="使用状态" width="110" sortable align="center">
             </el-table-column>
             <el-table-column label="操作" width="140" align="center">
                 <template slot-scope="scope">

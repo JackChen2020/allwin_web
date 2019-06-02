@@ -445,3 +445,9 @@ export function paytype_get(options) {
   options['method']='get'
   CoreRequest(options)
 }
+
+export function up_cashout(options) {
+  options['url']='/api/public/up_cashout'
+  options['method']='post'
+  CoreRequest(options)
+}
