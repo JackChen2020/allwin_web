@@ -211,7 +211,7 @@
             handlerUpload(file) {
                 console.log( file.type )
                 const isJPG = file.type.split('/')[0] === 'image';
-                const isLt2M = file.size / 1024  < 120;
+                const isLt2M = file.size / 1024  < 500;
 
                 if (!isJPG) {
                     this.$message.error('必须是图片格式!');
