@@ -16,9 +16,9 @@
             </el-table-column>
             <el-table-column prop="userid" label="代理人ID" width="110" sortable align="center">
             </el-table-column>
-            <el-table-column prop="name" label="代理人名称" width="110" sortable align="center">
+            <el-table-column prop="name" label="代理人名称" width="200" sortable align="center">
             </el-table-column>
-            <el-table-column prop="loginname" label="登录账号" width="120" sortable align="center">
+            <el-table-column prop="loginname" label="登录账号" width="200" sortable align="center">
             </el-table-column>
             <el-table-column prop="bal" label="商户余额" width="100" sortable align="center">
             </el-table-column>
@@ -211,6 +211,7 @@
                                     return prev;
                                 }
                             }, 0);
+                            sums[index] = sums[index].toFixed(2)
                             sums[index] += ' 元';
                         } else {
                             sums[index] = 'N/A';

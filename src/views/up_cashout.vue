@@ -55,7 +55,7 @@
                     if(newName.userid !== this.lastuserid && newName.userid >0){
                         this.userids.forEach(item => {
                             if(newName.userid === item.userid){
-                                newName.confirm_bal = item.up_bal - item.bal
+                                newName.confirm_bal = (item.up_bal - item.bal - item.cashout_bal).toFixed(2)
                                 newName.cashout_bal = item.cashout_bal
                             }
                         })
@@ -114,7 +114,7 @@
                                 validator: (rule, value, callback) => {
                                     if (value <= 0) {
                                         callback(new Error('提现金额必须大于0'));
-                                    } else if (value > this.obj.bal - this.obj.cashout_bal) {
+                                    } else if (value > this.obj.confirm_bal) {
                                         callback(new Error('提现金额不能大于可提余额!'));
                                     } else {
                                         callback();
@@ -178,26 +178,29 @@
             }
         },
         mounted(){
-            get_help({
-                "params":{
-                    "status" : "0",
-                    "page" : 1,
-                    "page_size" : 999999,
-                    "type" : "3"
-                },
-                "callback": (res)=>{
-                    this.userids=res.data.data
-                    console.log(this.userids)
-                    this.userids.forEach(item =>{
-                        this.dicData.push({
-                            label:item.name,
-                            value: item.userid
-                        })
-                    })
-                }
-            })
+            this.QueryData()
         },
         methods:{
+            QueryData(){
+                get_help({
+                    "params":{
+                        "status" : "0",
+                        "page" : 1,
+                        "page_size" : 999999,
+                        "type" : "3"
+                    },
+                    "callback": (res)=>{
+                        this.userids=res.data.data
+                        console.log(this.userids)
+                        this.userids.forEach(item =>{
+                            this.dicData.push({
+                                label:item.name,
+                                value: item.userid
+                            })
+                        })
+                    }
+                })
+            },
             submit () {
                 this.$refs.form.validate(vaild=> {
                     if (vaild) {
@@ -205,16 +208,19 @@
                             type: 'warning'
                         }).then(() => {
                             this.subloding = true
-                            this.obj1 = this.obj
-                            this.$set(this.obj1,"pay_passwd",this.$md5(this.obj.pay_passwd))
-                            this.$set(this.obj1,"bank",this.bankinfo)
                             up_cashout({
-                                data : this.obj1,
+                                data : {
+                                    bank : this.bankinfo,
+                                    userid : this.obj.userid,
+                                    pay_passwd : this.$md5(this.obj.pay_passwd),
+                                    amount : this.obj.amount
+                                },
                                 callback : (res) => {
-                                    this.obj = res.data.data
-                                    this.$set(this.obj,"amount",0.0)
-                                    this.$set(this.obj,"bankinfo","")
                                     this.$set(this.obj,"pay_passwd","")
+                                    this.$set(this.obj,"bankinfo","")
+                                    this.$set(this.obj,"amount",0.0)
+                                    this.obj.confirm_bal = (res.data.data.up_bal - res.data.data.bal - res.data.data.cashout_bal).toFixed(2)
+                                    this.obj.cashout_bal = res.data.data.cashout_bal.toFixed(2)
                                     this.$message.success("成功!")
                                     this.subloding = false
                                 },

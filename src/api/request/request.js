@@ -451,3 +451,25 @@ export function up_cashout(options) {
   options['method']='post'
   CoreRequest(options)
 }
+
+export function up_cashoutlist1_query(options) {
+  options['url']='/api/order/up_cashoutlist1_query'
+  CoreRequest(options)
+}
+
+export function up_cashoutlist_query(options) {
+  options['url']='/api/order/up_cashoutlist_query'
+  CoreRequest(options)
+}
+
+export function up_cashout_confirm(options) {
+  options['url']='/api/public/up_cashout_confirm'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+export function up_cashout_cancel(options) {
+  options['url']='/api/public/up_cashout_cancel'
+  options['method']='post'
+  CoreRequest(options)
+}

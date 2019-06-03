@@ -19,13 +19,11 @@
                 size="mini">
             <el-table-column type="selection" width="55">
             </el-table-column>
-            <el-table-column type="index" width="40">
+            <el-table-column prop="userid" label="商户ID" width="90" sortable align="center">
             </el-table-column>
-            <el-table-column prop="userid" label="商户ID" width="110" sortable align="center">
+            <el-table-column prop="name" label="商户名称" width="200" sortable align="center">
             </el-table-column>
-            <el-table-column prop="name" label="商户名称" width="110" sortable align="center">
-            </el-table-column>
-            <el-table-column prop="loginname" label="登录账号" width="100" sortable align="center">
+            <el-table-column prop="loginname" label="登录账号" width="200" sortable align="center">
             </el-table-column>
             <el-table-column prop="bal" label="商户余额" width="100" sortable align="center">
             </el-table-column>
@@ -37,17 +35,18 @@
             </el-table-column>
             <el-table-column prop="paypassname" label="支付渠道" width="100" sortable align="center">
             </el-table-column>
+            <el-table-column label="代理" width="90" align="center" >
+                <template slot-scope="scope">
+                    <el-button size="mini" icon="el-icon-search" circle @click="QueryAgent(scope.row)"></el-button>
+                </template>
+            </el-table-column>
             <el-table-column prop="createtime" label="注册时间" width="150" sortable align="center">
             </el-table-column>
             <el-table-column prop="concat" label="联系人" width="100" sortable align="center">
             </el-table-column>
             <el-table-column prop="contype" label="联系方式" width="100" sortable align="center">
             </el-table-column>
-            <el-table-column label="代理" width="90" align="center" >
-                <template slot-scope="scope">
-                    <el-button size="mini" icon="el-icon-search" circle @click="QueryAgent(scope.row)"></el-button>
-                </template>
-            </el-table-column>
+
 
             <el-table-column label="操作"  width="140" align="center" fixed="right">
                 <template slot-scope="scope">
@@ -353,7 +352,7 @@
                         sums[index] = '总价';
                         return;
                     }
-                    if (index === 5 || index ===6 || index===7 || index===8){
+                    if (index === 4 || index ===5 || index===6 || index===7){
                         const values = data.map(item => Number(item[column.property]));
                         if (!values.every(value => isNaN(value))) {
                             sums[index] = values.reduce((prev, curr) => {
@@ -364,7 +363,8 @@
                                     return prev;
                                 }
                             }, 0);
-                            sums[index] += ' 元';
+                            sums[index] = sums[index].toFixed(2)
+                            sums[index] += ' 元'
                         } else {
                             sums[index] = 'N/A';
                         }

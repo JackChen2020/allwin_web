@@ -24,7 +24,7 @@
                             <span class="user-subtitle1">余额: ¥{{user.up_bal}}</span>
                         </div>
                         <div class="user-img">
-                            <span class="user-subtitle1">可提现余额: ¥{{user.up_bal - user.bal - user.cashout_bal}}</span>
+                            <span class="user-subtitle1">可提现余额: ¥{{(user.up_bal - user.bal - user.cashout_bal).toFixed(2)}}</span>
                         </div>
                         <div class="user-img">
                             <span class="user-subtitle2">利润: ¥{{user.bal}}</span>
@@ -35,7 +35,7 @@
                             <span class="user-subtitle1">余额: ¥{{user.bal}}</span>
                         </div>
                         <div class="user-img">
-                            <span class="user-subtitle2">可提现余额: ¥{{user.bal - user.cashout_bal}}</span>
+                            <span class="user-subtitle2">可提现余额: ¥{{(user.bal - user.cashout_bal).toFixed(2)}}</span>
                         </div>
                     </div>
                     <div class="info" v-show="this.user.rolecode==3001">
@@ -43,7 +43,7 @@
                             <span class="user-subtitle1">余额: ¥{{user.bal}}</span>
                         </div>
                         <div class="user-img">
-                            <span class="user-subtitle2">可提现余额: ¥{{user.bal - user.cashout_bal}}</span>
+                            <span class="user-subtitle2">可提现余额: ¥{{(user.bal - user.cashout_bal).toFixed(2)}}</span>
                         </div>
                     </div>
                     <div class="info" v-show="this.user.rolecode==1000 || this.user.rolecode==1001">
@@ -57,7 +57,7 @@
                             <span class="user-subtitle1">当天盈利:   ¥{{user.today_bal}}</span>
                         </div>
                         <div class="user-img">
-                            <span class="user-subtitle2">总盈利:    ¥{{user.bal}}</span>
+                            <span class="user-subtitle2">总盈利:    ¥{{user.tot_amount}}</span>
                         </div>
                     </div>
                 </basic-container>
