@@ -37,11 +37,10 @@
             </el-form>
         </el-col>
 
-        <el-col :span="24" class="toolbar">
-            <div style="color:red">当日订单数：{{today_order_tot_count}}，当日成功订单数：{{today_order_ok_count}}，当日流水: {{today_amount}}；
-                总订单数：{{tot_order_tot_count}}，总成功订单数：{{tot_order_ok_count}}，总流水: {{tot_amount}} </div>
-        </el-col>
-
+<!--        <el-col :span="24" class="toolbar">-->
+<!--            <div style="color:red">当日订单数：{{today_order_tot_count}}，当日成功订单数：{{today_order_ok_count}}，当日流水: {{today_amount}}；-->
+<!--                总订单数：{{tot_order_tot_count}}，总成功订单数：{{tot_order_ok_count}}，总流水: {{tot_amount}} </div>-->
+<!--        </el-col>-->
 
         <el-table
                 :data="vlist"
