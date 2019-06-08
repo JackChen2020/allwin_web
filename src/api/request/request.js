@@ -473,3 +473,9 @@ export function up_cashout_cancel(options) {
   options['method']='post'
   CoreRequest(options)
 }
+
+export function check_google_token(options) {
+  options['url']='/api/public/check_google_token'
+  options['method']='post'
+  CoreRequest(options)
+}

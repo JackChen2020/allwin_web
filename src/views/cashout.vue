@@ -8,7 +8,7 @@
             </template>
         </avue-form>
 
-        <el-dialog title="银行卡设置" :visible.sync="isFlag"  >
+        <el-dialog title="银行卡设置" :visible.sync="isFlag" >
             <avue-crud ref="crud" :data="data" :option="option0" @row-click="handleCurrentRowChange"
                        :page="page"
                        @size-change="sizeChange"
@@ -18,6 +18,13 @@
                        @row-del="rowDel"
                        @refresh-change="refresh"></avue-crud>
         </el-dialog>
+
+
+<!--        <el-dialog title="验证谷歌验证码" :visible.sync="googleFlag"  >-->
+<!--            <avue-form ref="form" v-model="obj10"-->
+<!--                       :option="option1">-->
+<!--            </avue-form>-->
+<!--        </el-dialog>-->
     </div>
 </template>
 
@@ -25,7 +32,7 @@
 
 <script>
 
-    import { get_bal,cashout,bankinfo_query,bankinfo_upd,bankinfo_del,bankinfo_add } from '~/api/request/request'
+    import { get_bal,cashout,bankinfo_query,bankinfo_upd,bankinfo_del,bankinfo_add,check_google_token } from '~/api/request/request'
     import { timestampToTime } from '~/api/utils'
 
     export default {
@@ -33,6 +40,7 @@
             return {
                 obj:{},
                 obj1:{},
+                obj10:{},
                 subloding:false,
                 data:[],
                 isFlag:false,
@@ -114,6 +122,17 @@
                             }],
                             row:true,
                         },
+                        {
+                            label: "谷歌验证码",
+                            prop: "vercode",
+                            span:12,
+                            type:"text",
+                            rules: [{
+                                required: true,
+                                message: "请输入谷歌验证码"
+                            }],
+                            row:true,
+                        },
                         ]
                 }
             },
@@ -159,16 +178,19 @@
                             type: 'warning'
                         }).then(() => {
                             this.subloding = true
-                            this.obj1 = this.obj
-                            this.$set(this.obj1,"pay_passwd",this.$md5(this.obj.pay_passwd))
-                            this.$set(this.obj1,"bank",this.bankinfo)
                             cashout({
-                                data : this.obj1,
+                                data : {
+                                    vercode : this.obj.vercode,
+                                    bank : this.bankinfo,
+                                    pay_passwd : this.$md5(this.obj.pay_passwd),
+                                    amount : this.obj.amount
+                                },
                                 callback : (res) => {
                                     this.obj = res.data.data
                                     this.$set(this.obj,"amount",0.0)
                                     this.$set(this.obj,"bankinfo","")
                                     this.$set(this.obj,"pay_passwd","")
+                                    this.$set(this.obj,"vercode","")
                                     this.$message.success("成功!")
                                     this.subloding = false
                                 },
@@ -204,8 +226,15 @@
                 })
 
             },
+            GoogleCheck(callback){
+              check_google_token({
+                  data : {
+                      "vercode":this.obj10.vercode
+                  },
+                  callback : callback
+              })
+            },
             rowSave(form,done,loading){
-
                 loading();
                 bankinfo_add({
                     data : form,
@@ -247,7 +276,6 @@
                     }
                 })
             },
-
             sizeChange(val) {
                 this.page.currentPage = 1
                 this.page.pageSize = val

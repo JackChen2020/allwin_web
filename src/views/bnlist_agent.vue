@@ -1,9 +1,9 @@
 <template>
     <section >
 
-<!--        <el-col :span="24" class="toolbar">-->
-<!--            <el-button type="primary" icon="el-icon-check" @click="clickUpdpassHandler" size="mini">切换支付渠道</el-button>-->
-<!--        </el-col>-->
+        <!--        <el-col :span="24" class="toolbar">-->
+        <!--            <el-button type="primary" icon="el-icon-check" @click="clickUpdpassHandler" size="mini">切换支付渠道</el-button>-->
+        <!--        </el-col>-->
 
         <el-table
                 :data="vlist"
@@ -25,10 +25,6 @@
             </el-table-column>
             <el-table-column prop="loginname" label="登录账号" width="200" sortable align="center">
             </el-table-column>
-            <el-table-column prop="bal" label="商户余额" width="100" sortable align="center">
-            </el-table-column>
-            <el-table-column prop="bal1" label="可提现余额" width="120" sortable align="center">
-            </el-table-column>
             <el-table-column prop="today_amount" label="当天流水" width="120" sortable align="center">
             </el-table-column>
             <el-table-column prop="up_bal" label="总流水" width="120" sortable align="center">
@@ -38,6 +34,11 @@
                     <el-button size="mini" icon="el-icon-search" circle @click="QueryAgent(scope.row)"></el-button>
                 </template>
             </el-table-column>
+            <el-table-column label="费率" width="90" align="center" >
+                <template slot-scope="scope">
+                    <el-button size="mini" icon="el-icon-search" circle @click="clickPayHandler(scope.row)"></el-button>
+                </template>
+            </el-table-column>
             <el-table-column prop="createtime" label="注册时间" width="150" sortable align="center">
             </el-table-column>
             <el-table-column prop="concat" label="联系人" width="100" sortable align="center">
@@ -45,34 +46,25 @@
             <el-table-column prop="contype" label="联系方式" width="100" sortable align="center">
             </el-table-column>
 
-
-            <el-table-column label="操作"  width="140" align="center" fixed="right">
-                <template slot-scope="scope">
-                    <el-button v-if="PayObj.PayLodingButton===false" type="primary" size="mini" icon="el-icon-s-finance" circle @click="clickPayHandler(scope.row)"></el-button>
-                    <el-button v-else type="primary" size="mini" icon="el-icon-loading" circle @click="clickPayHandler(scope.row)"></el-button>
-                    <el-button type="primary" size="mini" icon="el-icon-edit" circle @click="updHandler(scope.row)"></el-button>
-                    <el-button type="danger" size="mini" icon="el-icon-delete" circle @click="delHandler(scope.row)"></el-button>
-                </template>
-            </el-table-column>
         </el-table>
 
-<!--        &lt;!&ndash;渠道切换&ndash;&gt;-->
-<!--        <el-dialog title="渠道切换" :visible.sync="UpdPassObj.flag" :close-on-click-modal="false">-->
-<!--            <el-form :model="upassobj" status-icon label-width="100px" ref="upassobj"  label-position='left' size="mini">-->
-<!--                <el-form-item label="支付渠道" prop="paypassid" :rules="UpdPassFormRule">-->
-<!--                    <el-autocomplete-->
-<!--                            :fetch-suggestions="querySearch1"-->
-<!--                            prefix-icon="el-icon-search"-->
-<!--                            v-model="upassobj.paypassid"-->
-<!--                            placeholder="请输入支付渠道ID">-->
-<!--                    </el-autocomplete>-->
-<!--                </el-form-item>-->
-<!--            </el-form>-->
-<!--            <div slot="footer" class="dialog-footer">-->
-<!--                <el-button @click.native="UpdPassObj.flag = false">取消</el-button>-->
-<!--                <el-button type="primary" @click.native="UpdPassHandler" :loading="addLoading">提交</el-button>-->
-<!--            </div>-->
-<!--        </el-dialog>-->
+        <!--        &lt;!&ndash;渠道切换&ndash;&gt;-->
+        <!--        <el-dialog title="渠道切换" :visible.sync="UpdPassObj.flag" :close-on-click-modal="false">-->
+        <!--            <el-form :model="upassobj" status-icon label-width="100px" ref="upassobj"  label-position='left' size="mini">-->
+        <!--                <el-form-item label="支付渠道" prop="paypassid" :rules="UpdPassFormRule">-->
+        <!--                    <el-autocomplete-->
+        <!--                            :fetch-suggestions="querySearch1"-->
+        <!--                            prefix-icon="el-icon-search"-->
+        <!--                            v-model="upassobj.paypassid"-->
+        <!--                            placeholder="请输入支付渠道ID">-->
+        <!--                    </el-autocomplete>-->
+        <!--                </el-form-item>-->
+        <!--            </el-form>-->
+        <!--            <div slot="footer" class="dialog-footer">-->
+        <!--                <el-button @click.native="UpdPassObj.flag = false">取消</el-button>-->
+        <!--                <el-button type="primary" @click.native="UpdPassHandler" :loading="addLoading">提交</el-button>-->
+        <!--            </div>-->
+        <!--        </el-dialog>-->
 
         <!--分页-->
         <el-col :span="24" class="toolbar">
@@ -89,35 +81,7 @@
             </el-pagination>
         </el-col>
 
-        <el-dialog title="编辑代理" :visible.sync="AgentObj.updFlag" :close-on-click-modal="false">
-            <el-form :model="updobj" status-icon label-width="100px" ref="updobj" label-position='left' size="mini">
-                <el-form-item
-                        v-for="(agent, index) in updobj.agents"
-                        :label="index+1 + '级' + '代理人'"
-                        :key="agent.key"
-                        :prop="'agents[' + index + '].value'"
-                        :rules="AgentObj.Rules"
-                >
-                    <el-autocomplete  class="inline-input"
-                                      @select="handleSelect"
-                                      :fetch-suggestions="querySearch"
-                                      prefix-icon="el-icon-search"
-                                      placeholder="请输入代理人ID或名字"
-                                      v-model="agent.value"></el-autocomplete>
-                    <el-button type="danger" size="mini" icon="el-icon-delete" circle @click.prevent="removeAgent(agent)"></el-button>
-                </el-form-item>
-                <el-button style="margin-bottom:10px" type="primary" size="mini" icon="el-icon-plus" circle @click="addAgent">新增代理人</el-button>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click.native="AgentObj.updFlag = false">取消</el-button>
-                <el-button type="primary" @click.native="AgentModiHandler" :loading="addLoading">提交</el-button>
-            </div>
-        </el-dialog>
-
         <el-dialog title="查看代理" :visible.sync="AgentObj.showFlag" :close-on-click-modal="false">
-            <el-col :span="24" class="toolbar">
-                <el-button type="primary" icon="el-icon-edit" @click="AgentObj.updFlag = true" size="mini">编辑</el-button>
-            </el-col>
 
             <el-table
                     :data="AgentObj.list"
@@ -138,40 +102,20 @@
                 </el-table-column>
                 <el-table-column prop="level" label="代理级别" width="100" sortable align="center">
                 </el-table-column>
-                <el-table-column label="操作"  width="140" align="center" >
-                    <template slot-scope="scope">
-                        <el-button v-if="PayObj.PayLodingButton===false" type="primary" size="mini" icon="el-icon-s-finance" circle @click="clickPayHandler1(scope.row)"></el-button>
-                        <el-button v-else type="primary" size="mini" icon="el-icon-loading" circle @click="clickPayHandler1(scope.row)"></el-button>
-                        <el-button type="danger" size="mini" icon="el-icon-delete" circle @click="delAgentHandler(scope.row)"></el-button>
-                    </template>
-                </el-table-column>
             </el-table>
         </el-dialog>
 
         <el-dialog title="费率" :visible.sync="PayObj.showFlag" :close-on-click-modal="false">
             <el-form :model="PayObj" status-icon  label-width="150px"  ref="PayObj" label-position='left' size="mini">
-                <el-checkbox :indeterminate="PayObj.isIndeterminate" v-model="PayObj.checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-                <div style="margin: 15px 0;"></div>
-                <el-checkbox-group v-model="Pays.pays" @change="handleCheckedCitiesChange">
-                    <el-checkbox v-for="(city,index) in PayObj.cities" :label="city" :key="index">{{city}}</el-checkbox>
-                </el-checkbox-group>
-                <div style="margin: 20px"></div>
                 <el-form-item v-for="(item,index) in Pays.pays"
                               :label="item +'费率'" :key="index"
                               :prop="'rates[' + index + ']'"
                               :rules="PayObj.Rules">
                     <el-input v-model="PayObj.rates[index]" placeholder="请输入费率"></el-input>
-                    <el-autocomplete
-                            :fetch-suggestions="querySearch1"
-                            prefix-icon="el-icon-search"
-                            v-model="PayObj.passids[index]"
-                            placeholder="请输入支付渠道ID">
-                    </el-autocomplete>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click.native="PayObj.showFlag = false">取消</el-button>
-                <el-button type="primary" @click.native="PaySubmit" :loading="PayObj.loading" v-show="AgentObj.PayShowFlag">提交</el-button>
             </div>
         </el-dialog>
 
@@ -201,14 +145,14 @@
                             placeholder="例如:QQ:10101100">
                     </el-input>
                 </el-form-item>
-<!--                <el-form-item label="支付渠道" prop="paypassid">-->
-<!--                    <el-autocomplete-->
-<!--                            :fetch-suggestions="querySearch1"-->
-<!--                            prefix-icon="el-icon-search"-->
-<!--                            v-model="addForm.paypassid"-->
-<!--                            placeholder="请输入支付渠道ID">-->
-<!--                    </el-autocomplete>-->
-<!--                </el-form-item>-->
+                <!--                <el-form-item label="支付渠道" prop="paypassid">-->
+                <!--                    <el-autocomplete-->
+                <!--                            :fetch-suggestions="querySearch1"-->
+                <!--                            prefix-icon="el-icon-search"-->
+                <!--                            v-model="addForm.paypassid"-->
+                <!--                            placeholder="请输入支付渠道ID">-->
+                <!--                    </el-autocomplete>-->
+                <!--                </el-form-item>-->
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click.native="addFlag = false">取消</el-button>
@@ -299,16 +243,16 @@
                     PayShowFlag:true,
                     updFlag :false,
                     Rules: [
-                            {   required: true, message: '请输代理人', trigger: 'blur' },
-                            {
-                                validator : (rule, value, callback) => {
-                                    if (value.length > 0 && this.restaurants1.indexOf(value) === -1) {
-                                        callback(new Error('输入的代理人不存在!'));
-                                    } else {
-                                        callback();
-                                    }
-                                }}
-                            ],
+                        {   required: true, message: '请输代理人', trigger: 'blur' },
+                        {
+                            validator : (rule, value, callback) => {
+                                if (value.length > 0 && this.restaurants1.indexOf(value) === -1) {
+                                    callback(new Error('输入的代理人不存在!'));
+                                } else {
+                                    callback();
+                                }
+                            }}
+                    ],
                     userid : 0,
                 },
                 updobj:{agents:[]},
@@ -356,7 +300,7 @@
                         sums[index] = '总价';
                         return;
                     }
-                    if (index === 4 || index ===5 || index===6 || index===7){
+                    if (index === 4 || index ===5 ){
                         const values = data.map(item => Number(item[column.property]));
                         if (!values.every(value => isNaN(value))) {
                             sums[index] = values.reduce((prev, curr) => {
