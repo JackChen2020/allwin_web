@@ -521,6 +521,7 @@
                 this.PayObj.checkAll=false
                 this.Pays.pays=[]
                 this.PayObj.rates=[]
+                this.PayObj.passids=[]
                 this.$set(this.PayObj.addlist,'delete',{})
                 this.$set(this.PayObj.addlist,'insert',[])
 
