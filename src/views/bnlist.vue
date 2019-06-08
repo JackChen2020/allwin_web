@@ -1,9 +1,9 @@
 <template>
     <section >
 
-        <el-col :span="24" class="toolbar">
-            <el-button type="primary" icon="el-icon-check" @click="clickUpdpassHandler" size="mini">切换支付渠道</el-button>
-        </el-col>
+<!--        <el-col :span="24" class="toolbar">-->
+<!--            <el-button type="primary" icon="el-icon-check" @click="clickUpdpassHandler" size="mini">切换支付渠道</el-button>-->
+<!--        </el-col>-->
 
         <el-table
                 :data="vlist"
@@ -151,7 +151,7 @@
         </el-dialog>
 
         <el-dialog title="费率" :visible.sync="PayObj.showFlag" :close-on-click-modal="false">
-            <el-form :model="PayObj" status-icon  label-width="130px"  ref="PayObj" label-position='left' size="mini">
+            <el-form :model="PayObj" status-icon  label-width="150px"  ref="PayObj" label-position='left' size="mini">
                 <el-checkbox :indeterminate="PayObj.isIndeterminate" v-model="PayObj.checkAll" @change="handleCheckAllChange">全选</el-checkbox>
                 <div style="margin: 15px 0;"></div>
                 <el-checkbox-group v-model="Pays.pays" @change="handleCheckedCitiesChange">
@@ -163,6 +163,12 @@
                               :prop="'rates[' + index + ']'"
                               :rules="PayObj.Rules">
                     <el-input v-model="PayObj.rates[index]" placeholder="请输入费率"></el-input>
+                    <el-autocomplete
+                            :fetch-suggestions="querySearch1"
+                            prefix-icon="el-icon-search"
+                            v-model="PayObj.passids[index]"
+                            placeholder="请输入支付渠道ID">
+                    </el-autocomplete>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -334,7 +340,8 @@
                         }
                     ],
                     PayLodingButton:false,
-                    rates:[]
+                    rates:[],
+                    passids:[]
                 },
                 Pays : {pays:[]},
                 PayTypeObj : [],
@@ -347,7 +354,6 @@
                 const { columns, data } = param;
                 const sums = [];
                 columns.forEach((column, index) => {
-                    console.log(index)
                     if (index === 0 ) {
                         sums[index] = '总价';
                         return;
@@ -476,10 +482,12 @@
                                         to_id : this.PayPassObj.userid,
                                         paytypeid : item.paytypeid,
                                         type : '1',
-                                        rate : this.PayObj.rates[listno]
+                                        rate : this.PayObj.rates[listno],
+                                        passid : this.PayObj.passids[listno].split('(')[0],
                                     })
                                 }
                             })
+                            console.log(this.PayObj.addlist.insert)
                             if (this.PayObj.addlist.insert.length===0){
                                 this.$set(this.PayObj.addlist.delete,'id',this.PayPassObj.userid)
                                 this.$set(this.PayObj.addlist.delete,'type','1')
@@ -524,6 +532,9 @@
                         id : this.PayPassObj.userid
                     },
                     callback : (res) => {
+
+                        // console.log(res)
+                        // console.log(this.paypass1)
                         res.data.data.forEach((item,index) => {
                             this.Pays.pays.push(
                                 item.typename + item.name
@@ -531,6 +542,13 @@
                             this.PayObj.rates.push(
                                 item.rate
                             )
+                            this.paypass1.forEach(item1 => {
+                                if (item1.split('(')[0] === item.passid.toString()){
+                                    this.PayObj.passids.push(
+                                        item1
+                                    )
+                                }
+                            })
                         })
 
                         this.PayObj.PayLodingButton=false
