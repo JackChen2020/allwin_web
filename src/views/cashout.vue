@@ -122,17 +122,17 @@
                             }],
                             row:true,
                         },
-                        {
-                            label: "谷歌验证码",
-                            prop: "vercode",
-                            span:12,
-                            type:"text",
-                            rules: [{
-                                required: true,
-                                message: "请输入谷歌验证码"
-                            }],
-                            row:true,
-                        },
+                        // {
+                        //     label: "谷歌验证码",
+                        //     prop: "vercode",
+                        //     span:12,
+                        //     type:"text",
+                        //     rules: [{
+                        //         required: true,
+                        //         message: "请输入谷歌验证码"
+                        //     }],
+                        //     row:true,
+                        // },
                         ]
                 }
             },
