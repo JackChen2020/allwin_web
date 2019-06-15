@@ -65,8 +65,8 @@ export function CoreRequest (options) {
   }).then((res) => {
 
     if (res && res.data.rescode === '20001' ){
-      console.log("失效")
       localStorage.clear()
+      Vue.$router.push({path:'/login'})
     }else if (res && res.data.rescode !== '10000') {
 
       if (typeof options.errorcallback === 'function') {

@@ -479,3 +479,8 @@ export function check_google_token(options) {
   options['method']='post'
   CoreRequest(options)
 }
+
+export function ballist_query(options) {
+  options['url']='/api/pay/ballist_query'
+  CoreRequest(options)
+}
