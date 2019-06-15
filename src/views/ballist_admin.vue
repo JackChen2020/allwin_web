@@ -74,7 +74,9 @@
                     querytime:'',
                     ordercode:'',
                     status:'',
-                    no:''
+                    no:'',
+                    userid:'',
+                    memo:''
                 },
                 pickerOptions2: {
                     shortcuts: [{
@@ -249,7 +251,9 @@
                 ballist_query({
                     params : {
                         page:this.page,
-                        page_size: this.pagesize
+                        page_size: this.pagesize,
+                        userid : this.filters.userid,
+                        memo : this.filters.memo
                     },
                     callback : (res) => {
                         this.vlist = res.data.data
