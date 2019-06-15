@@ -484,3 +484,9 @@ export function ballist_query(options) {
   options['url']='/api/pay/ballist_query'
   CoreRequest(options)
 }
+
+export function correct(options) {
+  options['url']='/api/public/correct'
+  options['method']='post'
+  CoreRequest(options)
+}
