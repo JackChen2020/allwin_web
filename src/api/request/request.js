@@ -490,3 +490,9 @@ export function correct(options) {
   options['method']='post'
   CoreRequest(options)
 }
+
+export function callback_business(options) {
+  options['url']='/api/pay/callback_business'
+  options['method']='post'
+  CoreRequest(options)
+}

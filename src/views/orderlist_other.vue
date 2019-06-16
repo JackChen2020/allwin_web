@@ -8,10 +8,20 @@
                 <el-form-item >
                     <el-input v-model="filters.no" :clearable="true" placeholder="流水号"></el-input>
                 </el-form-item>
+            </el-form>
+            <el-form :inline="true" :model="filters" size="mini">
                 <el-form-item >
                     <el-select v-model="filters.status" :clearable="true" placeholder="支付状态">
                         <el-option label="支付成功" value="0"></el-option>
                         <el-option label="等待支付" value="1"></el-option>
+                        <el-option label="订单过期" value="3"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item >
+                    <el-select v-model="filters.down_status" :clearable="true" placeholder="商户订单支付状态">
+                        <el-option label="支付成功" value="0"></el-option>
+                        <el-option label="等待支付" value="1"></el-option>
+                        <el-option label="回调失败" value="2"></el-option>
                         <el-option label="订单过期" value="3"></el-option>
                     </el-select>
                 </el-form-item>
@@ -67,6 +77,13 @@
                     <span v-else style="color: #e62b32">{{scope.row.status_name}}</span>
                 </template>
             </el-table-column>
+            <el-table-column prop="down_status_name" label="商户订单支付状态" width="150" sortable align="center">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.down_status=== '0'" style="color: #95e61a">{{scope.row.down_status_name}}</span>
+                    <span v-else-if="scope.row.down_status=== '1'" style="color: #abd5f9">{{scope.row.down_status_name}}</span>
+                    <span v-else style="color: #e62b32">{{scope.row.down_status_name}}</span>
+                </template>
+            </el-table-column>
             <el-table-column prop="createtime" label="订单时间" width="150" sortable align="center">
             </el-table-column>
             <el-table-column prop="amount" label="订单金额" width="100" sortable align="center">
@@ -76,6 +93,12 @@
             <el-table-column prop="tech_cost" label="总技术费" width="100" sortable align="center">
             </el-table-column>
             <el-table-column prop="paytypename" label="支付方式" width="110" sortable align="center">
+            </el-table-column>
+
+            <el-table-column  width="100" align="center">
+                <template slot-scope="scope">
+                    <el-button v-show="scope.row.down_status==='2'" type="primary" size="mini" icon="el-icon-edit" circle @click="callbackBusi(scope.row)">补发通知</el-button>
+                </template>
             </el-table-column>
         </el-table>
 
@@ -140,7 +163,7 @@
 </template>
 
 <script>
-    import { paytype_add,paytype_upd,paytype_del,order_query,order_status_upd  } from '~/api/request/request';
+    import { paytype_add,paytype_upd,paytype_del,order_query,order_status_upd,callback_business  } from '~/api/request/request';
     import { dateformart , Decrypt , Encrypt} from '~/api/utils'
     export default {
         data() {
@@ -155,7 +178,8 @@
                     querytime:'',
                     ordercode:'',
                     status:'',
-                    no:''
+                    no:'',
+                    down_status:''
                 },
                 pickerOptions2: {
                     shortcuts: [{
@@ -208,6 +232,19 @@
             }
         },
         methods:{
+            callbackBusi(row){
+                this.$confirm('确认补发通知吗？', '提示', {}).then(() => {
+                    callback_business({
+                        data :{
+                            "ordercode" : row.ordercode
+                        },
+                        callback : () => {
+                            this.RequestQuery()
+                            this.$message({message : "补发通知成功!"})
+                        }
+                    })
+                })
+            },
             handleSelectionChange(val){
                 this.selectData = val
             },
@@ -342,7 +379,8 @@
                         startdate : startdate ,
                         enddate : enddate,
                         status : this.filters.status,
-                        no : this.filters.no
+                        no : this.filters.no,
+                        down_status : this.filters.down_status
                     },
                     callback : (res) => {
                         this.vlist = res.data.data.data
