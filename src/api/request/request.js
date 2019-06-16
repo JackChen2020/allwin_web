@@ -496,3 +496,8 @@ export function callback_business(options) {
   options['method']='post'
   CoreRequest(options)
 }
+
+export function finance_order_count(options) {
+  options['url']='/api/datacount/finance_order_count'
+  CoreRequest(options)
+}
