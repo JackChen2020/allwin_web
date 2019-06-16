@@ -1,9 +1,19 @@
 <template>
     <section >
 
-<!--        <el-col :span="24" class="toolbar">-->
-<!--            <el-button type="primary" icon="el-icon-check" @click="clickUpdpassHandler" size="mini">切换支付渠道</el-button>-->
-<!--        </el-col>-->
+        <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+
+            <el-form :inline="true" :model="filters" size="mini">
+                <el-form :inline="true" :model="filters" size="mini">
+                    <el-form-item >
+                        <el-input v-model="filters.userid" :clearable="true" placeholder="商户ID"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="RequestQuery" :loading="listLoading">查询</el-button>
+                    </el-form-item>
+                </el-form>
+            </el-form>
+        </el-col>
 
         <el-table
                 :data="vlist"
@@ -226,6 +236,9 @@
         data() {
             return {
 
+                filters:{
+                  userid:''
+                },
                 //一键更改渠道结构
                 UpdPassObj:{
                     flag:false
@@ -485,7 +498,6 @@
                                     })
                                 }
                             })
-                            console.log(this.PayObj.addlist.insert)
                             if (this.PayObj.addlist.insert.length===0){
                                 this.$set(this.PayObj.addlist.delete,'id',this.PayPassObj.userid)
                                 this.$set(this.PayObj.addlist.delete,'type','1')
@@ -733,7 +745,8 @@
                         page:this.page,
                         page_size:this.pagesize,
                         status : "0",
-                        type: "1"
+                        type: "1",
+                        userid:this.filters.userid
                     },
                     callback : (res) => {
                         this.vlist = res.data.data
