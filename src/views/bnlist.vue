@@ -66,7 +66,7 @@
             </el-table-column>
         </el-table>
 
-<!--        &lt;!&ndash;渠道切换&ndash;&gt;-->
+        <!--渠道切换-->
 <!--        <el-dialog title="渠道切换" :visible.sync="UpdPassObj.flag" :close-on-click-modal="false">-->
 <!--            <el-form :model="upassobj" status-icon label-width="100px" ref="upassobj"  label-position='left' size="mini">-->
 <!--                <el-form-item label="支付渠道" prop="paypassid" :rules="UpdPassFormRule">-->
@@ -184,6 +184,35 @@
                 <el-button type="primary" @click.native="PaySubmit" :loading="PayObj.loading" v-show="AgentObj.PayShowFlag">提交</el-button>
             </div>
         </el-dialog>
+
+
+
+
+<!--        <el-dialog title="费率" :visible.sync="PayObj1.showFlag" :close-on-click-modal="false">-->
+<!--            <el-form :model="PayObj1" status-icon  label-width="150px"  ref="PayObj1" label-position='left' size="mini">-->
+<!--                <el-checkbox :indeterminate="PayObj1.isIndeterminate" v-model="PayObj1.checkAll" @change="handleCheckAllChange">全选</el-checkbox>-->
+<!--                <div style="margin: 15px 0;"></div>-->
+<!--                <el-checkbox-group v-model="Pays.pays" @change="handleCheckedCitiesChange">-->
+<!--                    <el-checkbox v-for="(city,index) in PayObj.cities" :label="city" :key="index">{{city}}</el-checkbox>-->
+<!--                </el-checkbox-group>-->
+<!--                <div style="margin: 20px"></div>-->
+<!--                <el-form-item v-for="(item,index) in Pays.pays"-->
+<!--                              :label="item +'费率'" :key="index"-->
+<!--                              :prop="'rates[' + index + ']'"-->
+<!--                              :rules="PayObj.Rules">-->
+<!--                    <el-autocomplete-->
+<!--                            :fetch-suggestions="querySearch1"-->
+<!--                            prefix-icon="el-icon-search"-->
+<!--                            v-model="PayObj.passids[index]"-->
+<!--                            placeholder="请输入支付渠道ID">-->
+<!--                    </el-autocomplete>-->
+<!--                </el-form-item>-->
+<!--            </el-form>-->
+<!--            <div slot="footer" class="dialog-footer">-->
+<!--                <el-button @click.native="PayObj.showFlag = false">取消</el-button>-->
+<!--                <el-button type="primary" @click.native="PaySubmit" :loading="PayObj.loading" v-show="AgentObj.PayShowFlag">提交</el-button>-->
+<!--            </div>-->
+<!--        </el-dialog>-->
 
         <el-dialog title="编辑" :visible.sync="addFlag" :close-on-click-modal="false">
             <el-form :model="addForm" status-icon label-width="100px" :rules="addFormRules" ref="addForm" label-position='left' size="mini">

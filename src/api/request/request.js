@@ -501,3 +501,8 @@ export function finance_order_count(options) {
   options['url']='/api/datacount/finance_order_count'
   CoreRequest(options)
 }
+
+export function pass_count(options) {
+  options['url']='/api/datacount/pass_count'
+  CoreRequest(options)
+}
