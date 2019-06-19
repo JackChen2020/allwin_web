@@ -28,6 +28,9 @@
                         <el-option label="订单过期" value="3"></el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item >
+                    <el-input v-model="filters.passid" :clearable="true" placeholder="支付渠道"></el-input>
+                </el-form-item>
             </el-form>
             <el-form :inline="true" :model="filters" size="mini">
                 <el-form-item >
@@ -175,7 +178,8 @@
                     no:'',
                     userid:'',
                     name:'',
-                    down_status:''
+                    down_status:'',
+                    passid:''
                 },
                 pickerOptions2: {
                     shortcuts: [{
@@ -415,7 +419,8 @@
                         status : this.filters.status,
                         no : this.filters.no,
                         userid: this.filters.userid,
-                        down_status: this.filters.down_status
+                        down_status: this.filters.down_status,
+                        passid: this.filters.passid
                     },
                     callback : (res) => {
                         this.vlist = res.data.data.data
