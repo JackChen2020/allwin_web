@@ -1,0 +1,471 @@
+<template>
+    <section >
+        <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+            <el-form :inline="true" :model="filters" size="mini">
+                <el-form-item >
+                    <el-input v-model="filters.ordercode" :clearable="true" placeholder="订单号"></el-input>
+                </el-form-item>
+                <el-form-item >
+                    <el-input v-model="filters.no" :clearable="true" placeholder="流水号"></el-input>
+                </el-form-item>
+                <el-form-item >
+                    <el-input v-model="filters.userid" :clearable="true" placeholder="商户ID"></el-input>
+                </el-form-item>
+            </el-form>
+            <el-form :inline="true" :model="filters" size="mini">
+                <el-form-item >
+                    <el-select v-model="filters.status" :clearable="true" placeholder="支付状态">
+                        <el-option label="支付成功" value="0"></el-option>
+                        <el-option label="等待支付" value="1"></el-option>
+                        <el-option label="订单过期" value="3"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item >
+                    <el-select v-model="filters.down_status" :clearable="true" placeholder="商户订单支付状态">
+                        <el-option label="支付成功" value="0"></el-option>
+                        <el-option label="等待支付" value="1"></el-option>
+                        <el-option label="回调失败" value="2"></el-option>
+                        <el-option label="订单过期" value="3"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item >
+                    <el-input v-model="filters.passid" :clearable="true" placeholder="支付渠道"></el-input>
+                </el-form-item>
+            </el-form>
+            <el-form :inline="true" :model="filters" size="mini">
+                <el-form-item >
+                    <el-date-picker
+                            v-model="filters.querytime"
+                            type="daterange"
+                            align="right"
+                            placeholder="选择订单日期"
+                            range-separator="至"
+                            start-placeholder="订单开始日期"
+                            end-placeholder="订单结束日期"
+                            unlink-panels
+                            :picker-options="pickerOptions2">
+                    </el-date-picker>
+                </el-form-item>
+
+                <el-form-item>
+                    <el-button type="primary" @click="RequestQuery" :loading="listLoading">查询</el-button>
+                </el-form-item>
+            </el-form>
+        </el-col>
+
+        <el-col :span="24" class="toolbar">
+            <el-button type="primary" icon="el-icon-check" @click="clickUpdOrderStatus" size="mini" :loading="addLoading">手工上分</el-button>
+            <el-button type="primary" icon="el-icon-check" @click="clickWorkHandler" size="mini" :loading="addLoading1">手工补单</el-button>
+        </el-col>
+
+<!--        <el-col :span="24" class="toolbar">-->
+<!--            <div style="color:red">当日订单数：{{today_order_tot_count}}，当日成功订单数：{{today_order_ok_count}}，当日流水: {{today_amount}}；-->
+<!--                                总订单数：{{tot_order_tot_count}}，总成功订单数：{{tot_order_ok_count}}，总流水: {{tot_amount}} </div>-->
+<!--        </el-col>-->
+
+
+        <el-table
+                :data="vlist"
+                height="500"
+                highlight-current-row
+                v-loading="listLoading"
+                style="width: 100%;"
+                @selection-change="handleSelectionChange"
+                border
+                :fit="true"
+                size="mini">
+            <el-table-column type="selection" width="55">
+            </el-table-column>
+            <el-table-column type="index" width="40">
+            </el-table-column>
+            <el-table-column prop="ordercode" label="订单ID" width="90" sortable align="center">
+            </el-table-column>
+            <el-table-column prop="no" label="流水号" width="200" sortable align="center">
+            </el-table-column>
+            <el-table-column prop="userid" label="商户ID" width="90" sortable align="center">
+            </el-table-column>
+            <el-table-column prop="username" label="商户名称" width="180" sortable align="center">
+            </el-table-column>
+            <el-table-column prop="status_name" label="支付状态" width="100" sortable align="center">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.status=== '0'" style="color: #95e61a">{{scope.row.status_name}}</span>
+                    <span v-else-if="scope.row.status=== '1'" style="color: #abd5f9">{{scope.row.status_name}}</span>
+                    <span v-else style="color: #e62b32">{{scope.row.status_name}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="down_status_name" label="商户订单支付状态" width="150" sortable align="center">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.down_status=== '0'" style="color: #95e61a">{{scope.row.down_status_name}}</span>
+                    <span v-else-if="scope.row.down_status=== '1'" style="color: #abd5f9">{{scope.row.down_status_name}}</span>
+                    <span v-else style="color: #e62b32">{{scope.row.down_status_name}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="createtime" label="订单时间" width="150" sortable align="center">
+            </el-table-column>
+            <el-table-column prop="amount" label="订单金额" width="100" sortable align="center">
+            </el-table-column>
+            <el-table-column prop="confirm_amount" label="收款金额" width="100" sortable align="center">
+            </el-table-column>
+            <el-table-column prop="tech_cost" label="总技术费" width="100" sortable align="center">
+            </el-table-column>
+            <el-table-column prop="myfee" label="收入" width="100" sortable align="center">
+            </el-table-column>
+            <el-table-column prop="codefee" label="码商费用" width="100" sortable align="center">
+            </el-table-column>
+            <el-table-column prop="paypassname" label="支付渠道" width="110" sortable align="center">
+            </el-table-column>
+            <el-table-column prop="paytypename" label="支付方式" width="110" sortable align="center">
+            </el-table-column>
+
+            <el-table-column  width="100" align="center">
+                <template slot-scope="scope">
+                    <el-button v-show="scope.row.down_status==='2'" type="primary" size="mini" icon="el-icon-edit" circle @click="callbackBusi(scope.row)">补发通知</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+
+
+
+        <el-col :span="24" class="toolbar">
+            <el-pagination
+                    background
+                    layout="total, sizes, prev, pager, next, jumper"
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :page-sizes="[10, 30, 50, 100,200,500,1000,2000,5000]"
+                    :page-size="pagesize"
+                    :total="total"
+                    :pager-count="5"
+                    style="float:right;">
+            </el-pagination>
+        </el-col>
+
+        <el-dialog title="补空单" :visible.sync="addFlag" :close-on-click-modal="false">
+            <el-form :model="addForm" status-icon label-width="100px" :rules="addFormRules" ref="addForm" label-position='left' size="mini">
+                <el-form-item label="支付渠道" prop="paypassid">
+                    <el-autocomplete
+                            :fetch-suggestions="querySearch1"
+                            prefix-icon="el-icon-search"
+                            v-model="addForm.paypassid"
+                            placeholder="请输入支付渠道ID">
+                    </el-autocomplete>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click.native="addFlag = false">取消</el-button>
+                <el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
+            </div>
+        </el-dialog>
+    </section>
+</template>
+
+<script>
+    import { paytype_add,paytype_upd,paytype_del,order_query,order_status_upd,order_status_upd1, paypass_query1,callback_business  } from '~/api/request/request';
+    import { dateformart } from '~/api/utils'
+    export default {
+        data() {
+            return {
+                today_amount : 0.0,
+                tot_amount : 0.0,
+                today_order_tot_count : 0 ,
+                today_order_ok_count : 0 ,
+                tot_order_tot_count : 0 ,
+                tot_order_ok_count : 0,
+                filters: {
+                    querytime:'',
+                    ordercode:'',
+                    status:'',
+                    no:'',
+                    userid:'',
+                    name:'',
+                    down_status:'',
+                    passid:''
+                },
+                pickerOptions2: {
+                    shortcuts: [{
+                        text: '最近一周',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: '最近一个月',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: '最近三个月',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }]
+                },
+                vlist:[],
+                listLoading: false,
+                total:0,
+                page:1,
+                pagesize:10,
+                addFlag:false,
+                addForm:{
+                },
+                addFormRules: {
+                    name: [
+                        { required: true, message: '请输入名称', trigger: 'blur' }
+                    ],
+                    type: [
+                        { required: true, message: '请选择类型', trigger: 'blur' }
+                    ]
+                },
+                addLoading:false,
+                addLoading1:false,
+                updFlag:false,
+                updForm:{},
+                updLoading:false,
+                selectData:[],
+                paypass:[],
+                paypass1:[]
+            }
+        },
+        methods:{
+            callbackBusi(row){
+                this.$confirm('确认补发通知吗？', '提示', {}).then(() => {
+                    callback_business({
+                        data :{
+                            "ordercode" : row.ordercode
+                        },
+                        callback : () => {
+                            this.RequestQuery()
+                            this.$message({message : "补发通知成功!"})
+                        }
+                    })
+                })
+            },
+            handleSelectionChange(val){
+                this.selectData = val
+            },
+            clickUpdOrderStatus(){
+                if(this.selectData.length==0){
+                    this.$message.error('请勾选订单!')
+                }else{
+                    this.addLoading = true;
+                    let orders = []
+                    this.selectData.forEach(item => {
+                        if(item.status === '1'){
+                            orders.push(item.ordercode)
+                        }
+                    })
+                    order_status_upd({
+                        data : {"orders" : orders},
+                        callback : (res) => {
+                            this.addLoading = false;
+                            this.$message.success("手工上分成功!")
+                            this.RequestQuery()
+                        },
+                        errorcallback : () => {
+                            this.addLoading = false;
+                        }
+                    })
+                }
+            },
+            clickWorkHandler(){
+                if(this.selectData.length==0){
+                    this.addFlag=true
+                }else{
+                    this.addLoading1 = true;
+                    let orders = []
+                    this.selectData.forEach(item => {
+                        if(item.status === '1'){
+                            orders.push(item.ordercode)
+                        }
+                    })
+                    order_status_upd1({
+                        data : {"orders" : orders},
+                        callback : (res) => {
+                            this.addLoading1 = false;
+                            this.$message.success("手工补单成功!")
+                            this.RequestQuery()
+                        },
+                        errorcallback : () => {
+                            this.addLoading1 = false;
+                        }
+                    })
+                }
+            },
+            addSubmit() {
+                this.$refs.addForm.validate((valid) => {
+                    if (valid) {
+                        this.$confirm('确认提交吗？', '提示', {}).then(() => {
+                            this.addLoading = true;
+                            paytype_add({
+                                data :this.addForm,
+                                callback : () => {
+                                    this.addLoading = false;
+                                    this.$refs['addForm'].resetFields();
+                                    this.addFlag= false;
+                                    this.$message({
+                                        message : "添加成功!"
+                                    })
+                                    this.RequestQuery()
+                                },
+                                errorcallback : () => {
+                                    this.addLoading = false;
+                                    this.addFlag = false;
+                                }
+                            })
+                        })
+                    }
+                })
+            },
+            updSubmit() {
+                this.$refs.updForm.validate((valid) => {
+                    if (valid) {
+                        this.$confirm('确认提交吗？', '提示', {}).then(() => {
+                            this.updLoading = true;
+                            paytype_upd({
+                                data :this.updForm,
+                                callback : () => {
+                                    this.updLoading = false;
+                                    this.$refs['updForm'].resetFields();
+                                    this.updFlag= false;
+                                    this.$message({
+                                        message : "编辑成功!"
+                                    })
+                                    this.RequestQuery()
+                                },
+                                errorcallback : () => {
+                                    this.updLoading = false;
+                                    this.updFlag = false;
+                                }
+                            })
+                        })
+                    }
+                })
+            },
+            tableRowClassName({row, rowIndex}) {
+                if (row.status === "0") {
+                    return 'success-row';
+                } else if (row.status === "1") {
+                    return 'warning-row';
+                }
+                return '';
+            },
+            updHandler(row){
+                this.updForm = Object.assign({}, row);
+                this.updFlag = true
+            },
+            querySearch1(queryString, cb) {
+                var restaurants = this.paypass;
+                var results = queryString ? restaurants.filter(this.createFilter1(queryString)) : restaurants;
+                // 调用 callback 返回建议列表的数据
+                cb(results);
+            },
+            createFilter1(queryString) {
+                return (restaurant) => {
+                    return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1);
+                };
+            },
+            delHandler(row){
+                this.$confirm('确认删除该记录吗?', '提示', {
+                    type: 'warning'
+                }).then(() => {
+                    this.listLoading = true;
+                    paytype_del({
+                        data : { paytypeid : row.paytypeid },
+                        callback : () => {
+                            this.RequestQuery()
+                        },
+                        errorcallback : () => {
+                            this.listLoading = false;
+                        }
+                    })
+                }).catch(() => {
+                })
+            },
+            handlerEdit(row){
+            },
+            handleSizeChange(val) {
+                this.pagesize = val;
+                this.RequestQuery()
+            },
+            handleCurrentChange(val) {
+                this.page = val;
+                this.RequestQuery()
+            },
+            RequestQuery(){
+                this.listLoading=true
+
+                let startdate=""
+                let enddate=""
+                if(this.filters.querytime && this.filters.querytime[0] && this.filters.querytime[1]){
+                    startdate=dateformart(this.filters.querytime[0])+' 00:00:01'
+                    enddate=dateformart(this.filters.querytime[1])+' 23:59:59'
+                }
+
+                order_query({
+                    params : {
+                        page:this.page,
+                        page_size: this.pagesize,
+                        ordercode : this.filters.ordercode,
+                        startdate : startdate ,
+                        enddate : enddate,
+                        status : this.filters.status,
+                        no : this.filters.no,
+                        userid: this.filters.userid,
+                        down_status: this.filters.down_status,
+                        passid: this.filters.passid
+                    },
+                    callback : (res) => {
+                        this.vlist = res.data.data.data
+                        this.today_amount = res.data.data.today_amount
+                        this.tot_amount = res.data.data.tot_amount
+                        this.today_order_tot_count = res.data.data.today_order_tot_count
+                        this.today_order_ok_count = res.data.data.today_order_ok_count
+                        this.tot_order_tot_count = res.data.data.tot_order_tot_count
+                        this.tot_order_ok_count = res.data.data.tot_order_ok_count
+                        this.total = Number(res.headers.total)
+                        this.listLoading=false
+                    },
+                    errorcallback : () => {
+                        this.listLoading=false
+                    }
+                })
+            }
+        },
+        mounted(){
+            paypass_query1({
+                params : {
+                    page:1,
+                    page_size : 9999999,
+                },
+                callback : (res) => {
+                    res.data.data.forEach(item => {
+                        this.paypass.push({
+                            name : item.name ,
+                            value : item.paypassid+'('+item.name+')'
+                        })
+                        this.paypass1.push( item.paypassid+'('+item.name+')' )
+                    })
+                }
+            })
+            this.RequestQuery()
+        }
+    }
+</script>
+
+<style>
+    .el-table .warning-row {
+        background: #5261fd;
+    }
+
+    .el-table .success-row {
+        background: #f92489;
+    }
+</style>
