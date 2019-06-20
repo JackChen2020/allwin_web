@@ -125,11 +125,9 @@
             RequestQuery(){
                 this.listLoading=true
 
-                console.log(this.filters.today)
                 if(this.filters.today){
                     this.filters.today=dateformart(this.filters.today)
                 }
-                console.log(this.filters.today)
 
                 pass_count({
                     params : {
