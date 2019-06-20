@@ -145,8 +145,8 @@
                     border:true,
                     addBtn:false,
                     searchSize:'mini',
-                    searchShow:true,
                     selection:true,
+                    searchShow:false,
                     selectable:(row,index)=>{
                         return row;
                     },
