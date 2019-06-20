@@ -506,3 +506,9 @@ export function pass_count(options) {
   options['url']='/api/datacount/pass_count'
   CoreRequest(options)
 }
+
+export function upd_paypass_batch(options) {
+  options['url']='/api/pay/upd_paypass_batch'
+  options['method']='post'
+  CoreRequest(options)
+}

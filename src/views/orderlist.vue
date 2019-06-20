@@ -9,7 +9,6 @@
                @refresh-change="refreshChange"
                @search-change="searchChange"
                @search-reset="searchReset"
-               :row-class-name="tableRowClassName"
                @selection-change="selectionChange"
     >
         <template  slot="search">
@@ -147,9 +146,6 @@
                     searchSize:'mini',
                     selection:true,
                     searchShow:false,
-                    selectable:(row,index)=>{
-                        return row;
-                    },
                     column:[
                         {
                             label:'商户ID',
@@ -235,15 +231,6 @@
             },
             searchReset(){
               this.filters={}
-            },
-            tableRowClassName ({ row, rowIndex }) {
-                console.log(rowIndex)
-                if (rowIndex === 0) {
-                    return 'warning-row';
-                } else if (rowIndex === 1) {
-                    return 'success-row';
-                }
-                return '';
             },
             selectionChange(list){
                 this.selectData = list

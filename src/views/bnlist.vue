@@ -1,129 +1,92 @@
 <template>
-    <section >
+    <div>
+        <avue-crud :data="data"
+                   :option="option"
+                   v-model="obj"
+                   :page="page"
+                   @size-change="sizeChange"
+                   @current-change="currentChange"
+                   :table-loading="loading"
+                   @refresh-change="refreshChange"
+                   @search-change="searchChange"
+                   @search-reset="searchReset"
+                   @selection-change="selectionChange"
+        >
+            <template  slot="search">
+                <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+                    <el-form  :model="filters" size="mini">
+                        <el-form-item >
+                            <el-input v-model="filters.userid" :clearable="true" placeholder="商户ID"></el-input>
+                        </el-form-item>
+                    </el-form>
+                </el-col>
+            </template>
+            <template slot="agent" slot-scope="scope" >
+                <u style="color: #e62b32" @click="QueryAgent(scope.row)">{{scope.row.agentsname}}</u>
+            </template>
+            <template slot="passtyperate" slot-scope="scope" >
+                <u style="color: #e62b32"  @click="clickPayHandler(scope.row)">{{scope.row.paypasstypenames}}</u>
+            </template>
+            <template slot-scope="scope" slot="menu">
+                <el-button type="primary" size="mini" icon="el-icon-edit" circle @click="updHandler(scope.row)"></el-button>
+                <el-button type="danger" size="mini" icon="el-icon-delete" circle @click="delHandler(scope.row)"></el-button>
+            </template>
+            <template slot="menuRight">
+                <el-button type="primary" icon="el-icon-edit" circle @click="clickPayHandler2" size="mini" ></el-button>
+            </template>
 
-        <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+        </avue-crud>
 
-            <el-form :inline="true" :model="filters" size="mini">
-                <el-form :inline="true" :model="filters" size="mini">
-                    <el-form-item >
-                        <el-input v-model="filters.userid" :clearable="true" placeholder="商户ID"></el-input>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" @click="RequestQuery" :loading="listLoading">查询</el-button>
-                    </el-form-item>
-                </el-form>
-            </el-form>
-        </el-col>
-
-        <el-table
-                :data="vlist"
-                height="500"
-                highlight-current-row
-                v-loading="listLoading"
-                @selection-change="handleSelectionChange"
-                style="width: 100%;"
-                border
-                :summary-method="getSummaries"
-                show-summary
-                :fit="true"
-                size="mini">
-            <el-table-column type="selection" width="55">
-            </el-table-column>
-            <el-table-column prop="userid" label="商户ID" width="90" sortable align="center">
-            </el-table-column>
-            <el-table-column prop="name" label="商户名称" width="200" sortable align="center">
-            </el-table-column>
-            <el-table-column prop="loginname" label="登录账号" width="200" sortable align="center">
-            </el-table-column>
-            <el-table-column prop="bal" label="商户余额" width="100" sortable align="center">
-            </el-table-column>
-            <el-table-column prop="bal1" label="可提现余额" width="120" sortable align="center">
-            </el-table-column>
-            <el-table-column prop="today_amount" label="当天流水" width="120" sortable align="center">
-            </el-table-column>
-            <el-table-column prop="up_bal" label="总流水" width="120" sortable align="center">
-            </el-table-column>
-            <el-table-column label="代理" width="90" align="center" >
-                <template slot-scope="scope">
-                    <el-button size="mini" icon="el-icon-search" circle @click="QueryAgent(scope.row)"></el-button>
-                </template>
-            </el-table-column>
-            <el-table-column prop="createtime" label="注册时间" width="150" sortable align="center">
-            </el-table-column>
-            <el-table-column prop="concat" label="联系人" width="100" sortable align="center">
-            </el-table-column>
-            <el-table-column prop="contype" label="联系方式" width="100" sortable align="center">
-            </el-table-column>
-
-
-            <el-table-column label="操作"  width="140" align="center" fixed="right">
-                <template slot-scope="scope">
-                    <el-button v-if="PayObj.PayLodingButton===false" type="primary" size="mini" icon="el-icon-s-finance" circle @click="clickPayHandler(scope.row)"></el-button>
-                    <el-button v-else type="primary" size="mini" icon="el-icon-loading" circle @click="clickPayHandler(scope.row)"></el-button>
-                    <el-button type="primary" size="mini" icon="el-icon-edit" circle @click="updHandler(scope.row)"></el-button>
-                    <el-button type="danger" size="mini" icon="el-icon-delete" circle @click="delHandler(scope.row)"></el-button>
-                </template>
-            </el-table-column>
-        </el-table>
-
-        <!--渠道切换-->
-<!--        <el-dialog title="渠道切换" :visible.sync="UpdPassObj.flag" :close-on-click-modal="false">-->
-<!--            <el-form :model="upassobj" status-icon label-width="100px" ref="upassobj"  label-position='left' size="mini">-->
-<!--                <el-form-item label="支付渠道" prop="paypassid" :rules="UpdPassFormRule">-->
-<!--                    <el-autocomplete-->
-<!--                            :fetch-suggestions="querySearch1"-->
-<!--                            prefix-icon="el-icon-search"-->
-<!--                            v-model="upassobj.paypassid"-->
-<!--                            placeholder="请输入支付渠道ID">-->
-<!--                    </el-autocomplete>-->
-<!--                </el-form-item>-->
-<!--            </el-form>-->
-<!--            <div slot="footer" class="dialog-footer">-->
-<!--                <el-button @click.native="UpdPassObj.flag = false">取消</el-button>-->
-<!--                <el-button type="primary" @click.native="UpdPassHandler" :loading="addLoading">提交</el-button>-->
-<!--            </div>-->
-<!--        </el-dialog>-->
-
-        <!--分页-->
-        <el-col :span="24" class="toolbar">
-            <el-pagination
-                    background
-                    layout="sizes,prev, pager, next"
-                    @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
-                    :page-sizes="[10, 30, 50, 100,200,500,1000,2000,5000]"
-                    :page-size="pagesize"
-                    :total="total"
-                    :pager-count="5"
-                    style="float:right;">
-            </el-pagination>
-        </el-col>
-
-        <el-dialog title="编辑代理" :visible.sync="AgentObj.updFlag" :close-on-click-modal="false">
-            <el-form :model="updobj" status-icon label-width="100px" ref="updobj" label-position='left' size="mini">
-                <el-form-item
-                        v-for="(agent, index) in updobj.agents"
-                        :label="index+1 + '级' + '代理人'"
-                        :key="agent.key"
-                        :prop="'agents[' + index + '].value'"
-                        :rules="AgentObj.Rules"
-                >
-                    <el-autocomplete  class="inline-input"
-                                      @select="handleSelect"
-                                      :fetch-suggestions="querySearch"
-                                      prefix-icon="el-icon-search"
-                                      placeholder="请输入代理人ID或名字"
-                                      v-model="agent.value"></el-autocomplete>
-                    <el-button type="danger" size="mini" icon="el-icon-delete" circle @click.prevent="removeAgent(agent)"></el-button>
+        <el-dialog title="费率" :visible.sync="PayObj.showFlag" :close-on-click-modal="false">
+            <el-form :model="PayObj" status-icon  label-width="150px"  ref="PayObj" label-position='left' size="mini">
+                <el-checkbox :indeterminate="PayObj.isIndeterminate" v-model="PayObj.checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+                <div style="margin: 15px 0;"></div>
+                <el-checkbox-group v-model="Pays.pays" @change="handleCheckedCitiesChange">
+                    <el-checkbox v-for="(city,index) in PayObj.cities" :label="city" :key="index">{{city}}</el-checkbox>
+                </el-checkbox-group>
+                <div style="margin: 20px"></div>
+                <el-form-item v-for="(item,index) in Pays.pays"
+                              :label="item +'费率'" :key="index"
+                              :prop="'rates[' + index + ']'"
+                              :rules="PayObj.Rules">
+                    <el-input v-model="PayObj.rates[index]" placeholder="请输入费率"></el-input>
+                    <el-autocomplete
+                            :fetch-suggestions="querySearch1"
+                            prefix-icon="el-icon-search"
+                            v-model="PayObj.passids[index]"
+                            placeholder="请输入支付渠道ID">
+                    </el-autocomplete>
                 </el-form-item>
-                <el-button style="margin-bottom:10px" type="primary" size="mini" icon="el-icon-plus" circle @click="addAgent">新增代理人</el-button>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click.native="AgentObj.updFlag = false">取消</el-button>
-                <el-button type="primary" @click.native="AgentModiHandler" :loading="addLoading">提交</el-button>
+                <el-button @click.native="PayObj.showFlag = false">取消</el-button>
+                <el-button type="primary" @click.native="PaySubmit" :loading="PayObj.loading" v-show="AgentObj.PayShowFlag">提交</el-button>
             </div>
         </el-dialog>
-
+        <el-dialog title="批量切换费率" :visible.sync="PayObj.showFlag1" :close-on-click-modal="false">
+            <el-form :model="PayObj" status-icon  label-width="150px"  ref="PayObj" label-position='left' size="mini">
+                <el-checkbox :indeterminate="PayObj.isIndeterminate" v-model="PayObj.checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+                <div style="margin: 15px 0;"></div>
+                <el-checkbox-group v-model="Pays.pays" @change="handleCheckedCitiesChange">
+                    <el-checkbox v-for="(city,index) in PayObj.cities" :label="city" :key="index">{{city}}</el-checkbox>
+                </el-checkbox-group>
+                <div style="margin: 20px"></div>
+                <el-form-item v-for="(item,index) in Pays.pays"
+                              :label="item +'渠道'" :key="index"
+                              :prop="'rates[' + index + ']'">
+                    <el-autocomplete
+                            :fetch-suggestions="querySearch1"
+                            prefix-icon="el-icon-search"
+                            v-model="PayObj.passids[index]"
+                            placeholder="请输入支付渠道ID">
+                    </el-autocomplete>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click.native="PayObj.showFlag1 = false">取消</el-button>
+                <el-button type="primary" @click.native="PaySubmit1" :loading="PayObj.loading" v-show="AgentObj.PayShowFlag">提交</el-button>
+            </div>
+        </el-dialog>
         <el-dialog title="查看代理" :visible.sync="AgentObj.showFlag" :close-on-click-modal="false">
             <el-col :span="24" class="toolbar">
                 <el-button type="primary" icon="el-icon-edit" @click="AgentObj.updFlag = true" size="mini">编辑</el-button>
@@ -157,63 +120,29 @@
                 </el-table-column>
             </el-table>
         </el-dialog>
-
-        <el-dialog title="费率" :visible.sync="PayObj.showFlag" :close-on-click-modal="false">
-            <el-form :model="PayObj" status-icon  label-width="150px"  ref="PayObj" label-position='left' size="mini">
-                <el-checkbox :indeterminate="PayObj.isIndeterminate" v-model="PayObj.checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-                <div style="margin: 15px 0;"></div>
-                <el-checkbox-group v-model="Pays.pays" @change="handleCheckedCitiesChange">
-                    <el-checkbox v-for="(city,index) in PayObj.cities" :label="city" :key="index">{{city}}</el-checkbox>
-                </el-checkbox-group>
-                <div style="margin: 20px"></div>
-                <el-form-item v-for="(item,index) in Pays.pays"
-                              :label="item +'费率'" :key="index"
-                              :prop="'rates[' + index + ']'"
-                              :rules="PayObj.Rules">
-                    <el-input v-model="PayObj.rates[index]" placeholder="请输入费率"></el-input>
-                    <el-autocomplete
-                            :fetch-suggestions="querySearch1"
-                            prefix-icon="el-icon-search"
-                            v-model="PayObj.passids[index]"
-                            placeholder="请输入支付渠道ID">
-                    </el-autocomplete>
+        <el-dialog title="编辑代理" :visible.sync="AgentObj.updFlag" :close-on-click-modal="false">
+            <el-form :model="updobj" status-icon label-width="100px" ref="updobj" label-position='left' size="mini">
+                <el-form-item
+                        v-for="(agent, index) in updobj.agents"
+                        :label="index+1 + '级' + '代理人'"
+                        :key="agent.key"
+                        :prop="'agents[' + index + '].value'"
+                        :rules="AgentObj.Rules"
+                >
+                    <el-autocomplete  class="inline-input"
+                                      :fetch-suggestions="querySearch"
+                                      prefix-icon="el-icon-search"
+                                      placeholder="请输入代理人ID或名字"
+                                      v-model="agent.value"></el-autocomplete>
+                    <el-button type="danger" size="mini" icon="el-icon-delete" circle @click.prevent="removeAgent(agent)"></el-button>
                 </el-form-item>
+                <el-button style="margin-bottom:10px" type="primary" size="mini" icon="el-icon-plus" circle @click="addAgent">新增代理人</el-button>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click.native="PayObj.showFlag = false">取消</el-button>
-                <el-button type="primary" @click.native="PaySubmit" :loading="PayObj.loading" v-show="AgentObj.PayShowFlag">提交</el-button>
+                <el-button @click.native="AgentObj.updFlag = false">取消</el-button>
+                <el-button type="primary" @click.native="AgentModiHandler" :loading="addLoading">提交</el-button>
             </div>
         </el-dialog>
-
-
-
-
-<!--        <el-dialog title="费率" :visible.sync="PayObj1.showFlag" :close-on-click-modal="false">-->
-<!--            <el-form :model="PayObj1" status-icon  label-width="150px"  ref="PayObj1" label-position='left' size="mini">-->
-<!--                <el-checkbox :indeterminate="PayObj1.isIndeterminate" v-model="PayObj1.checkAll" @change="handleCheckAllChange">全选</el-checkbox>-->
-<!--                <div style="margin: 15px 0;"></div>-->
-<!--                <el-checkbox-group v-model="Pays.pays" @change="handleCheckedCitiesChange">-->
-<!--                    <el-checkbox v-for="(city,index) in PayObj.cities" :label="city" :key="index">{{city}}</el-checkbox>-->
-<!--                </el-checkbox-group>-->
-<!--                <div style="margin: 20px"></div>-->
-<!--                <el-form-item v-for="(item,index) in Pays.pays"-->
-<!--                              :label="item +'费率'" :key="index"-->
-<!--                              :prop="'rates[' + index + ']'"-->
-<!--                              :rules="PayObj.Rules">-->
-<!--                    <el-autocomplete-->
-<!--                            :fetch-suggestions="querySearch1"-->
-<!--                            prefix-icon="el-icon-search"-->
-<!--                            v-model="PayObj.passids[index]"-->
-<!--                            placeholder="请输入支付渠道ID">-->
-<!--                    </el-autocomplete>-->
-<!--                </el-form-item>-->
-<!--            </el-form>-->
-<!--            <div slot="footer" class="dialog-footer">-->
-<!--                <el-button @click.native="PayObj.showFlag = false">取消</el-button>-->
-<!--                <el-button type="primary" @click.native="PaySubmit" :loading="PayObj.loading" v-show="AgentObj.PayShowFlag">提交</el-button>-->
-<!--            </div>-->
-<!--        </el-dialog>-->
-
         <el-dialog title="编辑" :visible.sync="addFlag" :close-on-click-modal="false">
             <el-form :model="addForm" status-icon label-width="100px" :rules="addFormRules" ref="addForm" label-position='left' size="mini">
                 <el-form-item label="商户名称" prop="name">
@@ -240,63 +169,69 @@
                             placeholder="例如:QQ:10101100">
                     </el-input>
                 </el-form-item>
-<!--                <el-form-item label="支付渠道" prop="paypassid">-->
-<!--                    <el-autocomplete-->
-<!--                            :fetch-suggestions="querySearch1"-->
-<!--                            prefix-icon="el-icon-search"-->
-<!--                            v-model="addForm.paypassid"-->
-<!--                            placeholder="请输入支付渠道ID">-->
-<!--                    </el-autocomplete>-->
-<!--                </el-form-item>-->
+                <!--                <el-form-item label="支付渠道" prop="paypassid">-->
+                <!--                    <el-autocomplete-->
+                <!--                            :fetch-suggestions="querySearch1"-->
+                <!--                            prefix-icon="el-icon-search"-->
+                <!--                            v-model="addForm.paypassid"-->
+                <!--                            placeholder="请输入支付渠道ID">-->
+                <!--                    </el-autocomplete>-->
+                <!--                </el-form-item>-->
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click.native="addFlag = false">取消</el-button>
                 <el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
             </div>
         </el-dialog>
-    </section>
+    </div>
+
 </template>
 
 <script>
-    import { user_del,agent_query,user_add,user_verify,agent_query1,business_query,
-        user_upd,paytype_query,paypasslinktype_add,paypasslinktype_query,agent_delete,agent_modi,paypass_query1 ,
-        user_updpass} from '~/api/request/request';
+    import {business_query,agent_modi,agent_delete,agent_query1,user_del,user_upd,paypasslinktype_query,paytype_query,paypass_query1,paypasslinktype_add,upd_paypass_batch   } from '~/api/request/request';
+    import { dateformart } from '~/api/utils'
     export default {
         data() {
             return {
-
-                filters:{
-                  userid:''
+                filters: {
+                    userid:''
                 },
-                //一键更改渠道结构
-                UpdPassObj:{
-                    flag:false
-                },
-                upassobj:{},
-                UpdPassFormRule:[
-                    {
-                        required: true,
-                        validator : (rule, value, callback) => {
-                            if ( this.paypass1.indexOf(value) === -1) {
-                                callback(new Error('输入的支付渠道不存在!'));
-                            } else {
-                                callback();
-                            }
+                pickerOptions2: {
+                    shortcuts: [{
+                        text: '最近一周',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', [start, end]);
                         }
-                    }
-                ],
-
-
-                paypass:[],
-                paypass1:[],
-                vlist:[],
-                listLoading: false,
-                total:0,
-                page:1,
-                pagesize:10,
-                roles:[],
-                addFlag:false,
+                    }, {
+                        text: '最近一个月',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: '最近三个月',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }]
+                },
                 selectData:[],
+                loading:true,
+                page: {
+                    //pageSizes: [10, 20, 30, 40],默认
+                    currentPage: 1,
+                    total: 0,
+                    pageSize: 10
+                },
+                addFlag:false,
                 addForm:{
                     agents: [],
                     passwd: "",
@@ -330,10 +265,10 @@
                         }
                     ]
                 },
-                addLoading:false,
                 restaurants:[],
                 restaurants1:[],
                 //代理结构
+                addLoading:false,
                 AgentObj:{
                     list : [],
                     loading : false ,
@@ -341,25 +276,28 @@
                     PayShowFlag:true,
                     updFlag :false,
                     Rules: [
-                            {   required: true, message: '请输代理人', trigger: 'blur' },
-                            {
-                                validator : (rule, value, callback) => {
-                                    if (value.length > 0 && this.restaurants1.indexOf(value) === -1) {
-                                        callback(new Error('输入的代理人不存在!'));
-                                    } else {
-                                        callback();
-                                    }
-                                }}
-                            ],
+                        {   required: true, message: '请输代理人', trigger: 'blur' },
+                        {
+                            validator : (rule, value, callback) => {
+                                if (value.length > 0 && this.restaurants1.indexOf(value) === -1) {
+                                    callback(new Error('输入的代理人不存在!'));
+                                } else {
+                                    callback();
+                                }
+                            }}
+                    ],
                     userid : 0,
                 },
                 updobj:{agents:[]},
 
                 // 费率处理结构
+                paypass:[],
+                paypass1:[],
                 PayObj : {
                     addlist : {insert:[]} ,
                     loading : false ,
                     showFlag: false,
+                    showFlag1: false,
                     cityOptions : [] ,
                     checkAll: false,
                     checkedCities: [],
@@ -386,120 +324,126 @@
                 Pays : {pays:[]},
                 PayTypeObj : [],
                 PayTypeObjs : [],
-                PayPassObj : {}
+                PayPassObj : {},
+
+                obj:{},
+                data: [],
+                option:{
+                    stripe:true,
+                    align:'center',
+                    menuAlign:'center',
+                    size:'mini',
+                    menu:true,
+                    menuWidth:100,
+                    cellBtn:false,
+                    delBtn:false,
+                    editBtn:false,
+                    border:true,
+                    addBtn:false,
+                    searchSize:'mini',
+                    searchShow:false,
+                    selection:true,
+                    showSummary:true,
+                    sumColumnList:[
+                        {
+                            name: 'bal',
+                            type: 'sum'
+                        },
+                        {
+                            name: 'bal1',
+                            type: 'sum'
+                        },
+                        {
+                            name: 'today_amount',
+                            type: 'sum'
+                        },
+                        {
+                            name: 'up_bal',
+                            type: 'sum'
+                        },
+                    ],
+                    column:[
+                        {
+                            label:'商户ID',
+                            prop:'userid',
+                            width:60
+                        },
+                        {
+                            label:'商户名称',
+                            prop:'name',
+                            width:200
+                        },
+                        {
+                            label:'登录账号',
+                            prop:'loginname',
+                            width:200
+                        },
+                        {
+                            label:'渠道支付方式费率',
+                            prop:'passtyperate',
+                            width:500,
+                            solt:true,
+                        },
+                        {
+                            label:'商户余额',
+                            prop:'bal',
+                            width:120
+                        },
+                        {
+                            label:'可提现余额',
+                            prop:'bal1',
+                            width:120
+                        },
+                        {
+                            label:'当天流水',
+                            prop:'today_amount',
+                            width:120
+                        },
+                        {
+                            label:'总流水',
+                            prop:'up_bal',
+                            width:140
+                        },
+
+                        {
+                            label:'代理',
+                            prop:'agent',
+                            width:130,
+                            solt:true,
+                        },
+                        {
+                            label:'注册时间',
+                            prop:'createtime',
+                            width:150
+                        },
+                        {
+                            label:'联系人',
+                            prop:'concat',
+                            width:200
+                        },
+                        {
+                            label:'联系方式',
+                            prop:'contype',
+                            width:200
+                        },
+                    ]
+                }
             }
         },
-        methods:{
-            getSummaries(param) {
-                const { columns, data } = param;
-                const sums = [];
-                columns.forEach((column, index) => {
-                    if (index === 0 ) {
-                        sums[index] = '总价';
-                        return;
-                    }
-                    if (index === 4 || index ===5 || index===6 || index===7){
-                        const values = data.map(item => Number(item[column.property]));
-                        if (!values.every(value => isNaN(value))) {
-                            sums[index] = values.reduce((prev, curr) => {
-                                const value = Number(curr);
-                                if (!isNaN(value)) {
-                                    return prev + curr;
-                                } else {
-                                    return prev;
-                                }
-                            }, 0);
-                            sums[index] = sums[index].toFixed(2)
-                            sums[index] += ' 元'
-                        } else {
-                            sums[index] = 'N/A';
-                        }
-                    }
-
-                });
-
-                return sums;
+        methods : {
+            selectionChange(list){
+                this.selectData = list
             },
-            clickUpdpassHandler(){
-                if(this.selectData.length==0){
-                    this.$message.error('请勾选商户数据!')
-                }else{
-                    this.UpdPassObj.flag=true
-                }
+            querySearch1(queryString, cb) {
+                var restaurants = this.paypass;
+                var results = queryString ? restaurants.filter(this.createFilter1(queryString)) : restaurants;
+                // 调用 callback 返回建议列表的数据
+                cb(results);
             },
-            UpdPassHandler(){
-                this.$refs.upassobj.validate((valid) => {
-                    if (valid) {
-                        this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                            this.addLoading = true;
-                            let insert_data={pass:[]}
-                            this.selectData.forEach(item => {
-                                insert_data.pass.push({
-                                    userid : item.userid,
-                                    paypassid : this.upassobj.paypassid.split('(')[0]
-                                })
-                            })
-                            user_updpass({
-                                data :insert_data,
-                                callback : () => {
-                                    this.addLoading = false;
-                                    this.$refs['upassobj'].resetFields();
-                                    this.UpdPassObj.flag = false;
-                                    this.$message.success("切换成功!")
-                                    this.RequestQuery()
-                                },
-                                errorcallback : () => {
-                                    this.addLoading = false;
-                                    this.UpdPassObj.flag = false;
-                                }
-                            })
-                        })
-                    }
-                })
-            },
-            handleSelectionChange(val){
-                this.selectData = val
-            },
-            AgentModiHandler(){
-                this.$refs.updobj.validate((valid) => {
-                    if (valid) {
-                        this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                            this.addLoading = true;
-                            this.$set(this.updobj,'userid',this.AgentObj.userid)
-                            agent_modi({
-                                data :this.updobj,
-                                callback : () => {
-                                    this.addLoading = false;
-                                    this.$refs['updobj'].resetFields();
-                                    this.AgentObj.updFlag = false;
-                                    this.$message({
-                                        message : "编辑成功!"
-                                    })
-                                    this.AgentQueryTmp(this.AgentObj.userid)
-                                },
-                                errorcallback : () => {
-                                    this.addLoading = false;
-                                    this.AgentObj.updFlag = false;
-                                }
-                            })
-                        })
-                    }
-                })
-            },
-            delAgentHandler(row){
-                this.$confirm('确认删除吗？', '提示', {}).then(() => {
-                    this.AgentObj.loading =true
-                    agent_delete({
-                        data: {id: row.id},
-                        callback: () => {
-                            this.AgentQueryTmp(row.userid_to)
-
-                        },
-                        errorcallback: () => {
-
-                        }
-                    })
-                })
+            createFilter1(queryString) {
+                return (restaurant) => {
+                    return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1);
+                };
             },
             handleCheckAllChange(val) {
                 this.Pays.pays = val ? this.PayObj.cityOptions : [];
@@ -551,6 +495,66 @@
                     }
                 })
             },
+            PaySubmit1(){
+                this.$refs.PayObj.validate((valid) => {
+                    if (valid) {
+                        this.$confirm('确认提交吗？', '提示', {}).then(() => {
+                            this.PayObj.loading= true;
+
+                            let paypass=[]
+                            this.PayPassObj.types.forEach((item,index) => {
+                                let listno = this.Pays.pays.indexOf(item.typename + item.name)
+                                if (listno !==-1) {
+                                    paypass.push({
+                                        passid : this.PayObj.passids[listno].split('(')[0],
+                                        paytypeid : item.paytypeid
+                                    })
+                                }
+                            })
+                            let userids=[]
+                            this.selectData.forEach(item =>{
+                                userids.push(item.userid)
+                            })
+                            upd_paypass_batch({
+                                data :{userids:userids,paypass:paypass},
+                                callback : (res) => {
+                                    this.$refs['PayObj'].resetFields();
+                                    this.PayObj.showFlag = false;
+                                    this.PayObj.loading= false;
+                                    if(res.data.data.error_list.length>0){
+                                        this.$message({
+                                            message : res.data.data.error_list
+                                        })
+                                    }else{
+                                        this.$message({
+                                            message : "渠道切换成功!"
+                                        })
+                                    }
+                                    this.RequestQuery()
+                                },
+                                errorcallback : () => {
+                                    this.PayObj.showFlag = false;
+                                    this.PayObj.loading= false;
+                                }
+                            })
+                        })
+                    }
+                })
+            },
+            clickPayHandler2(row){
+                if(this.selectData.length==0){
+                    this.$message.error('请勾选订单!')
+                }else{
+                    this.PayObj.showFlag1 = true
+                    this.PayPassObj = Object.assign({}, row);
+                    this.$set(this.PayPassObj,'types',this.PayTypeObj)
+                    this.PayObj.isIndeterminate=true
+                    this.PayObj.checkAll=false
+                    this.Pays.pays=[]
+                    this.PayObj.rates=[]
+                    this.PayObj.passids=[]
+                }
+            },
             clickPayHandler(row){
                 this.PayObj.PayLodingButton=true
                 this.PayPassObj = Object.assign({}, row);
@@ -573,8 +577,6 @@
                     },
                     callback : (res) => {
 
-                        // console.log(res)
-                        // console.log(this.paypass1)
                         res.data.data.forEach((item,index) => {
                             this.Pays.pays.push(
                                 item.typename + item.name
@@ -599,6 +601,102 @@
             clickPayHandler1(row){
                 this.clickPayHandler(row)
                 this.AgentObj.PayShowFlag=false
+            },
+            addSubmit() {
+                this.$refs.addForm.validate((valid) => {
+                    if (valid) {
+                        this.$confirm('确认提交吗？', '提示', {}).then(() => {
+                            this.addLoading = true;
+
+                            this.$set(this.addForm1,'userid',this.addForm.userid)
+                            this.$set(this.addForm1,'name',this.addForm.name)
+                            this.$set(this.addForm1,'concat',this.addForm.concat)
+                            this.$set(this.addForm1,'contype',this.addForm.contype)
+                            this.$set(this.addForm1,'loginname',this.addForm.loginname)
+
+                            user_upd({
+                                data :this.addForm1,
+                                callback : () => {
+                                    this.addLoading = false;
+                                    this.$refs['addForm'].resetFields();
+                                    this.addFlag= false;
+                                    this.$message({
+                                        message : "编辑成功!"
+                                    })
+                                    this.RequestQuery()
+                                },
+                                errorcallback : () => {
+                                    this.addLoading = false;
+                                    this.addFlag = false;
+                                }
+                            })
+                        })
+                    }
+                })
+            },
+            updHandler(row){
+                this.addForm = Object.assign({}, row);
+                this.addFlag = true
+            },
+            delHandler(row){
+                this.$confirm('确认删除该记录吗?', '提示', {
+                    type: 'warning'
+                }).then(() => {
+                    this.listLoading = true;
+                    user_del({
+                        data : { userid : row.userid },
+                        callback : () => {
+                            this.RequestQuery()
+                        },
+                        errorcallback : () => {
+                            this.listLoading = false;
+                        }
+                    })
+                }).catch(() => {
+                })
+            },
+            sizeChange(val) {
+                this.page.currentPage = 1
+                this.page.pageSize = val
+                this.RequestQuery()
+            },
+            currentChange(val) {
+                this.page.currentPage = val
+                this.RequestQuery()
+            },
+            refreshChange(){
+                this.RequestQuery()
+            },
+            searchChange(){
+                this.RequestQuery()
+            },
+            searchReset(){
+                this.filters={}
+            },
+            SearchAgentQuery(){
+                agent_query1({
+                    params : {
+                        status : "0",
+                        type: "2"
+                    },
+                    callback : (res) => {
+                        this.restaurants = res.data.data
+                        this.restaurants.forEach(item => {
+                            this.restaurants1.push(item.value)
+                        })
+                    }
+                })
+            },
+            querySearch(queryString, cb) {
+                var restaurants = this.restaurants;
+                var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+                // 调用 callback 返回建议列表的数据
+                cb(results);
+            },
+            createFilter(queryString) {
+                return (restaurant) => {
+                    return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1);
+                };
             },
             AgentQueryTmp(userid){
                 this.AgentObj.loading =true
@@ -633,162 +731,96 @@
                     }
                 })
             },
-            QueryAgent(row){
-                this.AgentObj.showFlag=true
-                this.AgentObj.userid=row.userid
-                this.AgentQueryTmp(row.userid)
-            },
-            handleSelect(item) {
-            },
-            querySearch(queryString, cb) {
-                var restaurants = this.restaurants;
-                var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-                // 调用 callback 返回建议列表的数据
-                cb(results);
-            },
-            createFilter(queryString) {
-                return (restaurant) => {
-                    return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1);
-                };
-            },
-            querySearch1(queryString, cb) {
-                var restaurants = this.paypass;
-                var results = queryString ? restaurants.filter(this.createFilter1(queryString)) : restaurants;
-                // 调用 callback 返回建议列表的数据
-                cb(results);
-            },
-            createFilter1(queryString) {
-                return (restaurant) => {
-                    return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1);
-                };
-            },
-            SearchAgentQuery(){
-                agent_query1({
-                    params : {
-                        status : "0",
-                        type: "2"
-                    },
-                    callback : (res) => {
-                        this.restaurants = res.data.data
-                        this.restaurants.forEach(item => {
-                            this.restaurants1.push(item.value)
-                        })
-                    }
-                })
-            },
-            removeAgent(item){
-                var index = this.updobj.agents.indexOf(item)
-                if (index !== -1) {
-                    this.updobj.agents.splice(index, 1)
-                }
-            },
             addAgent(){
                 this.updobj.agents.push({
                     value: '',
                     key: Date.now()
                 })
             },
-            mg_add () {
-                this.addFlag = true;
-            },
-            addSubmit() {
-                this.$refs.addForm.validate((valid) => {
+            AgentModiHandler(){
+                this.$refs.updobj.validate((valid) => {
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.addLoading = true;
-
-                            this.$set(this.addForm1,'userid',this.addForm.userid)
-                            this.$set(this.addForm1,'name',this.addForm.name)
-                            this.$set(this.addForm1,'concat',this.addForm.concat)
-                            this.$set(this.addForm1,'contype',this.addForm.contype)
-                            this.$set(this.addForm1,'loginname',this.addForm.loginname)
-                            if(this.addForm.paypassid.length>0){
-                                this.$set(this.addForm1,'paypassid',this.addForm.paypassid.split('(')[0])
-                            }else{
-                                this.$set(this.addForm1,'paypassid','0')
-                            }
-
-                            user_upd({
-                                data :this.addForm1,
+                            this.$set(this.updobj,'userid',this.AgentObj.userid)
+                            agent_modi({
+                                data :this.updobj,
                                 callback : () => {
                                     this.addLoading = false;
-                                    this.$refs['addForm'].resetFields();
-                                    this.addFlag= false;
+                                    this.$refs['updobj'].resetFields();
+                                    this.AgentObj.updFlag = false;
                                     this.$message({
                                         message : "编辑成功!"
                                     })
-                                    this.RequestQuery()
+                                    this.AgentQueryTmp(this.AgentObj.userid)
                                 },
                                 errorcallback : () => {
                                     this.addLoading = false;
-                                    this.addFlag = false;
+                                    this.AgentObj.updFlag = false;
                                 }
                             })
                         })
                     }
                 })
             },
-            updHandler(row){
-                this.addForm = Object.assign({}, row);
-                this.paypass1.forEach(item => {
-                    if (item.split('(')[0] === this.addForm.paypassid.toString()){
-                        this.$set(this.addForm,"paypassid",item)
-                    }
-                })
-                if(this.addForm.paypassid===0){
-                    this.$set(this.addForm,"paypassid","")
-                }
-                this.addFlag = true
-            },
-            delHandler(row){
-                this.$confirm('确认删除该记录吗?', '提示', {
-                    type: 'warning'
-                }).then(() => {
-                    this.listLoading = true;
-                    user_del({
-                        data : { userid : row.userid },
-                        callback : () => {
-                            this.RequestQuery()
+            delAgentHandler(row){
+                this.$confirm('确认删除吗？', '提示', {}).then(() => {
+                    this.AgentObj.loading =true
+                    agent_delete({
+                        data: {id: row.id},
+                        callback: () => {
+                            this.AgentQueryTmp(row.userid_to)
+
                         },
-                        errorcallback : () => {
-                            this.listLoading = false;
+                        errorcallback: () => {
+
                         }
                     })
-                }).catch(() => {
                 })
             },
-            handlerEdit(row){
-            },
-            handleSizeChange(val) {
-                this.pagesize = val;
-                this.RequestQuery()
-            },
-            handleCurrentChange(val) {
-                this.page = val;
-                this.RequestQuery()
+            QueryAgent(row){
+                this.AgentObj.showFlag=true
+                this.AgentObj.userid=row.userid
+                this.AgentQueryTmp(row.userid)
             },
             RequestQuery(){
-                this.listLoading=true
+                this.loading=true
+                let startdate=""
+                let enddate=""
+                if(this.filters.querytime && this.filters.querytime[0] && this.filters.querytime[1]){
+                    startdate=dateformart(this.filters.querytime[0])+' 00:00:01'
+                    enddate=dateformart(this.filters.querytime[1])+' 23:59:59'
+                }
+
                 business_query({
                     params : {
-                        page:this.page,
-                        page_size:this.pagesize,
-                        status : "0",
-                        type: "1",
-                        userid:this.filters.userid
+                        page:this.page.currentPage,
+                        page_size: this.page.pageSize,
+                        userid: this.filters.userid
                     },
                     callback : (res) => {
-                        this.vlist = res.data.data
-                        this.total = Number(res.headers.total)
-                        this.listLoading=false
-                    },
-                    errorcallback : () => {
-                        this.listLoading=false
+                        this.data = res.data.data
+                        this.page.total = Number(res.headers.total)
+                        this.loading=false
+                        this.data.forEach(item =>{
+                            let agentsname=""
+                            item.agents.forEach(item1 => {
+                                agentsname =  agentsname + '(' + item1.name_to + ')'
+                            })
+                            this.$set(item,'agentsname',agentsname)
+
+
+                            let paypasstypenames = ""
+                            item.paytypes.forEach(item2 =>{
+                                paypasstypenames = paypasstypenames+ '(' + item2.paypassname+','+ item2.typename + item2.name + ',' + (item2.rate * 100.0).toFixed(2) + '%'  + ')'
+                            })
+                            this.$set(item,"paypasstypenames",paypasstypenames)
+                        })
                     }
                 })
             }
         },
-        mounted(){
+        created() {
             this.RequestQuery()
             this.SearchAgentQuery()
             paytype_query({
@@ -822,7 +854,7 @@
                     })
                 }
             })
-        }
+        },
     }
 </script>
 
