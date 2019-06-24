@@ -34,7 +34,8 @@
                 }).then(() => {
                     qqbot_send_msg({
                         "data":{
-                            "msg" : this.msg
+                            "msg" : this.msg,
+                            "qqacc" : this.qqacc
                         },
                         callback : (res)=>{
                             this.$message({
