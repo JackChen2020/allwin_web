@@ -155,7 +155,7 @@
                         {
                             label:'订单ID',
                             prop:'ordercode',
-                            width:60
+                            width:100
                         },
                         {
                             label:'流水号',

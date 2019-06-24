@@ -304,6 +304,12 @@ export function upd_passwd(options) {
   CoreRequest(options)
 }
 
+export function qqbot_send_msg(options) {
+  options['url']= apiurl + '/public/qqbot_send_msg'
+  options['method']='post'
+  CoreRequest(options)
+}
+
 export function upd_paypasswd(options) {
   options['url']= apiurl + '/public/upd_paypasswd'
   options['method']='post'
@@ -482,7 +488,7 @@ export function check_google_token(options) {
   options['method']='post'
   CoreRequest(options)
 }
-
+cashoutlist1_query
 export function ballist_query(options) {
   options['url']= apiurl + '/pay/ballist_query'
   CoreRequest(options)
