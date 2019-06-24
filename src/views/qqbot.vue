@@ -1,5 +1,5 @@
 <template>
-    <el-row>
+    <div>
 
         <el-select v-model="qqacc" placeholder="请选择QQ号">
             <el-option v-for="item in qqaccs" :label="item" :value="item" :key="item"></el-option>
@@ -12,7 +12,7 @@
                 v-model="msg">
         </el-input>
         <el-button style="margin-top:20px;" type="primary" @click="send">发送消息</el-button>
-    </el-row>
+    </div>
 </template>
 
 <script>
