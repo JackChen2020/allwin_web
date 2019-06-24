@@ -6,7 +6,7 @@
                 placeholder="请输入内容"
                 v-model="msg">
         </el-input>
-        <el-button type="primary" @click="send">发送消息</el-button>
+        <el-button style="margin-top:20px;" type="primary" @click="send">发送消息</el-button>
     </el-row>
 </template>
 
@@ -28,16 +28,10 @@
                             "msg" : this.msg
                         },
                         callback : (res)=>{
-                            if(res.data.data.length>0){
-                                this.$message({
-                                    message : res.data.data
-                                })
-                            }else{
-                                this.$message({
-                                    message : "群发成功!",
-                                    type: "sueecss"
-                                })
-                            }
+                            this.$message({
+                                message : "群发成功!",
+                                type: "sueecss"
+                            })
                         }
                     })
                 }).catch(() => {
