@@ -310,6 +310,12 @@ export function qqbot_send_msg(options) {
   CoreRequest(options)
 }
 
+export function get_qq_accs(options) {
+  options['url']= apiurl + '/public/get_qq_accs'
+  options['method']='get'
+  CoreRequest(options)
+}
+
 export function upd_paypasswd(options) {
   options['url']= apiurl + '/public/upd_paypasswd'
   options['method']='post'

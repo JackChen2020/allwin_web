@@ -1,5 +1,12 @@
 <template>
     <el-row>
+
+        <el-form-item label="QQ号" :rules="{ required: true, message: '请选择QQ号!', trigger: 'blur' }" placeholder="请选择QQ号">
+            <el-select v-model="qqacc" placeholder="请选择QQ号">
+                <el-option v-for="item in qqaccs" :label="item" :value="item" :key="item"></el-option>
+            </el-select>
+        </el-form-item>
+
         <el-input
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 10}"
@@ -11,11 +18,13 @@
 </template>
 
 <script>
-    import {qqbot_send_msg } from '~/api/request/request';
+    import {qqbot_send_msg,get_qq_accs } from '~/api/request/request';
     export default {
         data() {
             return {
-                msg:""
+                msg:"",
+                qqacc:"",
+                qqaccs:""
             }
         },
         methods : {
@@ -38,6 +47,13 @@
                 })
 
             }
+        },
+        mounted() {
+            get_qq_accs({
+                callback: (res)=>{
+                    this.qqaccs = res.data.data
+                }
+            })
         }
     }
 </script>
