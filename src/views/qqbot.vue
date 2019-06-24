@@ -6,6 +6,7 @@
         </el-select>
 
         <el-input
+                style="margin-top:30px;"
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 10}"
                 placeholder="请输入内容"
