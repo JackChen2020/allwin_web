@@ -43,17 +43,14 @@ module.exports = {
         open: process.platform === 'darwin',
         host: '0.0.0.0',
         port: 8080,
-        https: false,
-        hotOnly: false,
+        // https: false,
+        // hotOnly: false,
         proxy: {
-            '/api': {
+            '/client_api': {
                 // target: 'http://localhost:8000',
                 target : ServerUrl,
                 changeOrigin: true,
-                ws: false,
-                pathRewrite: {
-                    '^/api': '/api'//请求的时候使用这个api就可以
-                }
+                ws: false
 
             },
             '/upload': {

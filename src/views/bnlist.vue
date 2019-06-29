@@ -25,7 +25,8 @@
                 <u style="color: #e62b32" @click="QueryAgent(scope.row)">{{scope.row.agentsname}}</u>
             </template>
             <template slot="passtyperate" slot-scope="scope" >
-                <u style="color: #e62b32"  @click="clickPayHandler(scope.row)">{{scope.row.paypasstypenames}}</u>
+                <u v-if="scope.row.paypasstypenames.length!==0" style="color: #e62b32"  @click="clickPayHandler(scope.row)">{{scope.row.paypasstypenames}}</u>
+                <u v-else style="color: #e62b32"  @click="clickPayHandler(scope.row)">暂未设置费率,请点击设置!</u>
             </template>
             <template slot-scope="scope" slot="menu">
                 <el-button type="primary" size="mini" icon="el-icon-edit" circle @click="updHandler(scope.row)"></el-button>
