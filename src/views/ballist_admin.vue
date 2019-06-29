@@ -28,6 +28,8 @@
             </el-table-column>
             <el-table-column type="index" width="40">
             </el-table-column>
+            <el-table-column prop="userid" label="商户ID" width="100" sortable align="center">
+            </el-table-column>
             <el-table-column prop="createtime" label="操作时间" width="150" sortable align="center">
             </el-table-column>
             <el-table-column prop="memo" label="摘要" width="90" sortable align="center">
