@@ -710,22 +710,29 @@
                         userid : this.AgentObj.userid,
                     },
                     callback : (res) => {
-                        this.AgentObj.list = res.data.data[0].agents
-                        this.AgentObj.list.forEach((item,index) => {
-                            let userid = this.AgentObj.list[index].userid_to
-                            this.$set(this.AgentObj.list[index],'userid_to', this.AgentObj.list[index].userid)
-                            this.$set(this.AgentObj.list[index],'userid', userid)
+                        console.log(res)
+                        if(res.data.data && res.data.data.length>0){
+                            this.AgentObj.list = res.data.data[0].agents
+                            this.AgentObj.list.forEach((item,index) => {
+                                let userid = this.AgentObj.list[index].userid_to
+                                this.$set(this.AgentObj.list[index],'userid_to', this.AgentObj.list[index].userid)
+                                this.$set(this.AgentObj.list[index],'userid', userid)
 
-                            this.updobj.agents.push({
-                                value: this.AgentObj.list[index].userid+'('+this.AgentObj.list[index].name_to+')',
-                                key: this.AgentObj.list[index].id
+                                this.updobj.agents.push({
+                                    value: this.AgentObj.list[index].userid+'('+this.AgentObj.list[index].name_to+')',
+                                    key: this.AgentObj.list[index].id
+                                })
+
+
+                                this.AgentObj.userid  = this.AgentObj.list[index].userid_to
                             })
+                        }else{
+                            this.AgentObj.list = []
+                        }
 
-
-                            this.AgentObj.userid  = this.AgentObj.list[index].userid_to
-                        })
 
                         this.AgentObj.loading =false
+                        this.RequestQuery()
 
                     },
                     errorcallback : () => {
@@ -798,7 +805,8 @@
                     params : {
                         page:this.page.currentPage,
                         page_size: this.page.pageSize,
-                        userid: this.filters.userid
+                        userid: this.filters.userid,
+                        status : '0'
                     },
                     callback : (res) => {
                         this.data = res.data.data
