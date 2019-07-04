@@ -242,7 +242,7 @@
                 else{
                     let orders = []
                     this.selectData.forEach(item => {
-                        if(item.status === '1'){
+                        if(item.status === '1' || item.status === '3'){
                             orders.push(item.ordercode)
                         }
                     })
