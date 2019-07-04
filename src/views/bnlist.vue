@@ -22,7 +22,8 @@
                 </el-col>
             </template>
             <template slot="agent" slot-scope="scope" >
-                <u style="color: #e62b32" @click="QueryAgent(scope.row)">{{scope.row.agentsname}}</u>
+                <u v-if="scope.row.agentsname.length!==0" style="color: #e62b32" @click="QueryAgent(scope.row)">{{scope.row.agentsname}}</u>
+                <u v-else style="color: #e62b32"  @click="QueryAgent(scope.row)">暂未设置代理,点击可设置!</u>
             </template>
             <template slot="passtyperate" slot-scope="scope" >
                 <u v-if="scope.row.paypasstypenames.length!==0" style="color: #e62b32"  @click="clickPayHandler(scope.row)">{{scope.row.paypasstypenames}}</u>
