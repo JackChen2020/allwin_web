@@ -71,6 +71,13 @@
                     size:"mini",
                     column:[
                         {
+                            label:'群名称',
+                            prop:'name',
+                            cell: true,
+                            search:true,
+                            formslot:true
+                        },
+                        {
                             label:'群类型',
                             prop:'message_type',
                             formslot:true
@@ -80,13 +87,6 @@
                             prop:'id',
                             formslot:true
                         },
-                        {
-                            label:'群名称',
-                            prop:'name',
-                            cell: true,
-                            search:true,
-                            formslot:true
-                        }
                     ]
                 },
             }
