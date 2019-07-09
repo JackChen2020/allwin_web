@@ -11,6 +11,27 @@ export function get_menu(options) {
   CoreRequest(options)
 }
 
+//获取群发列表
+export function get_qq_list(options) {
+  options['url']=apiurl + '/public/get_qq_list'
+  options['method']='get'
+  CoreRequest(options)
+}
+
+//获取群发列表
+export function upd_qq(options) {
+  options['url']=apiurl + '/public/upd_qq'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+//获取群发列表
+export function del_qq(options) {
+  options['url']=apiurl + '/public/del_qq'
+  options['method']='post'
+  CoreRequest(options)
+}
+
 //登录
 export function request_login (options) {
   options['url']=apiurl + '/user/login'
