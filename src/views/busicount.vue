@@ -42,6 +42,8 @@
             </el-table-column>
             <el-table-column prop="amount" label="流水" width="120" sortable align="center">
             </el-table-column>
+            <el-table-column prop="endamount" label="扣去费率后的流水" width="200" sortable align="center">
+            </el-table-column>
             <el-table-column prop="rate" label="成功率" width="120" sortable align="center">
             </el-table-column>
             <el-table-column prop="order_success_count" label="成功订单" width="120" sortable align="center">
