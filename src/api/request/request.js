@@ -203,17 +203,40 @@ export function paypasslinktype_query(options) {
   CoreRequest(options)
 }
 
-// export function paytype_name_query(options) {
-//   options['url']='/api/pay/paytype_name_query'
-//   options['method']='get'
-//   CoreRequest(options)
-// }
+export function paypasslinktype_query_new(options) {
+  options['url']= apiurl + '/pay/paypasslinktype_query_new'
+  options['method']='get'
+  CoreRequest(options)
+}
 
+export function paytypelinkstatusAdd(options) {
+  options['url']= apiurl + '/pay/paytypelinkstatusAdd'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+export function updrate(options) {
+  options['url']= apiurl + '/pay/updrate'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+export function paytypelinkstatusUpd(options) {
+  options['url']= apiurl + '/pay/paytypelinkstatusUpd'
+  options['method']='post'
+  CoreRequest(options)
+}
 
 export function business_query(options) {
   options['url']= apiurl + '/public/business_query'
   options['method']='get'
   CoreRequest(options)
+}
+
+export function business_query_new(options) {
+    options['url']= apiurl + '/pay/business_query'
+    options['method']='get'
+    CoreRequest(options)
 }
 
 export function agent_delete(options) {
@@ -543,8 +566,19 @@ export function pass_count(options) {
   CoreRequest(options)
 }
 
+export function busi_count(options) {
+  options['url']= apiurl + '/datacount/business_count'
+  CoreRequest(options)
+}
+
 export function upd_paypass_batch(options) {
   options['url']= apiurl + '/pay/upd_paypass_batch'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+export function upd_paypass_batch_new(options) {
+  options['url']= apiurl + '/pay/upd_paypass_batch_new'
   options['method']='post'
   CoreRequest(options)
 }

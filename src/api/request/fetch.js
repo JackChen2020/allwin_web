@@ -64,7 +64,6 @@ export function CoreRequest (options) {
     // params : options.hasOwnProperty('params') ? options.params : {}
   }).then((res) => {
 
-    console.log(res)
     if (res && res.data.rescode === '20001' ){
       localStorage.clear()
       Vue.$router.push({path:'/login'})
