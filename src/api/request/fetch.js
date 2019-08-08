@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { Loading,Message } from 'element-ui';
 import Vue from 'vue'
+import {imgjoin} from '~/api/utils'
 
 import { Decrypt , Encrypt } from '~/api/utils'
 
@@ -64,9 +65,10 @@ export function CoreRequest (options) {
     // params : options.hasOwnProperty('params') ? options.params : {}
   }).then((res) => {
 
-    if (res && res.data.rescode === '20001' ){
+    if (res && res.data.rescode === '900001' ){
       localStorage.clear()
-      Vue.$router.push({path:'/login'})
+      console.log(imgjoin("/#/login"))
+      window.location.href= imgjoin("/#/login")
     }else if (res && res.data.rescode !== '10000') {
 
       if (typeof options.errorcallback === 'function') {
