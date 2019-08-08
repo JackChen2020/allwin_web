@@ -556,6 +556,12 @@ export function callback_business(options) {
   CoreRequest(options)
 }
 
+export function callback_business_ex(options) {
+  options['url']= apiurl + '/pay/callback_business_ex'
+  options['method']='post'
+  CoreRequest(options)
+}
+
 export function finance_order_count(options) {
   options['url']= apiurl + '/datacount/finance_order_count'
   CoreRequest(options)
