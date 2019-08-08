@@ -75,15 +75,16 @@
         </template>
 
 
-        <template slot="menuRight">
+        <template slot="menuLeft">
             <el-button type="primary" icon="el-icon-edit" circle @click="clickUpdOrderStatus" size="mini" ></el-button>
+            <el-button type="primary" icon="el-icon-phone-outline" circle @click="clickUpdOrderDown" size="mini" ></el-button>
         </template>
 
     </avue-crud>
 </template>
 
 <script>
-    import {order_query,order_status_upd } from '~/api/request/request';
+    import {order_query,order_status_upd,callback_business_ex } from '~/api/request/request';
     import { dateformart } from '~/api/utils'
     export default {
         data() {
@@ -250,6 +251,28 @@
                         data : {"orders" : orders},
                         callback : (res) => {
                             this.$message.success("手工上分成功!")
+                            this.RequestQuery()
+                        }
+                    })
+                }
+            },
+            clickUpdOrderDown(){
+                if(this.selectData.length==0){
+                    this.$message.error('请勾选订单!')
+                }
+                else{
+                    let orders = []
+                    this.selectData.forEach(item => {
+                        orders.push(item.ordercode)
+                    })
+                    callback_business_ex({
+                        data : {"orders" : orders},
+                        callback : (res) => {
+                            if(res.data.data.error){
+                                this.$message.warning(res.data.data.error)
+                            }else{
+                                this.$message.success("通知成功!")
+                            }
                             this.RequestQuery()
                         }
                     })
