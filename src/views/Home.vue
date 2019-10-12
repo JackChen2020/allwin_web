@@ -216,6 +216,8 @@
 				this.sysName = "傲银管理后台"
 			}else if (this.user.rolecode.toString() === "1001"){
 				this.sysName = "傲银管理后台"
+			}else if (this.user.rolecode.toString() === "1005"){
+				this.sysName = "傲银财务管理后台"
 			}else if (this.user.rolecode.toString() === "2001"){
 				this.sysName = "傲银商户后台"
 			}else if (this.user.rolecode.toString() === "3001"){

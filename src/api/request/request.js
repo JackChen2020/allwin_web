@@ -4,6 +4,24 @@ import { CoreRequest } from './fetch'
 
 let apiurl = '/client_api'
 
+export function daifuBalQuery(options) {
+  options['url']=apiurl + '/public/daifuBalQuery'
+  options['method']='get'
+  CoreRequest(options)
+}
+
+export function daifuBalTixian(options) {
+  options['url']=apiurl + '/public/daifuBalTixian'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+export function daifuPassList(options) {
+  options['url']=apiurl + '/public/daifuPassList'
+  options['method']='get'
+  CoreRequest(options)
+}
+
 //获取菜单
 export function get_menu(options) {
   options['url']=apiurl + '/public/get_menu'
@@ -317,6 +335,50 @@ export function upd_bal(options) {
 //提现明细查询
 export function cashoutlist_query(options) {
   options['url']= apiurl + '/order/cashoutlist_query'
+  options['method']='get'
+  CoreRequest(options)
+}
+
+
+//提现明细查询
+export function getWhiteList(options) {
+  options['url']= apiurl + '/public/getWhiteList'
+  options['method']='get'
+  CoreRequest(options)
+}
+
+//提现明细查询
+export function delWhiteList(options) {
+  options['url']= apiurl + '/public/delWhiteList'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+//提现明细查询
+export function updWhiteList(options) {
+  options['url']= apiurl + '/public/updWhiteList'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+//提现明细查询
+export function refeshWhiteList(options) {
+  options['url']= apiurl + '/public/refeshWhiteList'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+//提现明细查询
+export function addWhiteList(options) {
+  options['url']= apiurl + '/public/addWhiteList'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+
+//提现明细查询
+export function cashoutlist_df_query(options) {
+  options['url']= apiurl + '/order/cashoutlist_df_query'
   options['method']='get'
   CoreRequest(options)
 }

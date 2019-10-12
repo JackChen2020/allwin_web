@@ -6,7 +6,7 @@ function resolve (dir) {
 }
 
 //开发环境
-// const ServerUrl = "http://localhost:8000"
+// const ServerUrl = "http://localhost:7001"
 
 // 测试环境
 // const ServerUrl = "http://47.244.129.198"
