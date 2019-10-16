@@ -6,13 +6,13 @@ function resolve (dir) {
 }
 
 //开发环境
-const ServerUrl = "http://localhost:7001"
+// const ServerUrl = "http://localhost:7001"
 
 // 测试环境
 // const ServerUrl = "http://47.244.129.198"
 
 // 生产环境
-// const ServerUrl = "http://allwin6666.com"
+const ServerUrl = "http://allwin6666.com"
 
 module.exports = {
     // 基本路径
