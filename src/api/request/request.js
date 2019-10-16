@@ -10,6 +10,18 @@ export function daifuBalQuery(options) {
   CoreRequest(options)
 }
 
+export function stop_handler(options) {
+    options['url']=apiurl + '/order/stop_handler'
+    options['method']='post'
+    CoreRequest(options)
+}
+
+export function stop_canle_handler(options) {
+    options['url']=apiurl + '/order/stop_canle_handler'
+    options['method']='post'
+    CoreRequest(options)
+}
+
 export function daifuBalTixian(options) {
   options['url']=apiurl + '/public/daifuBalTixian'
   options['method']='post'

@@ -80,11 +80,16 @@
             <el-button type="primary" icon="el-icon-phone-outline" circle @click="clickUpdOrderDown" size="mini" ></el-button>
         </template>
 
+        <template slot-scope="scope" slot="menu">
+            <el-button  v-if="scope.row.isstop==='1'" type="primary" icon="el-icon-edit" circle size="mini" @click="stopHandler(scope.row)">冻结</el-button>
+            <el-button  v-else type="danger" icon="el-icon-edit" circle size="mini" @click="stopCanleHandler(scope.row)">解冻</el-button>
+        </template>
+
     </avue-crud>
 </template>
 
 <script>
-    import {order_query,order_status_upd,callback_business_ex } from '~/api/request/request';
+    import {order_query,order_status_upd,callback_business_ex,stop_handler,stop_canle_handler } from '~/api/request/request';
     import { dateformart } from '~/api/utils'
     export default {
         data() {
@@ -140,10 +145,13 @@
                     stripe:true,
                     align:'center',
                     menuAlign:'center',
+                    menuWidth:200,
                     size:'mini',
-                    menu:false,
+                    menu:true,
                     border:true,
                     addBtn:false,
+                    editBtn:false,
+                    delBtn:false,
                     searchSize:'mini',
                     selection:true,
                     searchShow:false,
@@ -184,6 +192,11 @@
                             prop:'down_status_name',
                             width:100,
                             solt:true,
+                        },
+                        {
+                            label:'是否冻结',
+                            prop:'isstop_name',
+                            width:100
                         },
                         {
                             label:'支付渠道',
@@ -278,6 +291,32 @@
                     })
                 }
             },
+            stopHandler(row){
+                this.$confirm('确认冻结此笔订单号吗？', '提示', {}).then(() => {
+                    stop_handler({
+                        data :{
+                            "ordercode" : row.ordercode
+                        },
+                        callback : () => {
+                            this.RequestQuery()
+                            this.$message({message : "冻结成功!"})
+                        }
+                    })
+                })
+            },
+            stopCanleHandler(row){
+                this.$confirm('确认解冻此笔订单号吗？', '提示', {}).then(() => {
+                    stop_canle_handler({
+                        data :{
+                            "ordercode" : row.ordercode
+                        },
+                        callback : () => {
+                            this.RequestQuery()
+                            this.$message({message : "解冻成功!"})
+                        }
+                    })
+                })
+            },
             RequestQuery(){
                 this.loading=true
                 let startdate=""
@@ -304,6 +343,7 @@
                         this.data = res.data.data.data
                         this.page.total = Number(res.headers.total)
                         this.loading=false
+                        console.log(this.data)
                     }
                 })
             }

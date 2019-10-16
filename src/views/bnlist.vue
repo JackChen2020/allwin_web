@@ -159,6 +159,12 @@
                             placeholder="请输入登录账号">
                     </el-input>
                 </el-form-item>
+                <el-form-item label="下发手续费" prop="fee_rule">
+                    <el-input
+                            v-model="addForm.fee_rule"
+                            placeholder="下发手续费">
+                    </el-input>
+                </el-form-item>
                 <el-form-item label="联系人" prop="concat">
                     <el-input
                             v-model="addForm.concat"
@@ -378,6 +384,16 @@
                         {
                             label:'登录账号',
                             prop:'loginname',
+                            width:200
+                        },
+                        {
+                            label:'登录账号',
+                            prop:'loginname',
+                            width:200
+                        },
+                        {
+                            label:'下发手续费',
+                            prop:'fee_rule',
                             width:200
                         },
                         {
@@ -615,6 +631,7 @@
                             this.$set(this.addForm1,'concat',this.addForm.concat)
                             this.$set(this.addForm1,'contype',this.addForm.contype)
                             this.$set(this.addForm1,'loginname',this.addForm.loginname)
+                            this.$set(this.addForm1,'fee_rule',this.addForm.fee_rule)
 
                             user_upd({
                                 data :this.addForm1,
