@@ -29,14 +29,19 @@
             </el-table-column>
             <el-table-column prop="up_bal" label="总流水" width="120" sortable align="center">
             </el-table-column>
-            <el-table-column label="代理" width="90" align="center" >
-                <template slot-scope="scope">
-                    <el-button size="mini" icon="el-icon-search" circle @click="QueryAgent(scope.row)"></el-button>
-                </template>
-            </el-table-column>
-            <el-table-column label="费率" width="90" align="center" >
+<!--            <el-table-column label="代理" width="90" align="center" >-->
+<!--                <template slot-scope="scope">-->
+<!--                    <el-button size="mini" icon="el-icon-search" circle @click="QueryAgent(scope.row)"></el-button>-->
+<!--                </template>-->
+<!--            </el-table-column>-->
+            <el-table-column label="商户费率" width="90" align="center" >
                 <template slot-scope="scope">
                     <el-button size="mini" icon="el-icon-search" circle @click="clickPayHandler(scope.row)"></el-button>
+                </template>
+            </el-table-column>
+            <el-table-column label="我的费率" width="90" align="center" >
+                <template slot-scope="scope">
+                    <el-button size="mini" icon="el-icon-search" circle @click="clickPayHandler1(scope.row)"></el-button>
                 </template>
             </el-table-column>
             <el-table-column prop="createtime" label="注册时间" width="150" sortable align="center">
@@ -47,6 +52,28 @@
             </el-table-column>
 
         </el-table>
+
+
+        <el-dialog title="我的费率" :visible.sync="PayObj1.showFlag" :close-on-click-modal="false">
+            <el-form :model="PayObj1" status-icon  label-width="150px"  ref="PayObj1" label-position='left' size="mini">
+<!--                <el-checkbox :indeterminate="PayObj1.isIndeterminate" v-model="PayObj1.checkAll" @change="handleCheckAllChange">全选</el-checkbox>-->
+<!--                <div style="margin: 15px 0;"></div>-->
+<!--                <el-checkbox-group v-model="Pays.pays" @change="handleCheckedCitiesChange">-->
+<!--                    <el-checkbox v-for="(city,index) in PayObj1.cities" :label="city" :key="index">{{city}}</el-checkbox>-->
+<!--                </el-checkbox-group>-->
+                <div style="margin: 20px"></div>
+                <el-form-item v-for="(item,index) in Pays.pays"
+                              :label="item +'费率'" :key="index"
+                              :prop="'rates[' + index + ']'"
+                              :rules="PayObj1.Rules">
+                    <el-input v-model="PayObj1.rates[index]" placeholder="请输入费率"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click.native="PayObj1.showFlag = false">取消</el-button>
+                <el-button type="primary" @click.native="PaySubmit2" :loading="PayObj1.loading" v-show="AgentObj.PayShowFlag">提交</el-button>
+            </div>
+        </el-dialog>
 
         <!--        &lt;!&ndash;渠道切换&ndash;&gt;-->
         <!--        <el-dialog title="渠道切换" :visible.sync="UpdPassObj.flag" :close-on-click-modal="false">-->
@@ -169,7 +196,7 @@
     export default {
         data() {
             return {
-
+                obj:{},
                 //一键更改渠道结构
                 UpdPassObj:{
                     flag:false
@@ -259,6 +286,33 @@
 
                 // 费率处理结构
                 PayObj : {
+                    addlist : {insert:[]} ,
+                    loading : false ,
+                    showFlag: false,
+                    cityOptions : [] ,
+                    checkAll: false,
+                    checkedCities: [],
+                    cities: [],
+                    isIndeterminate: true,
+                    Rules:[
+                        {   required: true, message: '请输入费率,例如:0.003', trigger: 'blur' },
+                        {
+                            validator: (rule, value, callback) => {
+                                var reg = /^-?\d{1,5}(?:\.\d{1,4})?$/
+                                if (reg.test(value)) {
+                                    callback()
+                                } else {
+                                    callback(new Error('请输入正确的金额'))
+                                }
+                            },
+                            trigger: 'blur'
+                        }
+                    ],
+                    PayLodingButton:false,
+                    rates:[],
+                    passids:[]
+                },
+                PayObj1 : {
                     addlist : {insert:[]} ,
                     loading : false ,
                     showFlag: false,
@@ -499,8 +553,57 @@
                     }
                 })
             },
+            clickPayHandlerAgent(row){
+                this.PayObj1.PayLodingButton=true
+                this.PayPassObj = Object.assign({}, row);
+                this.$set(this.PayPassObj,'types',this.PayTypeObj)
+
+                this.PayObj1.isIndeterminate=true
+                this.PayObj1.checkAll=false
+                this.Pays.pays=[]
+                this.PayObj1.rates=[]
+                this.PayObj1.passids=[]
+                this.$set(this.PayObj1.addlist,'delete',{})
+                this.$set(this.PayObj1.addlist,'insert',[])
+
+                let user = JSON.parse(localStorage.user)
+                console.log(this.obj)
+
+                paypasslinktype_query({
+                    params : {
+                        page:1,
+                        page_size: 9999999,
+                        type : "1",
+                        id : user.userid,
+                        userid : this.obj.userid,
+                        isAgent : 1
+                    },
+                    callback : (res) => {
+
+                        res.data.data.forEach((item,index) => {
+                            this.Pays.pays.push(
+                                item.typename + item.name
+                            )
+                            this.PayObj1.rates.push(
+                                item.rate
+                            )
+                            this.paypass1.forEach(item1 => {
+                                if (item1.split('(')[0] === item.passid.toString()){
+                                    this.PayObj1.passids.push(
+                                        item1
+                                    )
+                                }
+                            })
+                        })
+
+                        this.PayObj1.PayLodingButton=false
+                        this.PayObj1.showFlag=true
+                    }
+                })
+            },
             clickPayHandler1(row){
-                this.clickPayHandler(row)
+                this.obj = row
+                this.clickPayHandlerAgent(row)
                 this.AgentObj.PayShowFlag=false
             },
             AgentQueryTmp(userid){
@@ -705,8 +808,12 @@
                         this.PayObj.cityOptions.push(
                             item.typename + item.name
                         )
+                        this.PayObj1.cityOptions.push(
+                            item.typename + item.name
+                        )
                     })
                     this.PayObj.cities = this.PayObj.cityOptions
+                    this.PayObj1.cities = this.PayObj.cityOptions
                 }
             })
             paypass_query1({

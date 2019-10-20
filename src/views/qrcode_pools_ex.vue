@@ -166,7 +166,7 @@
                 console.log(fileList)
             },
             handlerUpload(file) {
-                console.log( file.type )
+                // console.log( file.type )
                 const isJPG = file.type.split('/')[0] === 'image';
                 const isLt2M = file.size / 1024  < 120;
 
@@ -179,7 +179,7 @@
                 return isJPG && isLt2M;
             },
             onLoad(page) {
-                console.log(page)
+                // console.log(page)
                 this.page.currentPage = page.currentPage
                 this.page.pageSize = page.pageSize
                 this.QueryQrcode()

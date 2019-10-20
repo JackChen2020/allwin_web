@@ -81,7 +81,7 @@
         methods:{
             handleSelectionChange(val){
                 this.selectData = val
-                console.log(this.selectData)
+                // console.log(this.selectData)
             },
             CashoutConfirm(){
                 this.selectData1=[]

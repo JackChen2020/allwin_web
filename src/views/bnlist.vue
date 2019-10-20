@@ -65,6 +65,29 @@
                 <el-button type="primary" @click.native="PaySubmit" :loading="PayObj.loading" v-show="AgentObj.PayShowFlag">提交</el-button>
             </div>
         </el-dialog>
+
+
+        <el-dialog title="费率" :visible.sync="PayObj1.showFlag" :close-on-click-modal="false">
+            <el-form :model="PayObj1" status-icon  label-width="150px"  ref="PayObj1" label-position='left' size="mini">
+                <el-checkbox :indeterminate="PayObj1.isIndeterminate" v-model="PayObj1.checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+                <div style="margin: 15px 0;"></div>
+                <el-checkbox-group v-model="Pays.pays" @change="handleCheckedCitiesChange">
+                    <el-checkbox v-for="(city,index) in PayObj1.cities" :label="city" :key="index">{{city}}</el-checkbox>
+                </el-checkbox-group>
+                <div style="margin: 20px"></div>
+                <el-form-item v-for="(item,index) in Pays.pays"
+                              :label="item +'费率'" :key="index"
+                              :prop="'rates[' + index + ']'"
+                              :rules="PayObj1.Rules">
+                    <el-input v-model="PayObj1.rates[index]" placeholder="请输入费率"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click.native="PayObj1.showFlag = false">取消</el-button>
+                <el-button type="primary" @click.native="PaySubmit2" :loading="PayObj1.loading" v-show="AgentObj.PayShowFlag">提交</el-button>
+            </div>
+        </el-dialog>
+
         <el-dialog title="批量切换费率" :visible.sync="PayObj.showFlag1" :close-on-click-modal="false">
             <el-form :model="PayObj" status-icon  label-width="150px"  ref="PayObj" label-position='left' size="mini">
                 <el-checkbox :indeterminate="PayObj.isIndeterminate" v-model="PayObj.checkAll" @change="handleCheckAllChange">全选</el-checkbox>
@@ -329,6 +352,34 @@
                     rates:[],
                     passids:[]
                 },
+                PayObj1 : {
+                    addlist : {insert:[]} ,
+                    loading : false ,
+                    showFlag: false,
+                    showFlag1: false,
+                    cityOptions : [] ,
+                    checkAll: false,
+                    checkedCities: [],
+                    cities: [],
+                    isIndeterminate: true,
+                    Rules:[
+                        {   required: true, message: '请输入费率,例如:0.003', trigger: 'blur' },
+                        {
+                            validator: (rule, value, callback) => {
+                                var reg = /^-?\d{1,5}(?:\.\d{1,4})?$/
+                                if (reg.test(value)) {
+                                    callback()
+                                } else {
+                                    callback(new Error('请输入正确的金额'))
+                                }
+                            },
+                            trigger: 'blur'
+                        }
+                    ],
+                    PayLodingButton:false,
+                    rates:[],
+                    passids:[]
+                },
                 Pays : {pays:[]},
                 PayTypeObj : [],
                 PayTypeObjs : [],
@@ -374,7 +425,8 @@
                         {
                             label:'商户ID',
                             prop:'userid',
-                            width:60
+                            width:60,
+                            fixed:true
                         },
                         {
                             label:'商户名称',
@@ -559,6 +611,49 @@
                     }
                 })
             },
+            PaySubmit2(){
+                this.$refs.PayObj1.validate((valid) => {
+                    if (valid) {
+                        this.$confirm('确认提交吗？', '提示', {}).then(() => {
+                            this.PayObj1.loading= true;
+                            this.PayPassObj.types.forEach((item,index) => {
+                                let listno = this.Pays.pays.indexOf(item.typename + item.name)
+                                if (listno !==-1){
+                                    this.PayObj1.addlist.insert.push({
+                                        to_id : this.PayPassObj.userid,
+                                        paytypeid : item.paytypeid,
+                                        type : '1',
+                                        rate : this.PayObj1.rates[listno],
+                                        // passid : this.PayObj1.passids[listno].split('(')[0],
+                                        userid : this.obj.userid
+                                    })
+                                }
+                            })
+                            if (this.PayObj1.addlist.insert.length===0){
+                                this.$set(this.PayObj1.addlist.delete,'id',this.PayPassObj.userid)
+                                this.$set(this.PayObj1.addlist.delete,'type','1')
+                            }
+                            console.log(this.PayObj1.addlist)
+                            paypasslinktype_add({
+                                data :this.PayObj1.addlist,
+                                callback : () => {
+                                    this.$refs['PayObj1'].resetFields();
+                                    this.PayObj1.showFlag = false;
+                                    this.PayObj1.loading= false;
+                                    this.$message({
+                                        message : "编辑成功!"
+                                    })
+                                    this.RequestQuery()
+                                },
+                                errorcallback : () => {
+                                    this.PayObj1.showFlag = false;
+                                    this.PayObj1.loading= false;
+                                }
+                            })
+                        })
+                    }
+                })
+            },
             clickPayHandler2(row){
                 if(this.selectData.length==0){
                     this.$message.error('请勾选订单!')
@@ -591,7 +686,7 @@
                         page:1,
                         page_size: 9999999,
                         type : "1",
-                        id : this.PayPassObj.userid
+                        id : this.PayPassObj.userid,
                     },
                     callback : (res) => {
 
@@ -616,9 +711,54 @@
                     }
                 })
             },
+            clickPayHandlerAgent(row){
+                this.PayObj1.PayLodingButton=true
+                this.PayPassObj = Object.assign({}, row);
+                this.$set(this.PayPassObj,'types',this.PayTypeObj)
+
+                this.PayObj1.isIndeterminate=true
+                this.PayObj1.checkAll=false
+                this.Pays.pays=[]
+                this.PayObj1.rates=[]
+                this.PayObj1.passids=[]
+                this.$set(this.PayObj1.addlist,'delete',{})
+                this.$set(this.PayObj1.addlist,'insert',[])
+
+                paypasslinktype_query({
+                    params : {
+                        page:1,
+                        page_size: 9999999,
+                        type : "1",
+                        id : this.PayPassObj.userid,
+                        userid : this.obj.userid,
+                        isAgent : 1
+                    },
+                    callback : (res) => {
+
+                        res.data.data.forEach((item,index) => {
+                            this.Pays.pays.push(
+                                item.typename + item.name
+                            )
+                            this.PayObj1.rates.push(
+                                item.rate
+                            )
+                            this.paypass1.forEach(item1 => {
+                                if (item1.split('(')[0] === item.passid.toString()){
+                                    this.PayObj1.passids.push(
+                                        item1
+                                    )
+                                }
+                            })
+                        })
+
+                        this.PayObj1.PayLodingButton=false
+                        this.PayObj1.showFlag=true
+                    }
+                })
+            },
             clickPayHandler1(row){
-                this.clickPayHandler(row)
-                this.AgentObj.PayShowFlag=false
+                this.clickPayHandlerAgent(row)
+                // this.AgentObj.PayShowFlag=false
             },
             addSubmit() {
                 this.$refs.addForm.validate((valid) => {
@@ -805,6 +945,7 @@
                 })
             },
             QueryAgent(row){
+                this.obj = row
                 this.AgentObj.showFlag=true
                 this.AgentObj.userid=row.userid
                 this.AgentQueryTmp(row.userid)
@@ -862,8 +1003,12 @@
                         this.PayObj.cityOptions.push(
                             item.typename + item.name
                         )
+                        this.PayObj1.cityOptions.push(
+                            item.typename + item.name
+                        )
                     })
                     this.PayObj.cities = this.PayObj.cityOptions
+                    this.PayObj1.cities = this.PayObj.cityOptions
                 }
             })
             paypass_query1({

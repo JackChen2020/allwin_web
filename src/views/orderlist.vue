@@ -150,6 +150,7 @@
                     menu:true,
                     border:true,
                     addBtn:false,
+                    // excelBtn:true,
                     editBtn:false,
                     delBtn:false,
                     searchSize:'mini',

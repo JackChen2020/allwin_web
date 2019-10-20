@@ -47,12 +47,17 @@
             </el-form>
         </el-col>
 
+        <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+            <el-button @click="exportExcel" style="margin-top: 2px;" size="medium" type="success">导出</el-button>
+        </el-col>
+
 <!--        <el-col :span="24" class="toolbar">-->
 <!--            <div style="color:red">当日订单数：{{today_order_tot_count}}，当日成功订单数：{{today_order_ok_count}}，当日流水: {{today_amount}}；-->
 <!--                总订单数：{{tot_order_tot_count}}，总成功订单数：{{tot_order_ok_count}}，总流水: {{tot_amount}} </div>-->
 <!--        </el-col>-->
 
         <el-table
+                id="rebateSetTable"
                 :data="vlist"
                 height="500"
                 highlight-current-row
@@ -165,6 +170,9 @@
 <script>
     import { paytype_add,paytype_upd,paytype_del,order_query,order_status_upd,callback_business  } from '~/api/request/request';
     import { dateformart , Decrypt , Encrypt} from '~/api/utils'
+    import FileSaver from 'file-saver'
+    import XLSX from 'xlsx'
+
     export default {
         data() {
             return {
@@ -296,6 +304,39 @@
                         })
                     }
                 })
+            },
+            exportExcel () {
+                /* generate workbook object from table */
+                var xlsxParam = { raw: true }
+                let wb = XLSX.utils.table_to_book(document.querySelector('#rebateSetTable'),xlsxParam);
+                /* get binary string as output */
+                // wb.Sheets.forEach( item => {
+                //     con
+                // })
+                // console.log(wb.Sheets)
+
+                let dic = wb.Sheets.Sheet1
+                for (var key in dic){
+                    var item = dic[key];
+
+                    console.log(key,item)
+                    if(item.v == '补发通知' || key == 'A1'){
+                        delete dic[key]
+                    }
+
+                    // if(item.v){
+                    //     item.v = item.v.toString()
+                    // }
+                }
+                let wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' });
+                try {
+                    FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' } ), '订单信息.xlsx');
+                } catch (e)
+                {
+                    if (typeof console !== 'undefined')
+                        console.log(e, wbout)
+                }
+                return wbout
             },
             updSubmit() {
                 this.$refs.updForm.validate((valid) => {
