@@ -10,6 +10,12 @@ export function daifuBalQuery(options) {
   CoreRequest(options)
 }
 
+export function daifuOrderQuery(options) {
+  options['url']=apiurl + '/public/daifuOrderQuery'
+  options['method']='post'
+  CoreRequest(options)
+}
+
 export function stop_handler(options) {
     options['url']=apiurl + '/order/stop_handler'
     options['method']='post'

@@ -20,6 +20,7 @@
             </el-table-column>
             <el-table-column type="index" width="40">
             </el-table-column>
+
             <el-table-column prop="userid" label="用户ID" width="110" sortable align="center">
             </el-table-column>
             <el-table-column prop="paypassid" label="渠道ID" width="100" sortable align="center">
@@ -36,16 +37,19 @@
             </el-table-column>
             <el-table-column prop="bank_card_number" label="银行卡号" width="130" sortable align="center">
             </el-table-column>
-            <el-table-column prop="status_name" label="状态" width="100" sortable align="center">
-            </el-table-column>
             <el-table-column prop="createtime" label="申请时间" width="150" sortable align="center">
             </el-table-column>
-<!--            <el-table-column label="操作" width="100" align="center">-->
-<!--                <template slot-scope="scope">-->
+            <el-table-column prop="textstatus" label="状态" width="100" sortable align="center">
+            </el-table-column>
+
+            <el-table-column label="操作" width="100" align="center">
+                <template slot-scope="scope">
+                    <el-button type="primary"  circle size="mini" @click="QueryOrderHandler(scope.row)">查询状态</el-button>
 <!--                    <el-button type="primary" icon="el-icon-edit" circle @click="CashoutConfirm(scope.row)" size="mini" :loading="ButtonLoading"></el-button>-->
 <!--                    <el-button type="danger" size="mini" icon="el-icon-delete" circle @click="CashoutCancel(scope.row)" :loading="ButtonLoading1"></el-button>-->
-<!--                </template>-->
-<!--            </el-table-column>-->
+                </template>
+            </el-table-column>
+
         </el-table>
 
         <!--分页-->
@@ -68,7 +72,7 @@
 
 <script>
 
-    import { cashoutlist_df_query } from '~/api/request/request'
+    import { cashoutlist_df_query,daifuOrderQuery } from '~/api/request/request'
 
     export default {
 
@@ -88,6 +92,19 @@
             }
         },
         methods:{
+            QueryOrderHandler(row){
+                // console.log(row.ordercode[0])
+                daifuOrderQuery({
+                    data:{
+                        id:row.id,
+                        dfordercode:row.ordercode[0],
+                        paypassid : row.paypassid
+                    },
+                    callback : (res)=>{
+                        this.RequestQuery()
+                    }
+                })
+            },
             handleSelectionChange(val){
                 this.selectData = val
                 console.log(this.selectData)
