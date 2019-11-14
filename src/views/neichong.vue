@@ -4,8 +4,8 @@
         <avue-form ref="form" v-model="obj"
                    :option="option">
             <template slot="menuForm">
-                <el-button v-if="subloding===false" type="primary" @click="submit">提现申请</el-button>
-                <el-button v-else type="primary" icon="el-icon-loading">提现申请</el-button>
+                <el-button v-if="subloding===false" type="primary" @click="submit">充值</el-button>
+                <el-button v-else type="primary" icon="el-icon-loading">充值</el-button>
             </template>
         </avue-form>
 
