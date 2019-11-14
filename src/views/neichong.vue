@@ -1,14 +1,6 @@
 <template>
     <div>
 
-        <el-form ref="FormObj" :model="request_data" label-width="100px" size="mini" style="margin-top:20px;width:500px;margin-left:180px;">
-            <el-form-item label="代付渠道" :rules="{ required: true, message: '请选择代付渠道!', trigger: 'blur' }" placeholder="请选择代付渠道">
-                <el-select v-model="request_data.paypassid" placeholder="请选择代付渠道">
-                    <el-option v-for="item in daifuPassObj" :label="item.name" :value="item.paypassid" :key="item.paypassid"></el-option>
-                </el-select>
-            </el-form-item>
-        </el-form>
-
         <avue-form ref="form" v-model="obj"
                    :option="option">
             <template slot="menuForm">
@@ -41,7 +33,7 @@
 
 <script>
 
-    import { get_bal,cashout,bankinfo_query,bankinfo_upd,bankinfo_del,bankinfo_add,check_google_token,daifuBalQuery,daifuPassList,daifuBalTixian } from '~/api/request/request'
+    import { get_bal,cashout,bankinfo_query,bankinfo_upd,bankinfo_del,bankinfo_add,check_google_token,neichong } from '~/api/request/request'
     import { timestampToTime } from '~/api/utils'
 
     export default {
@@ -51,11 +43,9 @@
                 obj1:{},
                 obj10:{},
                 subloding:false,
-                daifuPassObj:{},
                 data:[],
                 isFlag:false,
                 bankinfo:{},
-                request_data:{},
                 page: {
                     //pageSizes: [10, 20, 30, 40],默认
                     currentPage: 1,
@@ -73,63 +63,7 @@
                     menuPostion : 'left',
                     emptyBtn:false,
                     submitBtn:false,
-                    paypassid:0,
                     column: [
-                        {
-                            label: "T0可提现余额",
-                            prop: "acT0",
-                            span:12,
-                            readonly:true,
-                            row:true,
-                        },
-                        {
-                            label: "总余额",
-                            prop: "acBal",
-                            span:12,
-                            readonly:true,
-                            row:true,
-                        },
-                        {
-                            label: "冻结金额",
-                            prop: "freezeAmt",
-                            span:12,
-                            readonly:true,
-                            row:true,
-                        },
-                        {
-                            label: "冻结订单金额",
-                            prop: "freezeOrderAmt",
-                            span:12,
-                            readonly:true,
-                            row:true,
-                        },
-                        // {
-                        //     label: "已提现待审核金额",
-                        //     prop: "cashout_bal",
-                        //     span:12,
-                        //     readonly:true,
-                        //     row:true,
-                        // },
-                        {
-                            label: "提现",
-                            prop: "amount",
-                            span: 12,
-                            type: "number",
-                            precision: 2,
-                            row: true,
-                            rules: [{
-                                required: true,
-                                validator: (rule, value, callback) => {
-                                    if (value <= 0) {
-                                        callback(new Error('提现金额必须大于0'));
-                                    } else if (value > this.obj.acT0) {
-                                        callback(new Error('提现金额不能大于T0余额!'));
-                                    } else {
-                                        callback();
-                                    }
-                                },
-                            }],
-                        },
                         {
                             label: "银行卡信息",
                             prop: "bankinfo",
@@ -144,28 +78,24 @@
                             }],
                             click: this.bankinfo_handler,
                         },
-                        {
-                            label: "支付密码",
-                            prop: "pay_passwd",
-                            span:12,
-                            type:"password",
-                            rules: [{
-                                required: true,
-                                message: "请输入支付密码"
-                            }],
-                            row:true,
-                        },
-                        // {
-                        //     label: "谷歌验证码",
-                        //     prop: "vercode",
-                        //     span:12,
-                        //     type:"text",
-                        //     rules: [{
-                        //         required: true,
-                        //         message: "请输入谷歌验证码"
-                        //     }],
-                        //     row:true,
-                        // },
+                       {
+                            label: "充值金额",
+                            prop: "amount",
+                            span: 12,
+                            type: "number",
+                            precision: 2,
+                            row: true,
+                           rules: [{
+                               required: true,
+                               validator: (rule, value, callback) => {
+                                   if (value <= 0) {
+                                       callback(new Error('提现金额必须大于0'));
+                                   } else {
+                                       callback();
+                                   }
+                               },
+                           }],
+                        }
                     ]
                 }
             },
@@ -196,65 +126,29 @@
                 }
             }
         },
-        watch: {
-            request_data: {
-                handler(newName, oldName) {
-                    if(newName.hasOwnProperty('paypassid')){
-                        this.paypassid = newName.paypassid
-                        console.log(this.paypassid)
-                        this.daifuQuery()
-                    }
-                },
-                deep: true,
-                immediate: true
-            }
-        },
         mounted(){
-            daifuPassList({
+            get_bal({
                 "callback" : (res) => {
-                    this.daifuPassObj = res.data.data
-                    console.log(this.daifuPassObj)
+                    this.obj = res.data.data
+                    console.log(this.obj)
                 }
             })
-
-            // daifuBalQuery({
-            //     "callback" : (res) => {
-            //         this.obj = res.data.data
-            //     }
-            // })
         },
         methods:{
-            daifuQuery(){
-                daifuBalQuery({
-                    "params":{
-                        paypassid : this.paypassid
-                    },
-                    "callback" : (res) => {
-                        this.obj = res.data.data
-                    }
-                })
-            },
             submit () {
                 this.$refs.form.validate(vaild=> {
                     if (vaild) {
-                        this.$confirm('确认提现吗?', '提示', {
+                        this.$confirm('确认充值吗?', '提示', {
                             type: 'warning'
                         }).then(() => {
                             this.subloding = true
-                            daifuBalTixian({
+                            neichong({
                                 data : {
-                                    vercode : this.obj.vercode,
                                     bank : this.bankinfo,
-                                    pay_passwd : this.$md5(this.obj.pay_passwd),
-                                    amount : this.obj.amount,
-                                    paypassid: this.paypassid,
+                                    amount : this.obj.amount
                                 },
                                 callback : (res) => {
-                                    this.daifuQuery()
-                                    this.$set(this.obj,"amount",0.0)
-                                    this.$set(this.obj,"bankinfo","")
-                                    this.$set(this.obj,"pay_passwd","")
-                                    this.$set(this.obj,"vercode","")
+                                    window.open(res.data.data.url, '_blank');
                                     this.$message.success("成功!")
                                     this.subloding = false
                                 },

@@ -10,6 +10,12 @@ export function daifuBalQuery(options) {
   CoreRequest(options)
 }
 
+export function neichong(options) {
+  options['url']=apiurl + '/public/neichong'
+  options['method']='post'
+  CoreRequest(options)
+}
+
 export function daifuOrderQuery(options) {
   options['url']=apiurl + '/public/daifuOrderQuery'
   options['method']='post'
