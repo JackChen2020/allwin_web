@@ -188,6 +188,18 @@
                             placeholder="下发手续费">
                     </el-input>
                 </el-form-item>
+                <el-form-item label="是否单点登录" prop="islogin">
+                    <el-select v-model="addForm.islogin" placeholder="选择是否单点登录">
+                        <el-option label="是" value="0"></el-option>
+                        <el-option label="否" value="1"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="是否设置提现时候保存银行卡信息" prop="istixianpage">
+                    <el-select v-model="addForm.istixianpage" placeholder="选择是否设置提现时候保存银行卡信息">
+                        <el-option label="是" value="0"></el-option>
+                        <el-option label="否" value="1"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="联系人" prop="concat">
                     <el-input
                             v-model="addForm.concat"
@@ -446,6 +458,16 @@
                         {
                             label:'下发手续费',
                             prop:'fee_rule',
+                            width:200
+                        },
+                        {
+                            label:'是否单点登录',
+                            prop:'islogin_format',
+                            width:200
+                        },
+                        {
+                            label:'是否设置提现时候保存银行卡信息',
+                            prop:'istixianpage_format',
                             width:200
                         },
                         {
@@ -772,6 +794,8 @@
                             this.$set(this.addForm1,'contype',this.addForm.contype)
                             this.$set(this.addForm1,'loginname',this.addForm.loginname)
                             this.$set(this.addForm1,'fee_rule',this.addForm.fee_rule)
+                            this.$set(this.addForm1,'islogin',this.addForm.islogin)
+                            this.$set(this.addForm1,'istixianpage',this.addForm.istixianpage)
 
                             user_upd({
                                 data :this.addForm1,

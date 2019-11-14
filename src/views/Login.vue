@@ -105,6 +105,9 @@
           callback : (res) => {
             this.handleUser(res.data.data)
             this.$router.push({ path: '/dashboard' });
+          },
+          errorcallback : () =>{
+            this.logining = false
           }
         })
       },

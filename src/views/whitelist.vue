@@ -111,9 +111,18 @@
                     var data={}
                     console.log(form)
                     this.$set(data,'userid',form['userid'])
-                    this.$set(data,'dfobj',form.dfobj)
-                    this.$set(data,'webobj',form.webobj)
-                    this.$set(data,'orderobj',form.orderobj)
+
+                    if (form.dfobj.length>0){
+                        this.$set(data,'dfobj',form.dfobj)
+                    }
+
+                    if (form.webobj.length>0){
+                        this.$set(data,'webobj',form.webobj)
+                    }
+
+                    if (form.orderobj.length >0){
+                        this.$set(data,'orderobj',form.orderobj)
+                    }
 
                     console.log(data)
 
@@ -135,9 +144,17 @@
                     var data={}
                     console.log(form)
                     this.$set(data,'userid',form['userid'])
-                    this.$set(data,'dfobj',form.dfobj)
-                    this.$set(data,'webobj',form.webobj)
-                    this.$set(data,'orderobj',form.orderobj)
+                    if (form.dfobj.length>0){
+                        this.$set(data,'dfobj',form.dfobj)
+                    }
+
+                    if (form.webobj.length>0){
+                        this.$set(data,'webobj',form.webobj)
+                    }
+
+                    if (form.orderobj.length >0){
+                        this.$set(data,'orderobj',form.orderobj)
+                    }
 
                     updWhiteList({
                         data:data,
