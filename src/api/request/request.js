@@ -401,6 +401,20 @@ export function addWhiteList(options) {
 
 
 //提现明细查询
+export function google_token_url_get(options) {
+  options['url']= apiurl + '/public/google_token_url_get'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+//提现明细查询
+export function cashout_daifusb(options) {
+  options['url']= apiurl + '/public/cashout_daifusb'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+//提现明细查询
 export function cashoutlist_df_query(options) {
   options['url']= apiurl + '/order/cashoutlist_df_query'
   options['method']='get'

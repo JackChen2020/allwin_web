@@ -30,6 +30,7 @@
                 <u v-else style="color: #e62b32"  @click="clickPayHandler(scope.row)">暂未设置费率,请点击设置!</u>
             </template>
             <template slot-scope="scope" slot="menu">
+                <el-button type="primary" size="mini"  circle @click="getGoogTokenUrl(scope.row)">谷歌条形码</el-button>
                 <el-button type="primary" size="mini" icon="el-icon-edit" circle @click="updHandler(scope.row)"></el-button>
                 <el-button type="danger" size="mini" icon="el-icon-delete" circle @click="delHandler(scope.row)"></el-button>
             </template>
@@ -194,6 +195,12 @@
                         <el-option label="否" value="1"></el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item label="是否显示代付管理" prop="isapidaifu">
+                    <el-select v-model="addForm.isapidaifu" placeholder="选择是否单点登录">
+                        <el-option label="是" value="0"></el-option>
+                        <el-option label="否" value="1"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="是否设置提现时候保存银行卡信息" prop="istixianpage">
                     <el-select v-model="addForm.istixianpage" placeholder="选择是否设置提现时候保存银行卡信息">
                         <el-option label="是" value="0"></el-option>
@@ -226,16 +233,26 @@
                 <el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
             </div>
         </el-dialog>
+
+        <el-dialog title="谷歌验证条形码" :visible.sync="googleFlag" :close-on-click-modal="false">
+            <p>商户ID：{{userid}}</p>
+            <div v-if="googleFlag" id="qrCode" ref="qrCodeDiv"></div>
+        </el-dialog>
+
     </div>
 
 </template>
 
 <script>
-    import {business_query,agent_modi,agent_delete,agent_query1,user_del,user_upd,paypasslinktype_query,paytype_query,paypass_query1,paypasslinktype_add,upd_paypass_batch   } from '~/api/request/request';
+    import {google_token_url_get,business_query,agent_modi,agent_delete,agent_query1,user_del,user_upd,paypasslinktype_query,paytype_query,paypass_query1,paypasslinktype_add,upd_paypass_batch   } from '~/api/request/request';
     import { dateformart } from '~/api/utils'
+    import QRCode from 'qrcodejs2';
     export default {
         data() {
             return {
+                userid:"",
+                url:"",
+                googleFlag:false,
                 filters: {
                     userid:''
                 },
@@ -405,7 +422,7 @@
                     menuAlign:'center',
                     size:'mini',
                     menu:true,
-                    menuWidth:100,
+                    menuWidth:200,
                     cellBtn:false,
                     delBtn:false,
                     editBtn:false,
@@ -466,6 +483,11 @@
                             width:200
                         },
                         {
+                            label:'是否显示代付管理',
+                            prop:'isapidaifu_format',
+                            width:200
+                        },
+                        {
                             label:'是否设置提现时候保存银行卡信息',
                             prop:'istixianpage_format',
                             width:200
@@ -523,6 +545,35 @@
             }
         },
         methods : {
+            bindQRCode: function (url) {
+                console.log(url)
+                // console.log(this.qrcodehtml)
+                new QRCode(this.$refs.qrCodeDiv, {
+                    text: url,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#333333", //二维码颜色
+                    colorLight: "#ffffff", //二维码背景色
+                    correctLevel: QRCode.CorrectLevel.L//容错率，L/M/H
+                })
+                console.log(this.$refs.qrCodeDiv)
+            },
+            getGoogTokenUrl(row){
+                google_token_url_get({
+                    data:{
+                        userid : row.userid,
+                    },
+                    callback : (res)=>{
+                        console.log(res)
+                        this.userid = row.userid
+                        // this.$ref.qrCodeDiv.innerHTML=""
+                        this.googleFlag = true
+                        this.$nextTick(function () {
+                            this.bindQRCode(res.data.data);
+                        })
+                    }
+                })
+            },
             selectionChange(list){
                 this.selectData = list
             },
@@ -796,6 +847,9 @@
                             this.$set(this.addForm1,'fee_rule',this.addForm.fee_rule)
                             this.$set(this.addForm1,'islogin',this.addForm.islogin)
                             this.$set(this.addForm1,'istixianpage',this.addForm.istixianpage)
+                            this.$set(this.addForm1,'isapidaifu',this.addForm.isapidaifu)
+
+
 
                             user_upd({
                                 data :this.addForm1,
@@ -1013,6 +1067,8 @@
             }
         },
         created() {
+
+            this.qrcodehtml = document.getElementById('qrCode');
             this.RequestQuery()
             this.SearchAgentQuery()
             paytype_query({
