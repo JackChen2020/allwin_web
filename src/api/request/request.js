@@ -408,6 +408,13 @@ export function google_token_url_get(options) {
 }
 
 //提现明细查询
+export function accCheckok(options) {
+  options['url']= apiurl + '/public/accCheckok'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+//提现明细查询
 export function cashout_daifusb(options) {
   options['url']= apiurl + '/public/cashout_daifusb'
   options['method']='post'
