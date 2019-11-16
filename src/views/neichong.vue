@@ -149,7 +149,6 @@
                                 },
                                 callback : (res) => {
                                     this.obj.amount =0.0
-                                    this.bankinfo={}
                                     window.open(res.data.data.url, '_blank');
                                     this.$message.success("成功!")
                                     this.subloding = false
