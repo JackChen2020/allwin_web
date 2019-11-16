@@ -9,6 +9,9 @@
                 <el-form-item >
                     <el-input v-model="filters.no" :clearable="true" placeholder="商户订单号"></el-input>
                 </el-form-item>
+                <el-form-item >
+                    <el-input v-model="filters.memo" :clearable="true" placeholder="备注"></el-input>
+                </el-form-item>
             </el-form>
             <el-form :inline="true" :model="filters" size="mini">
                 <el-form-item >
@@ -66,6 +69,8 @@
             <el-table-column prop="bank_card_number" label="银行卡号" width="130" sortable align="center">
             </el-table-column>
             <el-table-column prop="createtime" label="申请时间" width="150" sortable align="center">
+            </el-table-column>
+            <el-table-column prop="memo" label="备注" width="150" sortable align="center">
             </el-table-column>
             <el-table-column prop="textstatus" label="状态" width="100" sortable align="center">
             </el-table-column>
@@ -156,7 +161,8 @@
                     userid:'',
                     name:'',
                     down_status:'',
-                    passid:''
+                    passid:'',
+                    memo:""
                 },
             }
         },
@@ -269,12 +275,14 @@
                         startdate : startdate ,
                         enddate : enddate,
                         no : this.filters.no,
-                        ordercode : this.filters.ordercode
+                        ordercode : this.filters.ordercode,
+                        memo:this.filters.memo
                     },
                     callback : (res) => {
                         this.vlist = res.data.data
                         this.total = Number(res.headers.total)
                         this.listLoading=false
+                        console.log(this.vlist)
                     },
                     errorcallback : () => {
                         this.listLoading=false

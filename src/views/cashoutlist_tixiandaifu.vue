@@ -1,9 +1,6 @@
 <template>
     <div>
 
-
-
-
         <avue-form ref="form" v-model="obj"
                    :option="option">
             <template slot="menuForm">
@@ -134,6 +131,12 @@
                             row:true,
                         },
                         {
+                            label: "备注",
+                            prop: "memo",
+                            span:12,
+                            row:true,
+                        },
+                        {
                             label: "谷歌验证码",
                             prop: "vercode",
                             span:12,
@@ -198,7 +201,8 @@
                                     vercode : this.obj.vercode,
                                     bank : this.bankinfo,
                                     pay_passwd : this.$md5(this.obj.pay_passwd),
-                                    amount : this.obj.amount
+                                    amount : this.obj.amount,
+                                    memo : this.obj.memo
                                 },
                                 callback : (res) => {
                                     this.getBal1()
