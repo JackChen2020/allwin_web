@@ -4,7 +4,7 @@
         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
             <el-form :inline="true" :model="filters" size="mini">
                 <el-form-item >
-                    <el-input v-model="filters.ordercode" :clearable="true" placeholder="用户ID"></el-input>
+                    <el-input v-model="filters.userid" :clearable="true" placeholder="用户ID"></el-input>
                 </el-form-item>
                 <el-form-item >
                     <el-input v-model="filters.ordercode" :clearable="true" placeholder="订单号"></el-input>
