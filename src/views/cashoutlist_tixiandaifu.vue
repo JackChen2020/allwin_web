@@ -211,7 +211,7 @@
                                     this.$set(this.obj,"pay_passwd","")
                                     this.$set(this.obj,"vercode","")
                                     this.getBal1()
-                                    this.$message.success("成功!")
+                                    this.$message.success("成功,请在下方的提现列表查看是否到账!")
                                     this.subloding = false
                                 },
                                 errorcallback : () => {
