@@ -205,6 +205,11 @@
                                     memo : this.obj.memo
                                 },
                                 callback : (res) => {
+                                    this.$set(this.obj,"amount",0.0)
+                                    this.$set(this.obj,"memo","")
+                                    this.$set(this.obj,"bankinfo","")
+                                    this.$set(this.obj,"pay_passwd","")
+                                    this.$set(this.obj,"vercode","")
                                     this.getBal1()
                                     this.$message.success("成功!")
                                     this.subloding = false
