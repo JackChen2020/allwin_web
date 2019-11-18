@@ -186,13 +186,13 @@
                             label:'支付状态',
                             prop:'status_name',
                             width:100,
-                            solt:true,
+                            slot:true,
                         },
                         {
                             label:'商户订单状态',
                             prop:'down_status_name',
                             width:100,
-                            solt:true,
+                            slot:true,
                         },
                         {
                             label:'是否冻结',

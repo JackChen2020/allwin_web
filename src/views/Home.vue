@@ -1,7 +1,7 @@
 <template>
 	<el-row class="container">
 		<el-col :span="24" class="header">
-			<el-col :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'">
+			<el-col :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'" >
 				{{collapsed?'':sysName}}
 			</el-col>
 			<el-col :span="10">
@@ -246,8 +246,8 @@
 		.header {
 			height: 60px;
 			line-height: 60px;
-			background: #20a0ff;
-			color:#fff;
+			background: #64594a;
+			color:black;
 			.userinfo {
 				text-align: right;
 				padding-right: 35px;
@@ -313,10 +313,10 @@
 				.el-menu{
 					height: 100%;
 					width:180px;
-					background-color: #5e7382;
+					background-color: #C7EDCC;
 					.el-menu-item{
 						min-width:180px;
-						background-color: #5e7382;
+						background-color: #C7EDCC;
 					}
 				}
 				.collapsed{

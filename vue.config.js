@@ -26,6 +26,15 @@ module.exports = {
         //修改文件引入自定义路径
         config.resolve.alias
             .set('~', resolve('src'))
+
+        //忽略的打包文件
+        config.externals({
+            'vue': 'Vue',
+            'vue-router': 'VueRouter',
+            'vuex': 'Vuex',
+            'axios': 'axios',
+            'element-ui': 'ELEMENT',
+        })
     },
     configureWebpack: {
     },

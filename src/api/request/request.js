@@ -407,6 +407,22 @@ export function google_token_url_get(options) {
   CoreRequest(options)
 }
 
+
+//提现明细查询
+export function paypassRulesAdd(options) {
+  options['url']= apiurl + '/pay/paypassRulesAdd'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+//提现明细查询
+export function paypassRulesGet(options) {
+  options['url']= apiurl + '/pay/paypassRulesGet'
+  options['method']='get'
+  CoreRequest(options)
+}
+
+
 //提现明细查询
 export function accCheckok(options) {
   options['url']= apiurl + '/public/accCheckok'

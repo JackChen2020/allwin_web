@@ -496,7 +496,7 @@
                             label:'渠道支付方式费率',
                             prop:'passtyperate',
                             width:500,
-                            solt:true,
+                            slot:true,
                         },
                         {
                             label:'商户余额',
@@ -523,7 +523,7 @@
                             label:'代理',
                             prop:'agent',
                             width:130,
-                            solt:true,
+                            slot:true,
                         },
                         {
                             label:'注册时间',
