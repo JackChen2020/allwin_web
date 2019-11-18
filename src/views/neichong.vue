@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <basic-container>
 
         <avue-form ref="form" v-model="obj"
                    :option="option">
@@ -26,7 +26,7 @@
         <!--                       :option="option1">-->
         <!--            </avue-form>-->
         <!--        </el-dialog>-->
-    </div>
+    </basic-container>
 </template>
 
 
@@ -248,5 +248,9 @@
     }
 </script>
 
-<style>
+<style >
+    .avue-form__menu{
+        width:500px;
+    }
 </style>
+

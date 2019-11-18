@@ -57,7 +57,7 @@
             </el-table-column>
             <el-table-column prop="createtime" label="操作时间" width="150" sortable align="center">
             </el-table-column>
-            <el-table-column prop="memo" label="摘要" width="90" sortable align="center">
+            <el-table-column prop="memo" label="摘要" width="190" sortable align="center">
             </el-table-column>
             <el-table-column prop="bal" label="交易前余额" width="120" sortable align="center">
             </el-table-column>
@@ -65,7 +65,7 @@
             </el-table-column>
             <el-table-column prop="confirm_bal" label="交易后余额" width="120" sortable align="center">
             </el-table-column>
-            <el-table-column prop="ordercode" label="订单号" width="100" sortable align="center">
+            <el-table-column prop="ordercode" label="订单号" width="300" sortable align="center">
             </el-table-column>
         </el-table>
 

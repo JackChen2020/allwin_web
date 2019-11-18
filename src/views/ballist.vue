@@ -62,7 +62,7 @@
             </el-table-column>
             <el-table-column prop="confirm_bal" label="交易后余额" width="120" sortable align="center">
             </el-table-column>
-            <el-table-column prop="ordercode" label="订单号" width="100" sortable align="center">
+            <el-table-column prop="ordercode" label="订单号" width="300" sortable align="center">
             </el-table-column>
         </el-table>
 

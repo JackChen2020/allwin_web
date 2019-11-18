@@ -1,9 +1,6 @@
 <template>
     <div>
 
-
-
-
         <avue-form ref="form" v-model="obj"
                    :option="option">
             <template slot="menuForm">
@@ -301,5 +298,8 @@
     }
 </script>
 
-<style>
+<style >
+    .avue-form__menu{
+        width:500px;
+    }
 </style>

@@ -1,44 +1,67 @@
 <template>
     <div>
 
-        <avue-form ref="form" v-model="obj"
-                   :option="option">
-            <template slot="menuForm">
-                <el-button v-if="subloding===false" type="primary" @click="submit">提现申请</el-button>
-                <el-button v-else type="primary" icon="el-icon-loading">提现申请</el-button>
-            </template>
-        </avue-form>
+        <basic-container >
+            <avue-form ref="form" v-model="obj"
+                       :option="option">
+                <template slot="menuForm">
+                    <el-button v-if="subloding===false" type="primary" @click="submit">提现申请</el-button>
+                    <el-button v-else type="primary" icon="el-icon-loading">提现申请</el-button>
+                </template>
+            </avue-form>
+            <el-dialog title="银行卡设置" :visible.sync="isFlag" >
+                <avue-crud ref="crud" :data="data" :option="option0" @row-click="handleCurrentRowChange"
+                           :page="page"
+                           @size-change="sizeChange"
+                           @current-change="currentChange"
+                           @row-save="rowSave"
+                           @row-update="rowUpdate"
+                           @row-del="rowDel"
+                           @refresh-change="refresh"></avue-crud>
+            </el-dialog>
+        </basic-container>
 
-        <el-dialog title="银行卡设置" :visible.sync="isFlag" >
-            <avue-crud ref="crud" :data="data" :option="option0" @row-click="handleCurrentRowChange"
-                       :page="page"
-                       @size-change="sizeChange"
-                       @current-change="currentChange"
-                       @row-save="rowSave"
-                       @row-update="rowUpdate"
-                       @row-del="rowDel"
-                       @refresh-change="refresh"></avue-crud>
+        <el-dialog title="消息" width="50%" :visible.sync="noticeFlag" :close-on-click-modal="false">
+            <el-tabs v-model="activeName">
+                <el-tab-pane label="代付订单消息" name="first"></el-tab-pane>
+                <el-tab-pane label="消息(2)" name="second"></el-tab-pane>
+            </el-tabs>
+            <avue-notice :data="noticeData"  :option="noticeOption" @page-change="pageChange"></avue-notice>
         </el-dialog>
-
-
-                <el-dialog title="验证谷歌验证码" :visible.sync="googleFlag"  >
-                    <avue-form ref="form" v-model="obj10"
-                               :option="option1">
-                    </avue-form>
-                </el-dialog>
     </div>
+
 </template>
 
 
 
 <script>
 
-    import { get_bal,cashout,bankinfo_query,cashout_daifusb,bankinfo_upd,bankinfo_del,bankinfo_add,check_google_token } from '~/api/request/request'
+    let list = [{
+        ordercode: 'DF0112312301023123123',
+        createtime: '05-08 15:08',
+        df_status_format: '支付成功',
+        df_status: 1
+    }, {
+        ordercode: 'DF0112312301023113223',
+        createtime: '05-08 15:08',
+        df_status_format: '支付失败',
+        df_status: 2
+    }, {
+        ordercode: 'DF0112312301023113023',
+        createtime: '05-08 15:08',
+        df_status_format: '支付中',
+        df_status: 0
+    }]
+
+    import { get_bal,cashout,bankinfo_query,cashout_daifusb,bankinfo_upd,bankinfo_del,bankinfo_add,check_google_token,cashoutlist_df_query } from '~/api/request/request'
     import { timestampToTime } from '~/api/utils'
 
     export default {
         data() {
             return {
+                noticeFlag:false,
+                noticeData:list,
+                activeName:'first',
                 obj:{},
                 obj1:{},
                 obj10:{},
@@ -51,6 +74,14 @@
                     currentPage: 1,
                     total: 0,
                     pageSize: 10
+                },
+                noticeOption: {
+                    props: {
+                        title: 'ordercode',
+                        subtitle: 'createtime',
+                        tag: 'df_status_format',
+                        status: 'df_status'
+                    },
                 },
             }
         },
@@ -181,6 +212,14 @@
             this.getBal1()
         },
         methods:{
+            pageChange(page, done) {
+                setTimeout(() => {
+                    this.$message.success('页码' + page)
+                    this.noticeData = this.noticeData.concat(list);
+                    done();
+                }, 1000)
+
+            },
             getBal1(){
                 get_bal({
                     "callback" : (res) => {
@@ -213,6 +252,7 @@
                                     this.getBal1()
                                     this.$message.success("成功,请在下方的提现列表查看是否到账!")
                                     this.subloding = false
+                                    // this.noticeFlag = true
                                 },
                                 errorcallback : () => {
                                     this.subloding = false
@@ -311,5 +351,9 @@
     }
 </script>
 
-<style>
+<style >
+    .avue-form__menu{
+        width:500px;
+    }
 </style>
+

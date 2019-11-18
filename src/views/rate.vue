@@ -22,7 +22,7 @@
             </el-table-column>
             <el-table-column prop="name" label="支付方式" width="120" sortable align="center">
             </el-table-column>
-            <el-table-column prop="rate" label="费率" width="100" sortable align="center">
+            <el-table-column prop="rate" label="费率(%)" width="100" sortable align="center">
             </el-table-column>
         </el-table>
 
@@ -67,7 +67,6 @@
         methods:{
             handleSelectionChange(val){
                 this.selectData = val
-                console.log(this.selectData)
             },
             handleSizeChange(val) {
                 this.pagesize = val;

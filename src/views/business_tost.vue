@@ -20,11 +20,6 @@
                         <el-link @click="HandlerPass" class="img-border1" type="success"  target="_blank">密钥: {{g_token}}</el-link>
                     </div>
                 </basic-container>
-                <basic-container>
-                    <div class="info">
-                        <el-link class="img-border" type="success" :href="javasdk_url" target="_blank">Java-sdk下载</el-link>
-                    </div>
-                </basic-container>
             </el-col>
         </el-row>
 
