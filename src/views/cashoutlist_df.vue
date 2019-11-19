@@ -212,7 +212,8 @@
                         paypassid : row.paypassid
                     },
                     callback : (res)=>{
-                        this.RequestQuery()
+                        row.df_status_format = res.data.data
+                        this.$message(res.data.data)
                     }
                 })
             },

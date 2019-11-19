@@ -76,14 +76,17 @@
             </el-table-column>
             <el-table-column prop="createtime" label="申请时间" width="150" sortable align="center">
             </el-table-column>
-            <el-table-column prop="textstatus" label="状态" width="100" sortable align="center">
+            <el-table-column prop="df_status_format" label="支付状态" width="100" sortable align="center">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.df_status=== '1'" style="color: #95e61a">{{scope.row.df_status_format}}</span>
+                    <span v-else-if="scope.row.df_status=== '0'" style="color: #abd5f9">{{scope.row.df_status_format}}</span>
+                    <span v-else style="color: #e62b32">{{scope.row.df_status_format}}</span>
+                </template>
             </el-table-column>
 
             <el-table-column label="操作" width="100" align="center">
                 <template slot-scope="scope">
                     <el-button type="primary"  circle size="mini" @click="QueryOrderHandler(scope.row)">查询状态</el-button>
-<!--                    <el-button type="primary" icon="el-icon-edit" circle @click="CashoutConfirm(scope.row)" size="mini" :loading="ButtonLoading"></el-button>-->
-<!--                    <el-button type="danger" size="mini" icon="el-icon-delete" circle @click="CashoutCancel(scope.row)" :loading="ButtonLoading1"></el-button>-->
                 </template>
             </el-table-column>
 
@@ -211,7 +214,8 @@
                         paypassid : row.paypassid
                     },
                     callback : (res)=>{
-                        this.RequestQuery()
+                        row.df_status_format = res.data.data
+                        this.$message(res.data.data)
                     }
                 })
             },
