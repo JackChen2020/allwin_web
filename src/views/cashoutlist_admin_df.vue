@@ -1,12 +1,14 @@
 <template>
-    <section >
-
-        <!--        <el-col :span="24" class="toolbar">-->
-        <!--            <el-button type="primary" icon="el-icon-check" @click="CashoutConfirm" size="mini" :loading="ButtonLoading">提现申请通过</el-button>-->
-        <!--            <el-button type="danger" icon="el-icon-delete" @click="CashoutCancel" size="mini" :loading="ButtonLoading1">提现申请拒绝</el-button>-->
-        <!--        </el-col>-->
+    <basic-container >
 
         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+
+            <el-form :inline="true" :model="filters" size="mini">
+                <el-form-item >
+                    <el-input v-model="filters.userid" :clearable="true" placeholder="用户ID"></el-input>
+                </el-form-item>
+            </el-form>
+
             <el-form :inline="true" :model="filters" size="mini">
                 <el-form-item >
                     <el-input v-model="filters.ordercode" :clearable="true" placeholder="订单号"></el-input>
@@ -14,7 +16,46 @@
                 <el-form-item >
                     <el-input v-model="filters.no" :clearable="true" placeholder="商户订单号"></el-input>
                 </el-form-item>
+                <el-form-item >
+                    <el-select v-model="filters.df_status" :clearable="true" placeholder="支付状态">
+                        <el-option label="支付成功" value="1"></el-option>
+                        <el-option label="支付中" value="0"></el-option>
+                        <el-option label="支付失败" value="2"></el-option>
+                    </el-select>
+                </el-form-item>
             </el-form>
+            <el-form :inline="true" :model="filters" size="mini">
+
+                <el-form-item >
+                    <el-input v-model="filters.bank_name" :clearable="true" placeholder="银行名称"></el-input>
+                </el-form-item>
+                <el-form-item >
+                    <el-input v-model="filters.open_name" :clearable="true" placeholder="开户人"></el-input>
+                </el-form-item>
+                <el-form-item >
+                    <el-input v-model="filters.bank_card_number" :clearable="true" placeholder="银行卡号"></el-input>
+                </el-form-item>
+
+
+            </el-form>
+
+            <el-form :inline="true" :model="filters" size="mini">
+                <el-form-item >
+                    <el-input v-model="filters.amount" :clearable="true" placeholder="金额"></el-input>
+                </el-form-item>
+
+                <el-form-item >
+                    <el-input v-model="filters.memo" :clearable="true" placeholder="备注"></el-input>
+                </el-form-item>
+                <el-form-item >
+                    <el-select v-model="filters.sort" :clearable="true" placeholder="排序">
+                        <el-option label="按时间倒序" value="0"></el-option>
+                        <el-option label="按时间正序" value="1"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+
+
             <el-form :inline="true" :model="filters" size="mini">
                 <el-form-item >
                     <el-date-picker
@@ -44,6 +85,8 @@
                 id="rebateSetTable"
                 :data="vlist"
                 height="500"
+                :summary-method="getSummaries"
+                show-summary
                 highlight-current-row
                 v-loading="listLoading"
                 @selection-change="handleSelectionChange"
@@ -56,25 +99,25 @@
             <el-table-column type="index" width="40">
             </el-table-column>
 
-            <el-table-column prop="userid" label="用户ID" width="100" sortable align="center">
+            <el-table-column prop="userid" label="用户ID" width="120" sortable align="center">
             </el-table-column>
-            <el-table-column prop="paypassid" label="渠道ID" width="100" sortable align="center">
-            </el-table-column>
-            <el-table-column prop="ordercode" label="订单ID" width="160" sortable align="center">
+            <el-table-column prop="ordercode" label="订单ID" width="220" sortable align="center">
             </el-table-column>
             <el-table-column prop="downordercode" label="商户订单ID" width="140" sortable align="center">
             </el-table-column>
             <el-table-column prop="amount" label="申请金额" width="110" sortable align="center">
             </el-table-column>
-            <el-table-column prop="bank_name" label="开户银行" width="100" sortable align="center">
+            <el-table-column prop="bank_name" label="开户银行" width="110" sortable align="center">
             </el-table-column>
-            <el-table-column prop="open_name" label="开户人" width="150" sortable align="center">
+            <el-table-column prop="open_name" label="开户人" width="120" sortable align="center">
             </el-table-column>
             <el-table-column prop="open_bank" label="支行" width="100" sortable align="center">
             </el-table-column>
-            <el-table-column prop="bank_card_number" label="银行卡号" width="130" sortable align="center">
+            <el-table-column prop="bank_card_number" label="银行卡号" width="200" sortable align="center">
             </el-table-column>
             <el-table-column prop="createtime" label="申请时间" width="150" sortable align="center">
+            </el-table-column>
+            <el-table-column prop="memo" label="备注" width="150" sortable align="center">
             </el-table-column>
             <el-table-column prop="df_status_format" label="支付状态" width="100" sortable align="center">
                 <template slot-scope="scope">
@@ -107,7 +150,7 @@
             </el-pagination>
         </el-col>
 
-    </section>
+    </basic-container>
 </template>
 
 <script>
@@ -116,6 +159,7 @@
     import { dateformart } from '~/api/utils'
     import FileSaver from 'file-saver'
     import XLSX from 'xlsx'
+
 
     export default {
 
@@ -167,12 +211,49 @@
                     userid:'',
                     name:'',
                     down_status:'',
-                    passid:''
+                    passid:'',
+                    df_status:"",
+                    memo:"",
+                    bank_card_number:"",
+                    bank_name:"",
+                    open_name:"",
+                    amount:"",
+                    sort:""
                 },
             }
         },
         methods:{
-            exportExcel () {
+            getSummaries(param) {
+                const { columns, data } = param;
+                const sums = [];
+                columns.forEach((column, index) => {
+                    if (index === 0) {
+                        sums[index] = '合计';
+                        return;
+                    }
+                    if (index !== 5) {
+                        return;
+                    }
+                    const values = data.map(item => Number(item[column.property]));
+                    if (!values.every(value => isNaN(value))) {
+                        sums[index] = values.reduce((prev, curr) => {
+                            const value = Number(curr);
+                            if (!isNaN(value)) {
+                                return prev + curr;
+                            } else {
+                                return prev;
+                            }
+                        }, 0);
+                        sums[index] += ' 元';
+                    } else {
+                        sums[index] = 'N/A';
+                    }
+                });
+
+                return sums;
+            },
+            exportExcel (sort) {
+
                 /* generate workbook object from table */
                 var xlsxParam = { raw: true }
                 let wb = XLSX.utils.table_to_book(document.querySelector('#rebateSetTable'),xlsxParam);
@@ -186,17 +267,14 @@
                 for (var key in dic){
                     var item = dic[key];
 
-                    if(item.v == '补发通知' || key == 'A1'){
+                    if(item.v == '操作' || key == 'A1' || item.v == '查询状态'){
                         delete dic[key]
                     }
-
-                    // if(item.v){
-                    //     item.v = item.v.toString()
-                    // }
                 }
+                console.log(dic)
                 let wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' });
                 try {
-                    FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' } ), '打款记录.xlsx');
+                    FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' } ), '代付订单明细.xlsx');
                 } catch (e)
                 {
                     if (typeof console !== 'undefined')
@@ -222,39 +300,6 @@
                 this.selectData = val
                 console.log(this.selectData)
             },
-            // CashoutConfirm(row){
-            //     this.$confirm('确认通过提现申请吗？', '提示', {}).then(() => {
-            //         this.ButtonLoading = true;
-            //         cashout_confirm({
-            //             data : {"userid": row.userid,"id":row.id},
-            //             callback : () => {
-            //                 this.ButtonLoading = false;
-            //                 this.$message.success('提现通过处理成功!')
-            //                 this.RequestQuery()
-            //             },
-            //             errorcallback : () => {
-            //                 this.ButtonLoading = false;
-            //             }
-            //         })
-            //     })
-            // },
-            // CashoutCancel(row){
-            //     console.log("row:",row)
-            //     this.$confirm('确认拒绝提现申请吗？', '提示', {}).then(() => {
-            //         this.ButtonLoading1 = true;
-            //         cashout_cancel({
-            //             data : {"userid": row.userid,"id":row.id},
-            //             callback : () => {
-            //                 this.ButtonLoading1 = false;
-            //                 this.$message.success('提现拒绝处理成功!')
-            //                 this.RequestQuery()
-            //             },
-            //             errorcallback : () => {
-            //                 this.ButtonLoading1 = false;
-            //             }
-            //         })
-            //     })
-            // },
             handleSizeChange(val) {
                 this.pagesize = val;
                 this.RequestQuery()
@@ -280,12 +325,21 @@
                         startdate : startdate ,
                         enddate : enddate,
                         no : this.filters.no,
-                        ordercode : this.filters.ordercode
+                        ordercode : this.filters.ordercode,
+                        df_status : this.filters.df_status,
+                        memo:this.filters.memo,
+                        userid:this.filters.userid,
+                        sort:this.filters.sort,
+                        bank_card_number:this.filters.bank_card_number,
+                        bank_name:this.filters.bank_name,
+                        open_name:this.filters.open_name,
+                        amount:this.filters.amount,
                     },
                     callback : (res) => {
                         this.vlist = res.data.data
                         this.total = Number(res.headers.total)
                         this.listLoading=false
+                        console.log(this.vlist)
                     },
                     errorcallback : () => {
                         this.listLoading=false
