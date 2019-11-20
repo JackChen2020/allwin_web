@@ -5,6 +5,8 @@ import {imgjoin} from '~/api/utils'
 
 import { Decrypt , Encrypt } from '~/api/utils'
 
+// let version = "1.0.1"
+
 function fetch (options) {
   return new Promise((resolve, reject) => {
     const instance = axios.create({
@@ -31,6 +33,10 @@ function fetch (options) {
     instance(options)
       .then(response => { // then 请求成功之后进行什么操作
 
+        // console.log(response.headers.version)
+        // if(version!==response.headers.version){
+        //   window.location.reload()
+        // }
         if(response.data.data){
           response.data.data = JSON.parse('{ "data":' + Decrypt(response.data.data) + '}')
           response.data.data = response.data.data.data

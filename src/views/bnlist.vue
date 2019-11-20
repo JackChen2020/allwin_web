@@ -14,7 +14,7 @@
         >
             <template  slot="search">
                 <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-                    <el-form  :model="filters" size="mini">
+                    <el-form :inline="true" :model="filters" size="mini">
                         <el-form-item >
                             <el-input v-model="filters.userid" :clearable="true" placeholder="商户ID"></el-input>
                         </el-form-item>

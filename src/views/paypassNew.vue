@@ -457,8 +457,7 @@
                                                 width: 150,
                                                 label: '金额小数位',
                                                 prop: "point",
-                                                type: "number",
-                                                precision:0
+                                                type: "number"
                                             },
                                             {
                                                 width: 150,

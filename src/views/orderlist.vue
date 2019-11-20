@@ -14,7 +14,7 @@
         >
             <template slot="search">
                 <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-                    <el-form  :model="filters" size="mini">
+                    <el-form :inline="true" :model="filters" size="mini">
                         <el-form-item >
                             <el-input v-model="filters.ordercode" :clearable="true" placeholder="订单号"></el-input>
                         </el-form-item>
@@ -25,7 +25,7 @@
                             <el-input v-model="filters.userid" :clearable="true" placeholder="商户ID"></el-input>
                         </el-form-item>
                     </el-form>
-                    <el-form  :model="filters" size="mini">
+                    <el-form :inline="true"  :model="filters" size="mini">
                         <el-form-item >
                             <el-select v-model="filters.status" :clearable="true" placeholder="支付状态">
                                 <el-option label="支付成功" value="0"></el-option>
@@ -45,9 +45,10 @@
                             <el-input v-model="filters.passid" :clearable="true" placeholder="支付渠道"></el-input>
                         </el-form-item>
                     </el-form>
-                    <el-form  :model="filters" size="mini">
-                        <el-form-item size="mini">
+                    <el-form :inline="true"  :model="filters" size="mini">
+                        <el-form-item>
                             <el-date-picker
+                                    style="height:27px;line-height: 27px;"
                                     v-model="filters.querytime"
                                     type="daterange"
                                     align="right"
@@ -56,6 +57,7 @@
                                     start-placeholder="订单开始日期"
                                     end-placeholder="订单结束日期"
                                     unlink-panels
+                                    :clearable="true"
                                     :picker-options="pickerOptions2">
                             </el-date-picker>
                         </el-form-item>

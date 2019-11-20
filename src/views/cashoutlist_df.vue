@@ -10,9 +10,45 @@
                     <el-input v-model="filters.no" :clearable="true" placeholder="商户订单号"></el-input>
                 </el-form-item>
                 <el-form-item >
-                    <el-input v-model="filters.memo" :clearable="true" placeholder="备注"></el-input>
+                    <el-select v-model="filters.df_status" :clearable="true" placeholder="支付状态">
+                        <el-option label="支付成功" value="1"></el-option>
+                        <el-option label="支付中" value="0"></el-option>
+                        <el-option label="支付失败" value="2"></el-option>
+                    </el-select>
                 </el-form-item>
             </el-form>
+            <el-form :inline="true" :model="filters" size="mini">
+
+                <el-form-item >
+                    <el-input v-model="filters.bank_name" :clearable="true" placeholder="银行名称"></el-input>
+                </el-form-item>
+                <el-form-item >
+                    <el-input v-model="filters.open_name" :clearable="true" placeholder="开户人"></el-input>
+                </el-form-item>
+                <el-form-item >
+                    <el-input v-model="filters.bank_card_number" :clearable="true" placeholder="银行卡号"></el-input>
+                </el-form-item>
+
+
+            </el-form>
+
+            <el-form :inline="true" :model="filters" size="mini">
+                <el-form-item >
+                    <el-input v-model="filters.amount" :clearable="true" placeholder="金额"></el-input>
+                </el-form-item>
+
+                <el-form-item >
+                    <el-input v-model="filters.memo" :clearable="true" placeholder="备注"></el-input>
+                </el-form-item>
+                <el-form-item >
+                    <el-select v-model="filters.sort" :clearable="true" placeholder="排序">
+                        <el-option label="按时间倒序" value="0"></el-option>
+                        <el-option label="按时间正序" value="1"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+
+
             <el-form :inline="true" :model="filters" size="mini">
                 <el-form-item >
                     <el-date-picker
@@ -42,6 +78,8 @@
                 id="rebateSetTable"
                 :data="vlist"
                 height="500"
+                :summary-method="getSummaries"
+                show-summary
                 highlight-current-row
                 v-loading="listLoading"
                 @selection-change="handleSelectionChange"
@@ -165,12 +203,48 @@
                     name:'',
                     down_status:'',
                     passid:'',
-                    memo:""
+                    df_status:"",
+                    memo:"",
+                    bank_card_number:"",
+                    bank_name:"",
+                    open_name:"",
+                    amount:"",
+                    sort:""
                 },
             }
         },
         methods:{
-            exportExcel () {
+            getSummaries(param) {
+                const { columns, data } = param;
+                const sums = [];
+                columns.forEach((column, index) => {
+                    if (index === 0) {
+                        sums[index] = '合计';
+                        return;
+                    }
+                    if (index !== 4) {
+                        return;
+                    }
+                    const values = data.map(item => Number(item[column.property]));
+                    if (!values.every(value => isNaN(value))) {
+                        sums[index] = values.reduce((prev, curr) => {
+                            const value = Number(curr);
+                            if (!isNaN(value)) {
+                                return prev + curr;
+                            } else {
+                                return prev;
+                            }
+                        }, 0);
+                        sums[index] += ' 元';
+                    } else {
+                        sums[index] = 'N/A';
+                    }
+                });
+
+                return sums;
+            },
+            exportExcel (sort) {
+
                 /* generate workbook object from table */
                 var xlsxParam = { raw: true }
                 let wb = XLSX.utils.table_to_book(document.querySelector('#rebateSetTable'),xlsxParam);
@@ -184,15 +258,11 @@
                 for (var key in dic){
                     var item = dic[key];
 
-                    console.log(key,item)
-                    if(item.v == '补发通知' || key == 'A1'){
+                    if(item.v == '操作' || key == 'A1' || item.v == '查询状态'){
                         delete dic[key]
                     }
-
-                    // if(item.v){
-                    //     item.v = item.v.toString()
-                    // }
                 }
+                console.log(dic)
                 let wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' });
                 try {
                     FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' } ), '代付订单明细.xlsx');
@@ -221,39 +291,6 @@
                 this.selectData = val
                 console.log(this.selectData)
             },
-            // CashoutConfirm(row){
-            //     this.$confirm('确认通过提现申请吗？', '提示', {}).then(() => {
-            //         this.ButtonLoading = true;
-            //         cashout_confirm({
-            //             data : {"userid": row.userid,"id":row.id},
-            //             callback : () => {
-            //                 this.ButtonLoading = false;
-            //                 this.$message.success('提现通过处理成功!')
-            //                 this.RequestQuery()
-            //             },
-            //             errorcallback : () => {
-            //                 this.ButtonLoading = false;
-            //             }
-            //         })
-            //     })
-            // },
-            // CashoutCancel(row){
-            //     console.log("row:",row)
-            //     this.$confirm('确认拒绝提现申请吗？', '提示', {}).then(() => {
-            //         this.ButtonLoading1 = true;
-            //         cashout_cancel({
-            //             data : {"userid": row.userid,"id":row.id},
-            //             callback : () => {
-            //                 this.ButtonLoading1 = false;
-            //                 this.$message.success('提现拒绝处理成功!')
-            //                 this.RequestQuery()
-            //             },
-            //             errorcallback : () => {
-            //                 this.ButtonLoading1 = false;
-            //             }
-            //         })
-            //     })
-            // },
             handleSizeChange(val) {
                 this.pagesize = val;
                 this.RequestQuery()
@@ -280,7 +317,13 @@
                         enddate : enddate,
                         no : this.filters.no,
                         ordercode : this.filters.ordercode,
-                        memo:this.filters.memo
+                        df_status : this.filters.df_status,
+                        memo:this.filters.memo,
+                        sort:this.filters.sort,
+                        bank_card_number:this.filters.bank_card_number,
+                        bank_name:this.filters.bank_name,
+                        open_name:this.filters.open_name,
+                        amount:this.filters.amount,
                     },
                     callback : (res) => {
                         this.vlist = res.data.data
