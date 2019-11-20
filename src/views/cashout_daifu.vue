@@ -201,7 +201,6 @@
                 handler(newName, oldName) {
                     if(newName.hasOwnProperty('paypassid')){
                         this.paypassid = newName.paypassid
-                        console.log(this.paypassid)
                         this.daifuQuery()
                     }
                 },
@@ -213,7 +212,6 @@
             daifuPassList({
                 "callback" : (res) => {
                     this.daifuPassObj = res.data.data
-                    console.log(this.daifuPassObj)
                 }
             })
 

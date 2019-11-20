@@ -349,7 +349,6 @@
                         this.data = res.data.data.data
                         this.page.total = Number(res.headers.total)
                         this.loading=false
-                        console.log(this.data)
                     }
                 })
             }

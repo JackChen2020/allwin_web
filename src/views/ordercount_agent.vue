@@ -148,7 +148,6 @@
                     },
                     callback : (res) => {
                         this.vlist = res.data.data
-                        console.log(res)
                         this.total = Number(res.headers.total)
                         this.listLoading=false
                     },

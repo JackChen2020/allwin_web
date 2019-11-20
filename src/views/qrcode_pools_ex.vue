@@ -149,10 +149,8 @@
         },
         methods: {
             handleRemove(file, fileList) {
-                console.log( file, fileList );
             },
             handlePreview(file) {
-                console.log(file);
             },
             handleSuccess( response, file, fileList ){
                 if ( response.rescode !== '10000' ){
@@ -163,7 +161,6 @@
                 }
             },
             handlerProress(event, file, fileList){
-                console.log(fileList)
             },
             handlerUpload(file) {
                 // console.log( file.type )
@@ -187,7 +184,6 @@
             searchChange(params){
                 this.filter.name = params.name
                 this.filter.status = params.statusname
-                console.log(this.filter)
                 this.QueryQrcode()
             },
             refreshChange(){
@@ -230,7 +226,6 @@
                 })
             },
             rowUpdate(form, index, done) {
-                console.log(form)
                 this.$confirm('确认提交吗？', '提示', {}).then(() => {
                     upd_qrcode({
                         data : {"id":form.id,"name":form.name},

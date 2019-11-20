@@ -116,7 +116,6 @@
             },
             selectionChange(list){
                 this.selectdata = list
-                console.log(this.selectdata)
             },
             searchChange(params){
                 this.filter.name = params.name
@@ -159,7 +158,6 @@
                 }
             },
             qq_list_Get(){
-                console.log(this.filter)
                 if(this.qqacc && this.qqacc.length>0){
                     get_qq_list({
                         params:{
@@ -171,7 +169,6 @@
                         callback : (res) =>{
                             this.data = res.data.data
                             this.page.total = Number(res.headers.total)
-                            console.log(this.data)
                             this.isFlag = true
                         }
                     })
@@ -209,7 +206,6 @@
             get_qq_accs({
                 callback: (res)=>{
                     this.qqaccs = res.data.data
-                    console.log(this.qqaccs)
                 }
             })
         }

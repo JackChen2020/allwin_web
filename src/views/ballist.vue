@@ -168,7 +168,6 @@
                 for (var key in dic){
                     var item = dic[key];
 
-                    console.log(key,item)
                     if(item.v == '补发通知' || key == 'A1'){
                         delete dic[key]
                     }
@@ -314,7 +313,6 @@
                     enddate=dateformart(this.filters.querytime[1])+' 23:59:59'
                 }
 
-                console.log(this.page)
                 ballist_query({
                     params : {
                         page:this.page,

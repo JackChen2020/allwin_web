@@ -166,10 +166,8 @@
         },
         methods: {
             handleRemove(file, fileList) {
-                console.log( file, fileList );
             },
             handlePreview(file) {
-                console.log(file);
             },
             handleSuccess( response, file, fileList ){
                 if ( response.rescode !== '10000' ){
@@ -180,10 +178,8 @@
                 }
             },
             handlerProress(event, file, fileList){
-                console.log(fileList)
             },
             handlerUpload(file) {
-                console.log( file.type )
                 const isJPG = file.type.split('/')[0] === 'image';
                 const isLt2M = file.size / 1024  < 120;
 
@@ -196,7 +192,6 @@
                 return isJPG && isLt2M;
             },
             onLoad(page) {
-                console.log(page)
                 this.page.currentPage = page.currentPage
                 this.page.pageSize = page.pageSize
                 this.QueryQrcode()
@@ -204,7 +199,6 @@
             searchChange(params){
                 this.filter.name = params.name
                 this.filter.status = params.statusname
-                console.log(this.filter)
                 this.QueryQrcode()
             },
             refreshChange(){
@@ -247,7 +241,6 @@
                 })
             },
             rowUpdate(form, index, done) {
-                console.log(form)
                 this.$confirm('确认提交吗？', '提示', {}).then(() => {
                     upd_qrcode({
                         data : {"id":form.id,"name":form.name},
@@ -296,7 +289,6 @@
             }
         },
         mounted() {
-            console.log(this.$route.query)
             // this.QueryQrcode()
             // console.log(this.$route.query.id)
         }

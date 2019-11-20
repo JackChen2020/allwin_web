@@ -175,7 +175,6 @@
             get_bal({
                 "callback" : (res) => {
                     this.obj = res.data.data
-                    console.log(this.obj)
                 }
             })
         },

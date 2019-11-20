@@ -483,7 +483,6 @@
                                     })
                                 }
                             })
-                            console.log(this.PayObj.addlist.insert)
                             if (this.PayObj.addlist.insert.length===0){
                                 this.$set(this.PayObj.addlist.delete,'id',this.PayPassObj.userid)
                                 this.$set(this.PayObj.addlist.delete,'type','1')
@@ -567,7 +566,6 @@
                 this.$set(this.PayObj1.addlist,'insert',[])
 
                 let user = JSON.parse(localStorage.user)
-                console.log(this.obj)
 
                 paypasslinktype_query({
                     params : {

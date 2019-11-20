@@ -231,7 +231,6 @@
                 val.forEach(item => {
                     this.selectData.push(item.userid)
                 })
-                console.log(this.selectData)
             },
             batchConfirm(){
                 this.$confirm('确认审核通过该记录吗?', '提示', {
@@ -298,9 +297,7 @@
                     })
             },
             mg_add () {
-                console.log(this.addFlag)
                 this.addFlag = true;
-                console.log(this.addFlag)
             },
             addSubmit() {
                 this.$refs.addForm.validate((valid) => {
@@ -309,7 +306,6 @@
                             this.addLoading = true;
                             this.$set(this.addForm,'rolecode',"2001")
                             this.$set(this.addForm,"status","1")
-                            console.log(this.addForm)
                             user_add({
                                 data :this.addForm,
                                 callback : () => {

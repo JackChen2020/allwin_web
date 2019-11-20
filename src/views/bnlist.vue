@@ -546,7 +546,6 @@
         },
         methods : {
             bindQRCode: function (url) {
-                console.log(url)
                 // console.log(this.qrcodehtml)
                 new QRCode(this.$refs.qrCodeDiv, {
                     text: url,
@@ -556,7 +555,6 @@
                     colorLight: "#ffffff", //二维码背景色
                     correctLevel: QRCode.CorrectLevel.L//容错率，L/M/H
                 })
-                console.log(this.$refs.qrCodeDiv)
             },
             getGoogTokenUrl(row){
                 google_token_url_get({
@@ -564,7 +562,6 @@
                         userid : row.userid,
                     },
                     callback : (res)=>{
-                        console.log(res)
                         this.userid = row.userid
                         // this.$ref.qrCodeDiv.innerHTML=""
                         this.googleFlag = true
@@ -706,7 +703,6 @@
                                 this.$set(this.PayObj1.addlist.delete,'id',this.PayPassObj.userid)
                                 this.$set(this.PayObj1.addlist.delete,'type','1')
                             }
-                            console.log(this.PayObj1.addlist)
                             paypasslinktype_add({
                                 data :this.PayObj1.addlist,
                                 callback : () => {
@@ -945,7 +941,6 @@
                         userid : this.AgentObj.userid,
                     },
                     callback : (res) => {
-                        console.log(res)
                         if(res.data.data && res.data.data.length>0){
                             this.AgentObj.list = res.data.data[0].agents
                             this.AgentObj.list.forEach((item,index) => {

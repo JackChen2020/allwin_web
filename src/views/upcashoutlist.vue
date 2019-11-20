@@ -81,7 +81,6 @@
         methods:{
             handleSelectionChange(val){
                 this.selectData = val
-                console.log(this.selectData)
             },
             handleSizeChange(val) {
                 this.pagesize = val;

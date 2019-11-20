@@ -273,7 +273,6 @@
                         //     }
                         // })
 
-                        console.log(this.data)
                         this.page.total = Number(res.headers.total)
                         this.loading=false
                     },

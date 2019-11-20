@@ -173,7 +173,6 @@
                 for (var key in dic){
                     var item = dic[key];
 
-                    console.log(key,item)
                     if(item.v == '补发通知' || key == 'A1'){
                         delete dic[key]
                     }

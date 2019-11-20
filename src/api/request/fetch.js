@@ -73,7 +73,6 @@ export function CoreRequest (options) {
 
     if (res && res.data.rescode === '900001' ){
       localStorage.clear()
-      console.log(imgjoin("/#/login"))
       window.location.href= imgjoin("/#/login")
     }else if (res && res.data.rescode !== '10000') {
 

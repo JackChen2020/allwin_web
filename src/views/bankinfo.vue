@@ -109,7 +109,6 @@
                 get_bankinfo({
                     "callback" : (res) => {
                         this.obj = res.data.data
-                        console.log(this.obj)
                     }
                 })
             }

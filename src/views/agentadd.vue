@@ -114,9 +114,7 @@
         },
         methods:{
             mg_add () {
-                console.log(this.addFlag)
                 this.addFlag = true;
-                console.log(this.addFlag)
             },
             addSubmit() {
                 this.$refs.addForm.validate((valid) => {

@@ -51,7 +51,6 @@
         watch: {
             obj: {
                 handler(newName, oldName) {
-                    console.log(newName.userid,this.lastuserid)
                     if(newName.userid !== this.lastuserid && newName.userid >0){
                         this.userids.forEach(item => {
                             if(newName.userid === item.userid){
@@ -191,7 +190,6 @@
                     },
                     "callback": (res)=>{
                         this.userids=res.data.data
-                        console.log(this.userids)
                         this.userids.forEach(item =>{
                             this.dicData.push({
                                 label:item.name,

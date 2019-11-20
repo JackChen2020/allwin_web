@@ -86,7 +86,6 @@
         methods:{
             handleSelectionChange(val){
                 this.selectData = val
-                console.log(this.selectData)
             },
             CashoutConfirm(row){
                 this.$confirm('确认通过提现申请吗？', '提示', {}).then(() => {
@@ -105,7 +104,6 @@
                 })
             },
             CashoutCancel(row){
-                console.log("row:",row)
                 this.$confirm('确认拒绝提现申请吗？', '提示', {}).then(() => {
                     this.ButtonLoading1 = true;
                     cashout_cancel({
