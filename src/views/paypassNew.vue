@@ -82,6 +82,7 @@
 
     import { paytype_query,paypasslinktype_add,paypasslinktype_query,
         paypass_query,paypass_add,paypass_upd,paypass_del,paypassRulesAdd,paypassRulesGet  } from '~/api/request/request';
+    import { Loading } from 'element-ui';
 
     export default {
         data() {
@@ -239,6 +240,7 @@
                                             value:"GET",
                                         }
                                     ],
+                                    valueDefault:"POST",
                                     span:10,
                                     rules: [{
                                         required: true,
@@ -250,13 +252,14 @@
                                     label: "请求数据类型",
                                     prop: "request_type",
                                     type: "select",
+                                    valueDefault:"body",
                                     dicData: [
                                         {
                                             label:"Json",
                                             value:"json",
                                         },
                                         {
-                                            label:"Body",
+                                            label:"表单",
                                             value:"body",
                                         },
                                         {
@@ -265,12 +268,58 @@
                                         }
                                     ],
                                     span:10,
+                                    row:true,
                                     rules: [{
                                         required: true,
                                         message: "请选择请求的方法",
                                         trigger: "blur"
                                     }],
                                 },
+                                {
+                                    label: "是否签名",
+                                    prop: "request_sign",
+                                    type: "select",
+                                    valueDefault:true,
+                                    dicData: [
+                                        {
+                                            label:"是",
+                                            value:true,
+                                        },
+                                        {
+                                            label:"否",
+                                            value:false,
+                                        }
+                                    ],
+                                    span:10,
+                                    rules: [{
+                                        required: true,
+                                        message: "请选择是否签名",
+                                        trigger: "blur"
+                                    }],
+                                },
+                                {
+                                    label: "是否加密",
+                                    prop: "request_password",
+                                    type: "select",
+                                    valueDefault:"否",
+                                    dicData: [
+                                        {
+                                            label:"是",
+                                            value:true,
+                                        },
+                                        {
+                                            label:"否",
+                                            value:false,
+                                        }
+                                    ],
+                                    span:10,
+                                    rules: [{
+                                        required: true,
+                                        message: "请选择是否加密",
+                                        trigger: "blur"
+                                    }],
+                                },
+
                             ],
                         },
                         {
@@ -282,6 +331,7 @@
                                     label: "返回数据类型",
                                     prop: "return_type",
                                     type: "select",
+                                    valueDefault:"html",
                                     dicData: [
                                         {
                                             label:"Json",
@@ -461,8 +511,40 @@
                                             },
                                             {
                                                 width: 150,
+                                                label: '是否为请求数据',
+                                                prop: "requestOk",
+                                                type: 'select',
+                                                dicData: [
+                                                    {
+                                                        label: '是',
+                                                        value: true
+                                                    },
+                                                    {
+                                                        label: '否',
+                                                        value: false
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                width: 150,
                                                 label: '是否加入签名',
                                                 prop: "sign",
+                                                type: 'select',
+                                                dicData: [
+                                                    {
+                                                        label: '是',
+                                                        value: true
+                                                    },
+                                                    {
+                                                        label: '否',
+                                                        value: false
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                width: 150,
+                                                label: '是否加入加密',
+                                                prop: "password",
                                                 type: 'select',
                                                 dicData: [
                                                     {
@@ -483,11 +565,11 @@
                         },
                         {
                             icon:'el-icon-info',
-                            label: '加密方式',
+                            label: '签名方式',
                             prop: 'sign',
                             column: [
                                 {
-                                    label: "加密关键字",
+                                    label: "签名关键字",
                                     prop: "sign_signKey",
                                     span:10,
                                     rules: [{
@@ -497,7 +579,7 @@
                                     }],
                                 },
                                 {
-                                    label: "加密方式",
+                                    label: "签名方式",
                                     prop: "sign_signType",
                                     type: "select",
                                     dicData: [
@@ -508,17 +590,21 @@
                                         {
                                             label:"SHA256",
                                             value:"sha256",
+                                        },
+                                        {
+                                            label:"RSA-ECB-PKCS1Padding",
+                                            value:"rsa_ecb_pkcs1padding",
                                         }
                                     ],
                                     span:10,
                                     rules: [{
                                         required: true,
-                                        message: "请选择加密方式",
+                                        message: "请选择签名方式",
                                         trigger: "blur"
                                     }],
                                 },
                                 {
-                                    label: "加密数据编码",
+                                    label: "签名数据编码",
                                     prop: "sign_signEncode",
                                     type: "select",
                                     dicData: [
@@ -530,17 +616,17 @@
                                     span:10,
                                     rules: [{
                                         required: true,
-                                        message: "请选择加密数据编码",
+                                        message: "请选择签名数据编码",
                                         trigger: "blur"
                                     }],
                                 },
                                 {
-                                    label: "加密关键字处理方法",
+                                    label: "签名关键字处理方法",
                                     prop: "sign_signDataType",
                                     type: "select",
                                     dicData: [
                                         {
-                                            label:"按照关键字ascii码排序(去除空值)",
+                                            label:"按照关键字ascii码排序(去除空值)(key-value形式)",
                                             value:"key-ascii-sort",
                                         },
                                         {
@@ -551,7 +637,7 @@
                                     span:10,
                                     rules: [{
                                         required: true,
-                                        message: "请选择加密关键字处理方法",
+                                        message: "请选择签名关键字处理方法",
                                         trigger: "blur"
                                     }],
                                 },
@@ -595,6 +681,158 @@
                                     span:20,
                                     row:true,
                                 },
+                                {
+                                    label: "平台公钥",
+                                    prop: "sign_Gpass",
+                                    span:20,
+                                    row:true,
+                                },
+                                {
+                                    label: "商户私钥",
+                                    prop: "sign_Spass",
+                                    span:20,
+                                    row:true,
+                                },
+                            ],
+                        },
+                        {
+                            icon:'el-icon-info',
+                            label: '加密方式',
+                            prop: 'password',
+                            column: [
+                                {
+                                    label: "加密关键字",
+                                    prop: "password_signKey",
+                                    span:10
+                                },
+                                {
+                                    label: "加密方式",
+                                    prop: "password_signType",
+                                    type: "select",
+                                    valueDefault:"aesPass",
+                                    dicData: [
+                                        {
+                                            label:"AES",
+                                            value:"aesPass",
+                                        }
+                                    ],
+                                    span:10,
+                                    rules: [{
+                                        required: true,
+                                        message: "请选择加密方式",
+                                        trigger: "blur"
+                                    }],
+                                },
+                                {
+                                    label: "加密模式",
+                                    prop: "password_signEncode",
+                                    type: "select",
+                                    valueDefault:"CBC",
+                                    dicData: [
+                                        {
+                                            label:"CBC",
+                                            value:"CBC",
+                                        },
+                                        {
+                                            label:"ECB",
+                                            value:"ECB",
+                                        },
+                                        {
+                                            label:"CTR",
+                                            value:"CTR",
+                                        }
+                                    ],
+                                    span:10
+                                },
+                                {
+                                    label: "填充方式",
+                                    prop: "password_tianchong",
+                                    type: "select",
+                                    dicData: [
+                                        {
+                                            label:"pkcs5padding",
+                                            value:"pkcs5padding",
+                                        },
+                                        {
+                                            label:"pkcs7padding",
+                                            value:"pkcs7padding",
+                                        },
+                                        {
+                                            label:"zeropadding",
+                                            value:"zeropadding",
+                                        }
+                                    ],
+                                    span:10,
+                                },
+                                {
+                                    label: "偏移量",
+                                    prop: "password_cheap",
+                                    span:10
+                                },
+                                {
+                                    label: "加密密钥",
+                                    prop: "password_Gpass",
+                                    span:10
+                                },
+                                {
+                                    label: "输出",
+                                    prop: "password_Pout",
+                                    span:10,
+                                    type: "select",
+                                    dicData: [
+                                        {
+                                            label:"16进制",
+                                            value:"hex",
+                                        },
+                                        {
+                                            label:"base64",
+                                            value:"base64",
+                                        }
+                                    ],
+                                },
+                                {
+                                    label: "加密关键字处理方法",
+                                    prop: "password_signDataType",
+                                    type: "select",
+                                    dicData: [
+                                        {
+                                            label:"按照关键字ascii码排序(去除空值)(key-value形式)",
+                                            value:"key-ascii-sort",
+                                        },
+                                        {
+                                            label:"按照指定关键字排序",
+                                            value:"key-appoint",
+                                        },
+                                        {
+                                            label:"按Json字符串",
+                                            value:"key-json",
+                                        }
+                                    ],
+                                    span:10,
+                                    rules: [{
+                                        required: true,
+                                        message: "请选择加密关键字处理方法",
+                                        trigger: "blur"
+                                    }],
+                                },
+                                {
+                                    label: "指定关键字的值",
+                                    prop: "password_signValue",
+                                    span:20,
+                                    row:true,
+                                },
+                                {
+                                    label: "指定关键字的值前缀拼接",
+                                    prop: "password_signBefore",
+                                    span:20,
+                                    row:true,
+                                },
+                                {
+                                    label: "指定关键字的值后缀拼接",
+                                    prop: "password_signAppend",
+                                    span:20,
+                                    row:true,
+                                },
                             ],
                         },
                     ]
@@ -604,12 +842,15 @@
         methods: {
             clickProSetHandler(row){
                 this.objForm={}
+                // let loadingInstance1 = Loading.service({ fullscreen: true });
+
                 paypassRulesGet({
                     params : {
                         paypassid : row.paypassid
                     },
                     callback : (res) => {
                         this.objForm = res.data.data
+                        // loadingInstance1.close()
                     }
                 })
                 this.proSet = true
