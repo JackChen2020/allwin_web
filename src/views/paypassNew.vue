@@ -301,7 +301,7 @@
                                     label: "是否加密",
                                     prop: "request_password",
                                     type: "select",
-                                    valueDefault:"否",
+                                    valueDefault:false,
                                     dicData: [
                                         {
                                             label:"是",
