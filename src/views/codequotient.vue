@@ -20,11 +20,11 @@
                         size="mini"
                         @click="rowCell(scope.row,scope.index)"
                 >{{scope.row.$cellEdit?'保存':'修改'}}</el-button>
-                <el-button
-                        type="primary"
-                        size="mini"
-                        @click="LinkQrcode(scope.row)"
-                >二维码</el-button>
+<!--                <el-button-->
+<!--                        type="primary"-->
+<!--                        size="mini"-->
+<!--                        @click="LinkQrcode(scope.row)"-->
+<!--                >二维码</el-button>-->
                 <el-button
                         type="danger"
                         size="mini"
@@ -155,29 +155,29 @@
                             search:true,
                             cell: true,
                         },
-                        {
-                            label:'码商余额',
-                            prop:'up_bal',
-                            minWidth:110,
-                            addVisdiplay:false,
-                        },
-                        {
-                            label:'可提现余额',
-                            prop:'bal1',
-                            minWidth:110,
-                            addVisdiplay:false,
-                        },
-                        {
-                            label:'利润',
-                            prop:'bal',
-                            minWidth:110,
-                            addVisdiplay:false,
-                        },
+                        // {
+                        //     label:'码商余额',
+                        //     prop:'up_bal',
+                        //     minWidth:110,
+                        //     addVisdiplay:false,
+                        // },
+                        // {
+                        //     label:'可提现余额',
+                        //     prop:'bal1',
+                        //     minWidth:110,
+                        //     addVisdiplay:false,
+                        // },
+                        // {
+                        //     label:'利润',
+                        //     prop:'bal',
+                        //     minWidth:110,
+                        //     addVisdiplay:false,
+                        // },
                         {
                             label:'创建时间',
                             prop:'createtime',
                             minWidth:150,
-                            addVisdiplay:false,
+                            display:false,
                         },
                     ]
                 }

@@ -4,6 +4,50 @@ import { CoreRequest } from './fetch'
 
 let apiurl = '/client_api'
 
+
+export function initOtherDataForWeibo(options) {
+  options['url']=apiurl + '/pay/initOtherDataForWeibo'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+export function getVerCodeForWeibo(options) {
+  options['url']=apiurl + '/pay/getVerCodeForWeibo'
+  options['method']='post'
+  CoreRequest(options)
+}
+export function vercodeLoginForWeibo(options) {
+  options['url']=apiurl + '/pay/vercodeLoginForWeibo'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+export function getPayPassLinkData(options) {
+  options['url']=apiurl + '/pay/getPayPassLinkData'
+  options['method']='get'
+  CoreRequest(options)
+}
+export function updPayPassLinkData(options) {
+  options['url']=apiurl + '/pay/updPayPassLinkData'
+  options['method']='post'
+  CoreRequest(options)
+}
+export function addPayPassLinkData(options) {
+  options['url']=apiurl + '/pay/addPayPassLinkData'
+  options['method']='post'
+  CoreRequest(options)
+}
+export function getSessionSSS(options) {
+  options['url']=apiurl + '/pay/getSessionSSS'
+  options['method']='post'
+  CoreRequest(options)
+}
+export function delPayPassLinkData(options) {
+  options['url']=apiurl + '/pay/delPayPassLinkData'
+  options['method']='post'
+  CoreRequest(options)
+}
+
 export function daifuBalQuery(options) {
   options['url']=apiurl + '/public/daifuBalQuery'
   options['method']='get'
