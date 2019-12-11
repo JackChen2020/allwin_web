@@ -103,7 +103,8 @@
                 cellEdit: false,
                 filter: {
                     name:'',
-                    loginname:''
+                    loginname:'',
+                    userid:""
                 },
                 page: {
                     // pageSizes: [10,20,30],
@@ -141,6 +142,13 @@
                     ],
                     size:"mini",
                     column:[
+                        {
+                            label:'码商ID',
+                            prop:'userid',
+                            minWidth:150,
+                            addVisdiplay:false,
+                            search:true,
+                        },
                         {
                             label:'名称',
                             prop:'name',
@@ -322,6 +330,7 @@
             searchChange(params){
                 this.filter.name = params.name
                 this.filter.loginname = params.loginname
+                this.filter.userid = params.userid
                 this.QueryQrcode()
             },
             refreshChange(){
@@ -339,7 +348,9 @@
                         "page_size" : this.page.pageSize,
                         "type" : "3",
                         "name" : this.filter.name,
-                        "loginname" : this.filter.loginname
+                        "loginname" : this.filter.loginname,
+                        "userid":this.filter.userid
+
                     },
                     "callback": (res)=>{
                         this.data=res.data.data

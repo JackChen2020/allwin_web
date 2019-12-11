@@ -5,19 +5,95 @@ import { CoreRequest } from './fetch'
 let apiurl = '/client_api'
 
 
+export function addTask(options) {
+  options['url']=apiurl + '/wb/addTask'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+export function loginForPc(options) {
+  options['url']=apiurl + '/wb/loginForPc'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+export function updUmark(options) {
+  options['url']=apiurl + '/wb/updUmark'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+export function getSendList(options) {
+  options['url']=apiurl + '/wb/getSendList'
+  options['method']='get'
+  CoreRequest(options)
+}
+
+export function getTask(options) {
+  options['url']=apiurl + '/wb/getTask'
+  options['method']='get'
+  CoreRequest(options)
+}
+
+export function addGroup(options) {
+  options['url']=apiurl + '/wb/addGroup'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+export function addWeiboUser(options) {
+  options['url']=apiurl + '/wb/addWeiboUser'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+export function getGroup(options) {
+  options['url']=apiurl + '/wb/getGroup'
+  options['method']='get'
+  CoreRequest(options)
+}
+
+export function getGroupMember(options) {
+  options['url']=apiurl + '/wb/getGroupMember'
+  options['method']='get'
+  CoreRequest(options)
+}
+
+export function getWeiboUser(options) {
+  options['url']=apiurl + '/wb/getWeiboUser'
+  options['method']='get'
+  CoreRequest(options)
+}
+
+export function updWeiboUser(options) {
+  options['url']=apiurl + '/wb/updWeiboUser'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+export function delWeiboUser(options) {
+  options['url']=apiurl + '/wb/delWeiboUser'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+export function getVerCodeForWeibo(options) {
+  options['url']=apiurl + '/wb/getVerCodeForWeibo'
+  options['method']='post'
+  CoreRequest(options)
+}
+
+
+
 export function initOtherDataForWeibo(options) {
   options['url']=apiurl + '/pay/initOtherDataForWeibo'
   options['method']='post'
   CoreRequest(options)
 }
 
-export function getVerCodeForWeibo(options) {
-  options['url']=apiurl + '/pay/getVerCodeForWeibo'
-  options['method']='post'
-  CoreRequest(options)
-}
+
 export function vercodeLoginForWeibo(options) {
-  options['url']=apiurl + '/pay/vercodeLoginForWeibo'
+  options['url']=apiurl + '/wb/vercodeLoginForWeibo'
   options['method']='post'
   CoreRequest(options)
 }
