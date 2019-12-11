@@ -8,6 +8,7 @@
                    @size-change="sizeChange"
                    @current-change="currentChange"
                    @search-change="searchChange"
+                   @selection-change="selectionChange"
                    @refresh-change="refresh"
                    :table-loading="loading">
             <template slot="search">
@@ -67,6 +68,10 @@
                 </el-select>
             </template>
 
+            <template slot="menuLeft">
+                <el-button type="primary" size="mini" @click="slodding=true;login()" :loading="slodding">登录</el-button>
+            </template>
+
 
             <template slot-scope="scope" slot="menuBtn">
                 <!--                <el-dropdown-item @click.native="getSession(scope.row)">获取Session</el-dropdown-item>-->
@@ -98,12 +103,34 @@
 
         </el-dialog>
 
+        <el-dialog  title="登录" :visible.sync="pcloginFlag" :close-on-click-modal="false" width="40%">
+
+            <div  v-for="(item,index) in login_params" :key="index">
+                <div v-if="item.code==='10002'">
+                    <basic-container>
+                        <h4 style="color: green">{{item.username}}：{{item.msg}}</h4>
+                        <div style="display: flex;align-items:center">
+                            <div style="width:100px;">验证码:</div>
+                            <el-input size="mini" clearable v-model="item.vercode"></el-input>
+                            <img style="margin-left:5px;width:100px;border:1px solid #C0C0C0" :src="item.url">
+                        </div>
+                    </basic-container>
+                </div>
+                <div v-if="item.code==='10001'">
+                    <basic-container>
+                        <h4 style="color: red">{{item.username}}：{{item.msg}}</h4>
+                    </basic-container>
+                </div>
+            </div>
+            <el-button type="primary" @click="bloadding=true;logins(login_params)" :loading="bloadding">登录</el-button>
+        </el-dialog>
+
     </basic-container>
 </template>
 
 <script>
 
-    import { addWeiboUser,getWeiboUser,updWeiboUser,delWeiboUser,  getPayPassLinkData,updPayPassLinkData,initOtherDataForWeibo,delPayPassLinkData,getSessionSSS,getVerCodeForWeibo,vercodeLoginForWeibo } from '~/api/request/request';
+    import { addWeiboUser,getWeiboUser,updWeiboUser,delWeiboUser, loginForPc, getPayPassLinkData,updPayPassLinkData,initOtherDataForWeibo,delPayPassLinkData,getSessionSSS,getVerCodeForWeibo,vercodeLoginForWeibo } from '~/api/request/request';
     import { dateformart } from '~/api/utils'
 
     export default {
@@ -113,6 +140,10 @@
                 auth_time: 0, /*倒计时 计数器*/
                 vercodeFlag:false,
                 vercode:"",
+                bloadding:false,
+                selectdata:[],
+                slodding:false,
+                pcloginFlag:false,
                 FormCopy:false,
                 objForm:{},
                 sssid:0,
@@ -154,6 +185,7 @@
                 data: [],
                 filters:{},
                 loading:false,
+                login_params:[]
             };
         },
         computed: {
@@ -169,6 +201,7 @@
                     indexLabel:'序号',
                     index:true,
                     border:true,
+                    selection:true,
                     expandFixed:false,
                     searchShow:false,
                     viewBtn:false,
@@ -230,6 +263,58 @@
             }
         },
         methods: {
+            selectionChange(list){
+                this.selectdata = list
+                console.log(this.selectdata)
+            },
+            logins(datas){
+                console.log(datas)
+                loginForPc({
+                    data:{datas:datas},
+                    callback:res=>{
+                        console.log(res)
+                        if(res.data.data.length===0){
+                            this.$message.success("登录成功!")
+
+                            this.bloadding=false
+                            this.pcloginFlag=false
+                        }else{
+                            this.bloadding=false
+                            this.pcloginFlag=false
+                            this.pcloginFlag=true
+                            this.login_params = res.data.data
+                        }
+                    }
+                })
+            },
+            login(){
+                if(this.selectdata.length===0){
+                    this.$message.warning("请勾选数据!")
+                }else{
+                    var datas=[]
+                    this.selectdata.forEach(item=>{
+                        datas.push({
+                            username:item.username
+                        })
+                    })
+                    this.$confirm('确定登录这些勾选的账号吗？', '提示', {}).then(() => {
+
+                        loginForPc({
+                            data:{datas:datas},
+                            callback:res=>{
+                                if(res.data.data.length===0){
+                                    this.$message.success("登录成功!")
+                                    this.slodding=false
+                                }else{
+                                    this.slodding=false
+                                    this.login_params = res.data.data
+                                    this.pcloginFlag=true
+                                }
+                            }
+                        })
+                    })
+                }
+            },
             getAuthCode:function () {
                 this.$confirm('确认发送验证码？', '提示', {}).then(() => {
                     getVerCodeForWeibo({
