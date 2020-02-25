@@ -12,7 +12,7 @@ function resolve (dir) {
 // const ServerUrl = "http://47.244.129.198"
 
 // 生产环境
-const ServerUrl = "http://allwin6666.com"
+const ServerUrl = "http://47.75.120.33"
 
 module.exports = {
     // 基本路径

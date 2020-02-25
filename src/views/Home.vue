@@ -88,7 +88,7 @@
 	export default {
 		data() {
 			return {
-				sysName:'傲银管理系统',
+				sysName:'三星管理系统',
 				collapsed:false,
 				sysUserName: '',
 				sysUserAvatar: '../assets/img/pichead.jpg',
@@ -213,17 +213,17 @@
 			// console.log("user:",this.user)
 
 			if(this.user.rolecode.toString() === "1000"){
-				this.sysName = "傲银管理后台"
+				this.sysName = "三星管理后台"
 			}else if (this.user.rolecode.toString() === "1001"){
-				this.sysName = "傲银管理后台"
+				this.sysName = "三星管理后台"
 			}else if (this.user.rolecode.toString() === "1005"){
-				this.sysName = "傲银财务管理后台"
+				this.sysName = "三星财务管理后台"
 			}else if (this.user.rolecode.toString() === "2001"){
-				this.sysName = "傲银商户后台"
+				this.sysName = "三星商户后台"
 			}else if (this.user.rolecode.toString() === "3001"){
-				this.sysName = "傲银代理后台"
+				this.sysName = "三星代理后台"
 			}else if (this.user.rolecode.toString() === "4001"){
-				this.sysName = "傲银码商后台"
+				this.sysName = "三星码商后台"
 			}
 
 
