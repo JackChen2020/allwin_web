@@ -19,7 +19,7 @@
     "sass-loader": "^7.1.0",
     "svg-sprite-loader": "^4.1.6",
     "vue-aplayer": "^1.6.1",
-    "xlsx": "^0.15.1"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.7.0",
